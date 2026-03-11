@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useCategories } from "@/hooks/useStoreData";
 import { toast } from "sonner";
-import { Camera, Wand2 } from "lucide-react";
+import { Camera, Wand2, Loader2 } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import BarcodeScanner from "@/components/shared/BarcodeScanner";
 import BarcodeGenerator, { generateEAN13 } from "@/components/shared/BarcodeGenerator";
