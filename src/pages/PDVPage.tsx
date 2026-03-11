@@ -177,8 +177,8 @@ export default function PDVPage() {
           <div class="item bold"><span>Troco</span><span>${formatPrice(sale.change)}</span></div>
         ` : ""}
         <div class="line"></div>
-        <div class="center" style="font-size:10px;margin-top:12px">Obrigado pela preferência!</div>
-        <div class="center" style="font-size:10px">Almoxarifado das Tintas</div>
+         <div class="center" style="font-size:10px;margin-top:12px">Obrigado pela preferência!</div>
+        <div class="center" style="font-size:10px">Aquaterapia Pet Shop</div>
         <script>window.print();</script>
       </body></html>
     `);
