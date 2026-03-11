@@ -507,10 +507,26 @@ export default function PDVPage() {
                 className="w-full bg-secondary text-foreground pl-10 pr-4 py-3 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground"
               />
             </div>
-            <Button onClick={handleBarcode} className="bg-accent text-accent-foreground px-6">
+            <Button onClick={() => handleBarcode()} className="bg-accent text-accent-foreground px-4">
               Buscar
             </Button>
+            <Button onClick={() => setShowCameraScanner(true)} variant="outline" className="gap-1 border-primary text-primary">
+              <Camera size={16} /> Escanear
+            </Button>
           </div>
+
+          <BarcodeScanner
+            open={showCameraScanner}
+            onOpenChange={setShowCameraScanner}
+            onScan={handleCameraScan}
+            title="Escanear Produto — PDV"
+          />
+          <ProductLabelPrint
+            open={showLabels}
+            onOpenChange={setShowLabels}
+            products={cart.map(i => ({ name: i.product.name, price: i.product.price, promoPrice: i.product.promoPrice, barcode: i.product.barcode }))}
+          />
+
 
           {/* Product Search */}
           <div className="relative">
