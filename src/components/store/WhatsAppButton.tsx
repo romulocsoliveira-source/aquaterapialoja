@@ -1,15 +1,15 @@
 import { MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
-const WHATSAPP_NUMBER = "551833231220";
-const STORE_NAME = "ALMOXARIFADO DAS TINTAS";
+const WHATSAPP_NUMBER = "5518996570512";
+const STORE_NAME = "AQUATERAPIA PET SHOP";
 
 export function getWhatsAppUrl(message: string) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
 export function getProductWhatsAppUrl(productName: string, productPrice: string, productUrl: string) {
-  const msg = `Olá! Vim do ${STORE_NAME} e gostaria de mais informações sobre:\n\n🎨 *${productName}*\n💰 ${productPrice}\n🔗 ${productUrl}\n\nPode me ajudar?`;
+  const msg = `Olá! Vim do ${STORE_NAME} e gostaria de mais informações sobre:\n\n🐾 *${productName}*\n💰 ${productPrice}\n🔗 ${productUrl}\n\nPode me ajudar?`;
   return getWhatsAppUrl(msg);
 }
 
@@ -23,7 +23,7 @@ export function getCartWhatsAppUrl(items: { name: string; qty: number; price: st
 }
 
 export default function WhatsAppButton() {
-  const defaultMsg = `Olá! Vim do ${STORE_NAME} e gostaria de mais informações sobre tintas e produtos.`;
+  const defaultMsg = `Olá! Vim do ${STORE_NAME} e gostaria de mais informações.`;
 
   return (
     <motion.a
