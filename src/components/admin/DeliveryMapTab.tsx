@@ -38,6 +38,7 @@ const statusConfig: Record<DeliveryStatus, { label: string; color: string; bgCol
   delivered: { label: "Entregue", color: "text-green-400", bgColor: "bg-green-500", icon: CheckCircle },
 };
 
+// Aquaterapia Pet Shop - Av. Getúlio Vargas, 339, Vila Nova Santana, Assis-SP
 const STORE_LAT = -22.6617;
 const STORE_LNG = -50.4122;
 
@@ -83,7 +84,7 @@ export default function DeliveryMapTab() {
 
   const openRoute = (address: string) => {
     const encoded = encodeURIComponent(`${address}, Assis, SP`);
-    window.open(`https://www.google.com/maps/dir/Av.+Getúlio+Vargas,+339,+Assis+-+SP/${encoded}`, "_blank");
+    window.open(`https://www.google.com/maps/dir/Av.+Get%C3%BAlio+Vargas,+339+-+Vila+Nova+Santana,+Assis+-+SP,+19807-130/${encoded}`, "_blank");
   };
 
   return (
@@ -118,7 +119,7 @@ export default function DeliveryMapTab() {
             />
             {/* Store marker */}
             <Marker position={[STORE_LAT, STORE_LNG]} icon={createIcon("hsl(199, 89%, 48%)")}>
-              <Popup><strong>Aquaterapia Pet Shop</strong><br/>Av. Getúlio Vargas, 339</Popup>
+              <Popup><strong>Aquaterapia Pet Shop</strong><br/>Av. Getúlio Vargas, 339<br/>Vila Nova Santana — Assis/SP<br/>Tel: (18) 99657-0512</Popup>
             </Marker>
             {/* Delivery markers */}
             {filtered.map(d => (
