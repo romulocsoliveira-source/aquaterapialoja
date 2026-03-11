@@ -309,10 +309,16 @@ export default function PDVPage() {
             <Button variant="outline" size="sm" onClick={loadHistory} className="gap-1 text-xs">
               <Clock size={14} /> Vendas do Dia
             </Button>
-            <span className="text-xs text-muted-foreground">
+            {cart.length > 0 && (
+              <Button variant="outline" size="sm" onClick={() => setShowLabels(true)} className="gap-1 text-xs">
+                <Tag size={14} /> Etiquetas
+              </Button>
+            )}
+            <span className="text-xs text-muted-foreground hidden md:block">
               {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" })}
             </span>
           </div>
+
         </div>
       </div>
 
