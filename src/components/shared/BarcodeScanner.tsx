@@ -57,10 +57,11 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
         (decodedText) => {
           const now = Date.now();
           // Debounce: ignore same code within 2 seconds
-          if (decodedText === lastScannedTimeRef.toString() && now - lastScannedTimeRef.current < 2000) {
+          if (decodedText === lastScannedCodeRef.current && now - lastScannedTimeRef.current < 2000) {
             return;
           }
           lastScannedTimeRef.current = now;
+          lastScannedCodeRef.current = decodedText;
           setLastScanned(decodedText);
           onScan(decodedText);
 
