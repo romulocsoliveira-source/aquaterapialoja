@@ -43,8 +43,11 @@ export default function PDVPage() {
   const [customerName, setCustomerName] = useState("");
   const [salesHistory, setSalesHistory] = useState<any[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [showCameraScanner, setShowCameraScanner] = useState(false);
+  const [showLabels, setShowLabels] = useState(false);
   const barcodeRef = useRef<HTMLInputElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+
 
   useEffect(() => {
     barcodeRef.current?.focus();
