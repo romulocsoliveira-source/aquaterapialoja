@@ -246,8 +246,12 @@ export default function HotelPetPage() {
               </div>
             )}
 
+            <div className="text-xs text-muted-foreground text-center mb-3">
+              O pagamento será confirmado na loja ou pelo WhatsApp (18) 99657-0512.
+            </div>
+
             <Button className="w-full gradient-pet text-primary-foreground h-12 font-semibold" onClick={handleReservar} disabled={submitting || !user}>
-              {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirmar Reserva"}
+              {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : `Confirmar Reserva${totalFinal > 0 ? ` — R$ ${totalFinal.toFixed(2).replace(".", ",")}` : ""}`}
             </Button>
           </div>
         </div>
