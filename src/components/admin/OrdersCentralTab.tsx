@@ -113,11 +113,12 @@ export default function OrdersCentralTab() {
       }
 
       setOrders(
-        (ordersData || []).map((order) => ({
+        ((ordersData || []) as any[]).map((order) => ({
           ...order,
+          shipping_address: (order.shipping_address as ShippingAddress) || null,
           customer_name: profilesMap.get(order.user_id)?.full_name || null,
           customer_phone: profilesMap.get(order.user_id)?.phone || null,
-        })),
+        })) as OrderRecord[],
       );
     } catch (error) {
       console.error("Erro ao carregar pedidos:", error);
