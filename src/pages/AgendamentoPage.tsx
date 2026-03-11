@@ -66,15 +66,28 @@ export default function AgendamentoPage() {
       horario: time,
       status: "pendente",
       observacoes: obs || null,
+      forma_pagamento: paymentMethod,
     } as any);
-    if (error) toast.error("Erro ao agendar: " + error.message);
-    else {
-      toast.success("Agendamento realizado com sucesso!");
-      const selectedService = servicos.find(s => s.id === service);
-      const msg = `Olá! Gostaria de confirmar meu agendamento de ${selectedService?.nome || "serviço"} para o dia ${day.toLocaleDateString("pt-BR")} às ${time}.`;
-      window.open(`https://wa.me/5518996570512?text=${encodeURIComponent(msg)}`, "_blank");
-      navigate("/conta");
-    }
+    if (error) { toast.error("Erro ao agendar: " + error.message); setLoading(false); return; }
+
+    // Create financial transaction
+    const selService = servicos.find(s => s.id === service);
+    await supabase.from("financial_transactions").insert({
+      type: "income",
+      category: "Banho e Tosa",
+      description: `Agendamento: ${selService?.nome || "Serviço"} - ${day.toLocaleDateString("pt-BR")} ${time}`,
+      amount: Number(selService?.preco || 0),
+      due_date: dateStr,
+      is_paid: false,
+      payment_method: paymentMethod,
+      reference_type: "agendamento",
+      created_by: user.id,
+    } as any);
+
+    toast.success("Agendamento realizado com sucesso!");
+    const msg = `Olá! Gostaria de confirmar meu agendamento de ${selService?.nome || "serviço"} para o dia ${day.toLocaleDateString("pt-BR")} às ${time}. Pagamento: ${paymentMethod.toUpperCase()}.`;
+    window.open(`https://wa.me/5518996570512?text=${encodeURIComponent(msg)}`, "_blank");
+    navigate("/conta");
     setLoading(false);
   };
 
