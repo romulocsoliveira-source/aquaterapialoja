@@ -134,6 +134,7 @@ export default function AdminHotelTab() {
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   🐾 {petsMap[r.pet_id] || "Pet"} • 👤 {profiles[r.user_id] || "Cliente"}
+                  {r.forma_pagamento && <> • 💳 {r.forma_pagamento.replace("_", " ")}</>}
                 </p>
               </div>
               <div className="text-right text-sm">
