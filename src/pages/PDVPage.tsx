@@ -285,9 +285,9 @@ export default function PDVPage() {
             <Link to="/admin" className="text-muted-foreground hover:text-foreground">
               <ArrowLeft size={20} />
             </Link>
-            <img src={logoImg} alt="Almoxarifado das Tintas" className="h-14 w-auto object-contain" />
+             <img src={logoImg} alt="Aquaterapia Pet Shop" className="h-14 w-auto object-contain" />
             <div>
-              <h1 className="font-display text-lg font-bold text-gradient-gold">PDV · ALMOXARIFADO DAS TINTAS</h1>
+              <h1 className="font-display text-lg font-bold text-gradient-gold">PDV · AQUATERAPIA PET SHOP</h1>
               <p className="text-xs text-muted-foreground">Frente de Caixa</p>
             </div>
           </div>
