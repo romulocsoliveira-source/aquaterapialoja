@@ -55,11 +55,8 @@ const App = () => (
                         <Route path="/checkout" element={<CheckoutPage />} />
                         <Route path="/favoritos" element={<AccountPage />} />
                         <Route path="/reset-password" element={<ResetPasswordPage />} />
-                        <Route path="/simulador-cores" element={<ColorSimulatorPage />} />
-                        <Route path="/calculadora-tinta" element={<PaintCalculatorPage />} />
-                        <Route path="/catalogo-cores" element={<ColorCatalogPage />} />
-                        <Route path="/dicas-pintura" element={<PaintTipsPage />} />
-                        <Route path="/orcamento-pintura" element={<PaintBudgetPage />} />
+                        <Route path="/agendamento" element={<AgendamentoPage />} />
+                        <Route path="/hotel-pet" element={<HotelPetPage />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </main>
