@@ -5,15 +5,7 @@ import { toast } from "sonner";
 import { ChevronDown, ChevronUp, Monitor, MessageCircle, Package, RefreshCw, Smartphone, Store } from "lucide-react";
 
 type Channel = "Loja Online" | "WhatsApp" | "Mercado Livre" | "PDV";
-type ShippingAddress = {
-  street?: string;
-  number?: string;
-  complement?: string;
-  neighborhood?: string;
-  city?: string;
-  state?: string;
-  zip_code?: string;
-} | null;
+type ShippingAddress = Record<string, string | undefined> | null;
 
 type OrderItem = {
   id: string;
