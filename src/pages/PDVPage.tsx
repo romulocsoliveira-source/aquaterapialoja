@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import logoImg from "@/assets/logo-almoxarifado.jpeg";
+import logoImg from "@/assets/logo-aquaterapia.png";
 
 interface PDVItem {
   product: Product;
