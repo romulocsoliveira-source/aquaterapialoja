@@ -49,7 +49,7 @@ export default function ToolsSection() {
         <p className="text-muted-foreground mt-2">Tudo que seu pet precisa em um só lugar</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
         {tools.map((tool, i) => (
           <motion.div
             key={tool.title}
