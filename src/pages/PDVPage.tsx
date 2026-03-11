@@ -403,7 +403,7 @@ export default function PDVPage() {
                   </p>
                   <p className="text-[10px] text-gray-400 mt-2">Consulte em www.nfe.fazenda.gov.br</p>
                   <p className="text-[10px] text-gray-400 mt-3">Obrigado pela preferência!</p>
-                  <p className="text-[10px] text-gray-400">Almoxarifado das Tintas</p>
+                  <p className="text-[10px] text-gray-400">Aquaterapia Pet Shop</p>
                 </div>
               </div>
 
