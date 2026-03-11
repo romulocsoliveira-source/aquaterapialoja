@@ -26,9 +26,9 @@ export default function Footer() {
       <div className="container py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
           <h3 className="font-display text-xl font-bold text-gradient-gold mb-2">AQUATERAPIA</h3>
-          <p className="font-display text-sm font-semibold text-primary mb-4">Pet Shop</p>
+          <p className="font-display text-sm font-semibold text-primary mb-4">Pet Shop & Aquarismo</p>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Banho & Tosa • Hotel Pet • Produtos Premium. Cuidamos do seu pet com amor e profissionalismo.
+            Banho & Tosa • Hotel Pet • Aquarismo • Produtos Premium. A maior loja de aquários de Assis.
           </p>
           <div className="flex gap-3 mt-4">
             <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Instagram"><Instagram size={20} /></a>
