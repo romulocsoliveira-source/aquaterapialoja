@@ -532,6 +532,7 @@ export default function PDVPage() {
             onOpenChange={setShowCameraScanner}
             onScan={handleCameraScan}
             title="Escanear Produto — PDV"
+            continuous
           />
           <ProductLabelPrint
             open={showLabels}
