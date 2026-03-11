@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Truck, CheckCircle, Clock, AlertCircle, Navigation, Phone, Package, User } from "lucide-react";
+import { MapPin, Truck, CheckCircle, Clock, AlertCircle, Navigation, Phone, Package, User, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -41,14 +42,11 @@ const STORE = {
   lng: -50.4122,
 };
 
-const mockDeliveries: Delivery[] = [
-  { id: "1", orderId: "#1001", customer: "Maria Silva", phone: "(18) 99999-1234", address: "Rua Dom Antônio, 450", neighborhood: "Centro", total: "R$ 289,80", status: "pending", items: 3, createdAt: "10/03/2026 09:30", lat: -22.659, lng: -50.41 },
-  { id: "2", orderId: "#1002", customer: "João Santos", phone: "(18) 99888-5678", address: "Av. Rui Barbosa, 1200", neighborhood: "Vila Operária", total: "R$ 159,90", status: "in_transit", items: 1, createdAt: "10/03/2026 10:15", lat: -22.665, lng: -50.418 },
-  { id: "3", orderId: "#1003", customer: "Ana Oliveira", phone: "(18) 99777-9012", address: "Rua José Bonifácio, 380", neighborhood: "Jd. Paulista", total: "R$ 449,70", status: "delivered", items: 5, createdAt: "09/03/2026 14:00", lat: -22.658, lng: -50.405 },
-  { id: "4", orderId: "#1004", customer: "Carlos Lima", phone: "(18) 99666-3456", address: "Rua Cel. Marcondes, 87", neighborhood: "Centro", total: "R$ 89,90", status: "pending", items: 2, createdAt: "10/03/2026 11:00", lat: -22.663, lng: -50.415 },
-  { id: "5", orderId: "#1005", customer: "Fernanda Costa", phone: "(18) 99555-7890", address: "Rua Minas Gerais, 510", neighborhood: "Vila Nova", total: "R$ 329,90", status: "in_transit", items: 4, createdAt: "10/03/2026 08:45", lat: -22.667, lng: -50.407 },
-  { id: "6", orderId: "#1006", customer: "Ricardo Alves", phone: "(18) 99444-2345", address: "Av. Getúlio Vargas, 920", neighborhood: "Jd. Europa", total: "R$ 199,90", status: "delivered", items: 2, createdAt: "09/03/2026 16:30", lat: -22.66, lng: -50.42 },
-];
+const statusColors: Record<DeliveryStatus, string> = {
+  pending: "#ef4444",
+  in_transit: "#eab308",
+  delivered: "#22c55e",
+};
 
 const createIcon = (color: string) =>
   L.divIcon({
@@ -58,28 +56,114 @@ const createIcon = (color: string) =>
     iconAnchor: [12, 12],
   });
 
-const statusColors: Record<DeliveryStatus, string> = {
-  pending: "#ef4444",
-  in_transit: "#eab308",
-  delivered: "#22c55e",
-};
-
 function MapAutoResize() {
   const map = useMap();
-
   useEffect(() => {
     const timer = window.setTimeout(() => map.invalidateSize(), 200);
     return () => window.clearTimeout(timer);
   }, [map]);
-
   return null;
 }
 
+function mapOrderStatus(status: string): DeliveryStatus {
+  switch (status) {
+    case "delivered":
+    case "completed":
+      return "delivered";
+    case "shipped":
+    case "in_transit":
+      return "in_transit";
+    default:
+      return "pending";
+  }
+}
+
 export default function DeliveryMapTab() {
-  const [deliveries, setDeliveries] = useState(mockDeliveries);
+  const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedDelivery, setSelectedDelivery] = useState<Delivery | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const loadDeliveries = async () => {
+    setLoading(true);
+    try {
+      const { data: orders, error } = await supabase
+        .from("orders")
+        .select("id, total, status, payment_method, shipping_address, created_at, user_id, discount, shipping_cost")
+        .not("shipping_address", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(50);
+
+      if (error) throw error;
+
+      // Get profiles for customer names
+      const userIds = [...new Set((orders || []).map(o => o.user_id))];
+      let profilesMap: Record<string, { full_name: string | null; phone: string | null }> = {};
+      if (userIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("user_id, full_name, phone")
+          .in("user_id", userIds);
+        if (profiles) {
+          profiles.forEach(p => { profilesMap[p.user_id] = { full_name: p.full_name, phone: p.phone }; });
+        }
+      }
+
+      // Get order item counts
+      const orderIds = (orders || []).map(o => o.id);
+      let itemCounts: Record<string, number> = {};
+      if (orderIds.length > 0) {
+        const { data: items } = await supabase
+          .from("order_items")
+          .select("order_id, quantity")
+          .in("order_id", orderIds);
+        if (items) {
+          items.forEach(i => { itemCounts[i.order_id] = (itemCounts[i.order_id] || 0) + i.quantity; });
+        }
+      }
+
+      const mapped: Delivery[] = (orders || []).map((o, idx) => {
+        const addr = o.shipping_address as any;
+        const profile = profilesMap[o.user_id];
+        const addressStr = addr ? `${addr.street || ''}, ${addr.number || ''}${addr.complement ? ` - ${addr.complement}` : ''}` : 'Endereço não informado';
+        const neighborhoodStr = addr?.neighborhood || '';
+
+        // Approximate coordinates based on order index (since we don't have geocoding)
+        // Spread around the store location
+        const angle = (idx * 137.5) * (Math.PI / 180); // golden angle for distribution
+        const dist = 0.003 + (idx % 5) * 0.002;
+        const lat = STORE.lat + Math.cos(angle) * dist;
+        const lng = STORE.lng + Math.sin(angle) * dist;
+
+        return {
+          id: o.id,
+          orderId: `#${o.id.slice(0, 6).toUpperCase()}`,
+          customer: profile?.full_name || "Cliente",
+          phone: profile?.phone || "",
+          address: addressStr,
+          neighborhood: neighborhoodStr,
+          total: Number(o.total).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }),
+          status: mapOrderStatus(o.status),
+          items: itemCounts[o.id] || 0,
+          createdAt: new Date(o.created_at).toLocaleString("pt-BR"),
+          lat,
+          lng,
+        };
+      });
+
+      setDeliveries(mapped);
+    } catch (err) {
+      console.error("Error loading deliveries:", err);
+      toast.error("Erro ao carregar entregas");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDeliveries();
+  }, []);
 
   const filtered = useMemo(
     () => (statusFilter === "all" ? deliveries : deliveries.filter((d) => d.status === statusFilter)),
@@ -95,7 +179,9 @@ export default function DeliveryMapTab() {
     [deliveries],
   );
 
-  const updateStatus = (id: string, newStatus: DeliveryStatus) => {
+  const updateStatus = async (id: string, newStatus: DeliveryStatus) => {
+    const dbStatus = newStatus === "in_transit" ? "shipped" : newStatus === "delivered" ? "delivered" : "pending_payment";
+    await supabase.from("orders").update({ status: dbStatus }).eq("id", id);
     setDeliveries((prev) => prev.map((d) => (d.id === id ? { ...d, status: newStatus } : d)));
     const labels: Record<DeliveryStatus, string> = { pending: "pendente", in_transit: "em entrega", delivered: "entregue" };
     toast.success(`Pedido marcado como ${labels[newStatus]}`);
@@ -109,6 +195,13 @@ export default function DeliveryMapTab() {
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div />
+        <Button variant="outline" size="sm" onClick={loadDeliveries} disabled={loading} className="gap-1 text-xs">
+          <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Atualizar
+        </Button>
+      </div>
+
       <div className="grid grid-cols-3 gap-4">
         {(Object.entries(counts) as [DeliveryStatus, number][]).map(([status, count]) => {
           const cfg = statusConfig[status];
@@ -134,49 +227,49 @@ export default function DeliveryMapTab() {
 
         {mapError && (
           <div className="mx-4 mt-4 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
-            Não foi possível carregar o provedor de mapa. Verifique conexão/bloqueadores e tente novamente.
+            Não foi possível carregar o provedor de mapa.
           </div>
         )}
 
-        <div style={{ height: 420 }}>
-          <MapContainer center={[STORE.lat, STORE.lng]} zoom={14} style={{ height: "100%", width: "100%" }} scrollWheelZoom>
-            <MapAutoResize />
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              eventHandlers={{
-                tileerror: () => setMapError("tile-error"),
-                load: () => setMapError(null),
-              }}
-            />
+        {deliveries.length === 0 && !loading ? (
+          <div className="p-12 text-center text-muted-foreground text-sm">
+            Nenhum pedido com endereço de entrega encontrado.
+          </div>
+        ) : (
+          <div style={{ height: 420 }}>
+            <MapContainer center={[STORE.lat, STORE.lng]} zoom={14} style={{ height: "100%", width: "100%" }} scrollWheelZoom>
+              <MapAutoResize />
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                eventHandlers={{
+                  tileerror: () => setMapError("tile-error"),
+                  load: () => setMapError(null),
+                }}
+              />
 
-            <Marker position={[STORE.lat, STORE.lng]} icon={createIcon("hsl(199, 89%, 48%)")}>
-              <Popup>
-                <strong>{STORE.name}</strong>
-                <br />
-                {STORE.street}
-                <br />
-                {STORE.neighborhood} — {STORE.cityState}
-                <br />
-                CEP {STORE.zipCode}
-                <br />
-                Tel: {STORE.phone}
-              </Popup>
-            </Marker>
-
-            {filtered.map((d) => (
-              <Marker key={d.id} position={[d.lat, d.lng]} icon={createIcon(statusColors[d.status])} eventHandlers={{ click: () => setSelectedDelivery(d) }}>
+              <Marker position={[STORE.lat, STORE.lng]} icon={createIcon("hsl(199, 89%, 48%)")}>
                 <Popup>
-                  <strong>{d.orderId}</strong> — {d.customer}
-                  <br />
-                  {d.address}
-                  <br />
-                  <strong>{d.total}</strong>
+                  <strong>{STORE.name}</strong><br />
+                  {STORE.street}<br />
+                  {STORE.neighborhood} — {STORE.cityState}<br />
+                  CEP {STORE.zipCode}<br />
+                  Tel: {STORE.phone}
                 </Popup>
               </Marker>
-            ))}
-          </MapContainer>
-        </div>
+
+              {filtered.map((d) => (
+                <Marker key={d.id} position={[d.lat, d.lng]} icon={createIcon(statusColors[d.status])} eventHandlers={{ click: () => setSelectedDelivery(d) }}>
+                  <Popup>
+                    <strong>{d.orderId}</strong> — {d.customer}<br />
+                    {d.address}<br />
+                    <strong>{d.total}</strong>
+                  </Popup>
+                </Marker>
+              ))}
+            </MapContainer>
+          </div>
+        )}
 
         <div className="p-3 border-t border-border flex gap-4 text-xs flex-wrap">
           <div className="flex items-center gap-1">
@@ -214,7 +307,7 @@ export default function DeliveryMapTab() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div className="flex items-center gap-2"><User size={14} className="text-muted-foreground" /><div><p className="text-xs text-muted-foreground">Cliente</p><p className="font-medium">{selectedDelivery.customer}</p></div></div>
-            <div className="flex items-center gap-2"><Phone size={14} className="text-muted-foreground" /><div><p className="text-xs text-muted-foreground">Telefone</p><p className="font-medium">{selectedDelivery.phone}</p></div></div>
+            <div className="flex items-center gap-2"><Phone size={14} className="text-muted-foreground" /><div><p className="text-xs text-muted-foreground">Telefone</p><p className="font-medium">{selectedDelivery.phone || "N/A"}</p></div></div>
             <div className="flex items-center gap-2"><MapPin size={14} className="text-muted-foreground" /><div><p className="text-xs text-muted-foreground">Endereço</p><p className="font-medium">{selectedDelivery.address}</p></div></div>
             <div className="flex items-center gap-2"><Package size={14} className="text-muted-foreground" /><div><p className="text-xs text-muted-foreground">Valor</p><p className="font-medium text-primary">{selectedDelivery.total}</p></div></div>
           </div>
@@ -247,7 +340,9 @@ export default function DeliveryMapTab() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((d) => {
+              {filtered.length === 0 ? (
+                <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">Nenhuma entrega encontrada</td></tr>
+              ) : filtered.map((d) => {
                 const cfg = statusConfig[d.status];
                 return (
                   <tr key={d.id} className="border-b border-border/50 hover:bg-secondary/30 cursor-pointer" onClick={() => setSelectedDelivery(d)}>

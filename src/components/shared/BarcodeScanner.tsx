@@ -24,7 +24,7 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
     if (scannerRef.current) {
       try {
         const state = scannerRef.current.getState?.();
-        if (state === 2) { // SCANNING
+        if (state === 2) {
           await scannerRef.current.stop();
         }
       } catch {}
@@ -52,32 +52,51 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
     setError(null);
     try {
       const { Html5Qrcode } = await import("html5-qrcode");
-      
-      // Wait for DOM element
-      await new Promise(r => setTimeout(r, 300));
-      
+
+      await new Promise(r => setTimeout(r, 500));
+
       const el = document.getElementById(containerId);
       if (!el) {
         setError("Não foi possível inicializar o scanner.");
         return;
       }
 
-      // Clear any previous instance
       if (scannerRef.current) {
         try { await scannerRef.current.stop(); } catch {}
         try { scannerRef.current.clear(); } catch {}
       }
 
-      const scanner = new Html5Qrcode(containerId);
+      const scanner = new Html5Qrcode(containerId, {
+        verbose: false,
+        formatsToSupport: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+      } as any);
       scannerRef.current = scanner;
 
+      // Get available cameras and prefer back camera
+      const cameras = await Html5Qrcode.getCameras();
+      let cameraId: any = { facingMode: "environment" };
+      
+      if (cameras && cameras.length > 0) {
+        // Find back/rear camera
+        const backCamera = cameras.find(c => 
+          c.label.toLowerCase().includes("back") || 
+          c.label.toLowerCase().includes("rear") ||
+          c.label.toLowerCase().includes("traseira") ||
+          c.label.toLowerCase().includes("environment")
+        );
+        if (backCamera) {
+          cameraId = backCamera.id;
+        }
+      }
+
       await scanner.start(
-        { facingMode: "environment" },
+        cameraId,
         {
-          fps: 15,
-          qrbox: { width: 280, height: 160 },
-          aspectRatio: 1.5,
-        } as any,
+          fps: 10,
+          qrbox: { width: 300, height: 150 },
+          aspectRatio: 1.7778,
+          disableFlip: false,
+        },
         (decodedText: string) => {
           handleDetection(decodedText);
         },
@@ -86,11 +105,13 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
       setScanning(true);
     } catch (err: any) {
       console.error("Scanner error:", err);
-      setError(
-        err?.message?.includes("NotAllowed") || err?.name === "NotAllowedError"
-          ? "Permissão de câmera negada. Habilite nas configurações do navegador."
-          : "Não foi possível acessar a câmera. Verifique se há uma câmera disponível."
-      );
+      if (err?.message?.includes("NotAllowed") || err?.name === "NotAllowedError") {
+        setError("Permissão de câmera negada. Habilite nas configurações do navegador.");
+      } else if (err?.message?.includes("NotFound") || err?.name === "NotFoundError") {
+        setError("Nenhuma câmera encontrada neste dispositivo.");
+      } else {
+        setError("Não foi possível acessar a câmera. Verifique as permissões do navegador.");
+      }
     }
   }, [handleDetection]);
 
@@ -99,7 +120,6 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
     onOpenChange(false);
   }, [stopScanner, onOpenChange]);
 
-  // Cleanup on unmount or when dialog closes
   useEffect(() => {
     if (!open) {
       stopScanner();
@@ -129,28 +149,25 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
         </DialogHeader>
 
         <div className="px-4 pb-4 space-y-3">
-          {/* Scanner viewport */}
-          <div className="relative rounded-xl overflow-hidden bg-black aspect-video">
-            <div
-              id={containerId}
-              className="w-full h-full"
-            />
+          <div className="relative rounded-xl overflow-hidden bg-black" style={{ minHeight: 260 }}>
+            <div id={containerId} className="w-full" style={{ minHeight: 260 }} />
 
-            {/* Overlay guide when scanning */}
             {scanning && (
               <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                <div className="border-2 border-primary/60 rounded-lg w-[280px] h-[160px] relative">
+                <div className="border-2 border-primary/60 rounded-lg w-[300px] h-[150px] relative">
                   <div className="absolute -top-0.5 -left-0.5 w-6 h-6 border-t-4 border-l-4 border-primary rounded-tl-lg" />
                   <div className="absolute -top-0.5 -right-0.5 w-6 h-6 border-t-4 border-r-4 border-primary rounded-tr-lg" />
                   <div className="absolute -bottom-0.5 -left-0.5 w-6 h-6 border-b-4 border-l-4 border-primary rounded-bl-lg" />
                   <div className="absolute -bottom-0.5 -right-0.5 w-6 h-6 border-b-4 border-r-4 border-primary rounded-br-lg" />
+                  {/* Scanning line animation */}
+                  <div className="absolute top-0 left-2 right-2 h-0.5 bg-primary animate-pulse" 
+                       style={{ animation: 'scanLine 2s ease-in-out infinite' }} />
                 </div>
               </div>
             )}
 
-            {/* Start button overlay when not scanning */}
             {!scanning && !error && (
-              <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center justify-center bg-black/80">
                 <Button onClick={startScanner} className="gap-2">
                   <Camera size={18} /> Iniciar Câmera
                 </Button>
@@ -159,7 +176,9 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
           </div>
 
           <p className="text-xs text-muted-foreground text-center">
-            {scanning ? "Posicione o código de barras dentro da área de leitura" : "Clique em 'Iniciar Câmera' para começar"}
+            {scanning 
+              ? "Posicione o código de barras dentro da área marcada. Mantenha o celular firme." 
+              : "Clique em 'Iniciar Câmera' para começar a leitura"}
           </p>
 
           {continuous && lastScanned && (
