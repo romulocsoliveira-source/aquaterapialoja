@@ -13,18 +13,23 @@ import ReportsTab from "@/components/admin/ReportsTab";
 import MercadoLivreTab from "@/components/admin/MercadoLivreTab";
 import DeliveryMapTab from "@/components/admin/DeliveryMapTab";
 import SmartInventoryTab from "@/components/admin/SmartInventoryTab";
+import AdminAgendaTab from "@/components/admin/AdminAgendaTab";
+import AdminHotelTab from "@/components/admin/AdminHotelTab";
+import AdminServicosTab from "@/components/admin/AdminServicosTab";
+import AdminPetsTab from "@/components/admin/AdminPetsTab";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   BarChart3, Package, ShoppingCart, Users, Tag, AlertTriangle,
   TrendingUp, DollarSign, ArrowLeft, Search, Edit, Trash2, Plus,
-  Eye, Bell, Store, MessageCircle, Monitor, Smartphone, FileText, Truck, ShoppingBag, MapPin, Brain
+  Eye, Bell, Store, MessageCircle, Monitor, Smartphone, FileText, Truck, ShoppingBag, MapPin, Brain,
+  Scissors, Building2, PawPrint, Calendar
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
-type AdminTab = "dashboard" | "products" | "orders" | "financial" | "fiscal" | "suppliers" | "purchases" | "coupons" | "stock" | "inventory" | "deliveries" | "reports" | "notifications" | "integrations" | "mercadolivre";
+type AdminTab = "dashboard" | "products" | "orders" | "financial" | "fiscal" | "suppliers" | "purchases" | "coupons" | "stock" | "inventory" | "deliveries" | "reports" | "notifications" | "integrations" | "mercadolivre" | "agenda" | "hotel" | "servicos" | "pets";
 
 const CHANNELS = ["Loja Online", "WhatsApp", "Mercado Livre", "PDV"] as const;
 type Channel = typeof CHANNELS[number];
