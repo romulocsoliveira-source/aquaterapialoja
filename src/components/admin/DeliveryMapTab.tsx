@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Truck, CheckCircle, Clock, AlertCircle, Navigation, Phone, Package, User, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -85,7 +85,7 @@ export default function DeliveryMapTab() {
   const [mapError, setMapError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const loadDeliveries = async () => {
+  const loadDeliveries = useCallback(async () => {
     setLoading(true);
     try {
       const { data: orders, error } = await supabase
@@ -159,11 +159,22 @@ export default function DeliveryMapTab() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadDeliveries();
-  }, []);
+
+    const channel = supabase
+      .channel("delivery-map-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, loadDeliveries)
+      .on("postgres_changes", { event: "*", schema: "public", table: "order_items" }, loadDeliveries)
+      .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, loadDeliveries)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [loadDeliveries]);
 
   const filtered = useMemo(
     () => (statusFilter === "all" ? deliveries : deliveries.filter((d) => d.status === statusFilter)),
