@@ -27,6 +27,7 @@ export default function AgendamentoPage() {
   const [loading, setLoading] = useState(false);
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
   const [obs, setObs] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("pix");
 
   useEffect(() => {
     supabase.from("servicos").select("id, nome, preco, duracao").eq("ativo", true).then(({ data }) => setServicos((data as Servico[]) || []));
