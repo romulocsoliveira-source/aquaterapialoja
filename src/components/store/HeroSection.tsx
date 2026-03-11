@@ -41,8 +41,8 @@ export default function HeroSection() {
 
           <div className="flex items-center gap-2 pt-4">
             <span className="text-xs text-muted-foreground font-body">Nossos serviços:</span>
-            <div className="flex gap-2">
-              {["🛁 Banho", "✂️ Tosa", "🏨 Hotel", "🛍️ Loja"].map((s) => (
+            <div className="flex gap-2 flex-wrap">
+              {["🛁 Banho", "✂️ Tosa", "🏨 Hotel", "🐠 Aquarismo", "🛍️ Loja"].map((s) => (
                 <span key={s} className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full font-medium">{s}</span>
               ))}
             </div>
