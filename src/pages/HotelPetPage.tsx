@@ -90,9 +90,24 @@ export default function HotelPetPage() {
         observacoes,
         valor_total: totalFinal,
         status: "pendente",
+        forma_pagamento: paymentMethod,
       } as any);
 
       if (error) throw error;
+
+      // Create financial transaction
+      await supabase.from("financial_transactions").insert({
+        type: "income",
+        category: "Hotel Pet",
+        description: `Reserva Hotel: ${selectedAcomData?.nome || "Acomodação"} - ${checkin} a ${checkout}`,
+        amount: totalFinal,
+        due_date: checkin,
+        is_paid: false,
+        payment_method: paymentMethod,
+        reference_type: "reserva_hotel",
+        created_by: user.id,
+      } as any);
+
       setSuccess(true);
       toast.success("Reserva criada com sucesso!");
     } catch (err: any) {
