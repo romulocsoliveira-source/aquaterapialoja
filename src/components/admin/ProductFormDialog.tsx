@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useCategories } from "@/hooks/useStoreData";
 import { toast } from "sonner";
-import { Camera, Wand2 } from "lucide-react";
+import { Camera, Wand2, Loader2 } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import BarcodeScanner from "@/components/shared/BarcodeScanner";
 import BarcodeGenerator, { generateEAN13 } from "@/components/shared/BarcodeGenerator";
@@ -36,6 +36,7 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
   const isEditing = !!product;
 
   const [loading, setLoading] = useState(false);
+  const [lookingUp, setLookingUp] = useState(false);
   const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
 
   const [form, setForm] = useState({
@@ -112,6 +113,41 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
 
   const handleNameChange = (name: string) => {
     setForm(f => ({ ...f, name, slug: isEditing ? f.slug : slugify(name) }));
+  };
+
+  const lookupBarcode = async (code: string) => {
+    setLookingUp(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("barcode-lookup", {
+        body: { barcode: code },
+      });
+      if (error) throw error;
+      if (data?.success && data?.data) {
+        const info = data.data;
+        setForm(f => ({
+          ...f,
+          barcode: code,
+          name: info.name && !f.name ? info.name : f.name,
+          slug: info.name && !f.name ? slugify(info.name) : f.slug,
+          description: info.description && !f.description ? info.description : f.description,
+          image: info.image && !f.image ? info.image : f.image,
+        }));
+        toast.success(`Produto encontrado: ${info.name || code} (${data.source})`);
+      } else {
+        toast.info("Produto não encontrado nas bases públicas. Preencha manualmente.");
+      }
+    } catch (err: any) {
+      console.error("Barcode lookup error:", err);
+      toast.info("Não foi possível consultar bases de dados. Preencha manualmente.");
+    } finally {
+      setLookingUp(false);
+    }
+  };
+
+  const handleBarcodeScan = (code: string) => {
+    setForm(f => ({ ...f, barcode: code }));
+    toast.success("Código lido: " + code);
+    lookupBarcode(code);
   };
 
   const handleCategorySelect = (slug: string) => {
@@ -225,9 +261,16 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
             <BarcodeScanner
               open={showBarcodeScanner}
               onOpenChange={setShowBarcodeScanner}
-              onScan={(code) => { setForm(f => ({ ...f, barcode: code })); toast.success("Código lido: " + code); }}
+              onScan={handleBarcodeScan}
               title="Ler Código de Barras"
             />
+
+            {lookingUp && (
+              <div className="col-span-full flex items-center gap-2 text-xs text-muted-foreground bg-secondary rounded-lg p-2">
+                <Loader2 size={14} className="animate-spin" />
+                Consultando bases de dados públicas...
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label>Estoque</Label>
