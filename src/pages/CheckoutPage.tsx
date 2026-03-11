@@ -491,7 +491,7 @@ export default function CheckoutPage() {
                         <QRCodeSVG
                           value={(() => {
                             const pixKey = "18997348718";
-                            const name = "ALMOXARIFADO DAS TINTAS";
+                            const name = "AQUATERAPIA PET SHOP";
                             const city = "ASSIS";
                             const amount = finalTotal.toFixed(2);
                             const txid = orderId ? orderId.slice(0, 25).replace(/-/g, "") : "COMPRA";
