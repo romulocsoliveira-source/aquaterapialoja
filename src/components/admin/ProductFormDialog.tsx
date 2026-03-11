@@ -38,6 +38,7 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
   const [loading, setLoading] = useState(false);
   const [lookingUp, setLookingUp] = useState(false);
   const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
+  const autoLookupRef = useRef<string>("");
 
   const [form, setForm] = useState({
     name: "",
