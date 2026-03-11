@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
+import PaymentMethodSelector from "@/components/shared/PaymentMethodSelector";
 
 interface Servico { id: string; nome: string; preco: number; duracao: string; }
 interface Pet { id: string; nome: string; especie: string; }
