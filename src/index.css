@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 97%;
+    --foreground: 220 20% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 15%;
+
+    --primary: 24 95% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 94%;
+    --secondary-foreground: 220 20% 15%;
+
+    --muted: 220 14% 92%;
+    --muted-foreground: 220 10% 45%;
+
+    --accent: 24 95% 53%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 220 14% 88%;
+    --input: 220 14% 88%;
+    --ring: 24 95% 53%;
+
+    --radius: 0.75rem;
+
+    --brand: 24 95% 53%;
+    --brand-foreground: 0 0% 100%;
+    --brand-light: 24 90% 65%;
+    --brand-dark: 24 95% 42%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 20% 15%;
+    --sidebar-primary: 24 95% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 94%;
+    --sidebar-accent-foreground: 220 20% 15%;
+    --sidebar-border: 220 14% 88%;
+    --sidebar-ring: 24 95% 53%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .gradient-gold {
+    background: linear-gradient(135deg, hsl(24, 95%, 53%), hsl(24, 95%, 42%));
+  }
+  .gradient-gold-shine {
+    background: linear-gradient(135deg, hsl(24, 95%, 53%), hsl(24, 90%, 65%), hsl(24, 95%, 53%));
+  }
+  .gradient-dark-gold {
+    background: linear-gradient(135deg, hsl(220, 20%, 15%), hsl(24, 95%, 53%));
+  }
+  .gradient-paint {
+    background: linear-gradient(135deg, hsl(24, 95%, 53%), hsl(340, 80%, 55%), hsl(200, 80%, 50%), hsl(120, 60%, 45%));
+  }
+  .gradient-paint-soft {
+    background: linear-gradient(135deg, hsl(24, 95%, 53%), hsl(45, 90%, 55%));
+  }
+  .text-gradient-gold {
+    background: linear-gradient(135deg, hsl(24, 95%, 53%), hsl(24, 90%, 65%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .text-gradient-shine {
+    background: linear-gradient(135deg, hsl(24, 90%, 65%), hsl(24, 95%, 53%), hsl(24, 90%, 65%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .text-gradient-paint {
+    background: linear-gradient(135deg, hsl(24, 95%, 53%), hsl(340, 80%, 55%), hsl(200, 80%, 50%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .glow-gold {
+    box-shadow: 0 0 20px hsl(24, 95%, 53%, 0.3);
+  }
+  .glow-gold-strong {
+    box-shadow: 0 0 30px hsl(24, 95%, 53%, 0.4);
+  }
+  .gradient-purple-pink {
+    background: linear-gradient(135deg, hsl(220, 20%, 15%), hsl(24, 95%, 53%));
+  }
+  .text-gradient-pink {
+    background: linear-gradient(135deg, hsl(24, 95%, 53%), hsl(24, 90%, 65%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .glow-pink {
+    box-shadow: 0 0 20px hsl(24, 95%, 53%, 0.3);
+  }
+  .glow-purple {
+    box-shadow: 0 0 20px hsl(24, 95%, 53%, 0.4);
+  }
+}
