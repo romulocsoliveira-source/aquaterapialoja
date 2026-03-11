@@ -244,7 +244,7 @@ export default function CheckoutPage() {
   return (
     <>
       <Helmet>
-        <title>Checkout | Almoxarifado das Tintas</title>
+        <title>Checkout | Aquaterapia Pet Shop</title>
       </Helmet>
       <div className="container py-12 md:py-20 max-w-4xl">
         {/* Steps */}
