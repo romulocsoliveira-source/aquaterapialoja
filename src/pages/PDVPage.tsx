@@ -147,9 +147,9 @@ export default function PDVPage() {
       </style>
       </head>
       <body>
-        <div class="center bold" style="font-size:16px">ALMOXARIFADO DAS TINTAS</div>
-        <div class="center">Tintas • Esmaltes • Acessórios</div>
-        <div class="center" style="font-size:10px">(18) 3323-1220</div>
+      <div class="center bold" style="font-size:16px">AQUATERAPIA PET SHOP</div>
+        <div class="center">Pet Shop • Aquarismo • Banho & Tosa</div>
+        <div class="center" style="font-size:10px">(18) 99657-0512</div>
         <div class="line"></div>
         <div class="center bold">CUPOM NÃO FISCAL</div>
         <div class="center" style="font-size:10px">${new Date().toLocaleString("pt-BR")}</div>
