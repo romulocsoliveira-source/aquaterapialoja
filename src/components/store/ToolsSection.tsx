@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Scissors, Building2, ShoppingBag, Calendar } from "lucide-react";
+import { Scissors, Building2, ShoppingBag, Calendar, Fish } from "lucide-react";
 
 const tools = [
   {
@@ -16,6 +16,13 @@ const tools = [
     desc: "Hospedagem com conforto",
     href: "/hotel-pet",
     gradient: "from-emerald-500 to-green-500",
+  },
+  {
+    icon: Fish,
+    title: "Aquarismo",
+    desc: "A maior loja de Assis",
+    href: "/categoria/aquarios",
+    gradient: "from-blue-500 to-indigo-500",
   },
   {
     icon: ShoppingBag,
