@@ -119,7 +119,7 @@ export default function DeliveryMapTab() {
             />
             {/* Store marker */}
             <Marker position={[STORE_LAT, STORE_LNG]} icon={createIcon("hsl(199, 89%, 48%)")}>
-              <Popup><strong>Aquaterapia Pet Shop</strong><br/>Av. Getúlio Vargas, 339</Popup>
+              <Popup><strong>Aquaterapia Pet Shop</strong><br/>Av. Getúlio Vargas, 339<br/>Vila Nova Santana — Assis/SP<br/>Tel: (18) 99657-0512</Popup>
             </Marker>
             {/* Delivery markers */}
             {filtered.map(d => (
