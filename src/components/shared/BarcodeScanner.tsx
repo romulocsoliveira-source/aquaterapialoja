@@ -18,6 +18,7 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
   const [scanning, setScanning] = useState(false);
   const [lastScanned, setLastScanned] = useState<string | null>(null);
   const lastScannedTimeRef = useRef<number>(0);
+  const lastScannedCodeRef = useRef<string>("");
   const containerId = "barcode-scanner-container";
 
   const stopScanner = async () => {
