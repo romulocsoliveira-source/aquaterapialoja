@@ -248,7 +248,26 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
             <div className="space-y-2">
               <Label>Código de Barras *</Label>
               <div className="flex gap-1">
-                <Input value={form.barcode} onChange={e => setForm(f => ({ ...f, barcode: e.target.value }))} placeholder="7891234567890" required className="flex-1" />
+                <Input 
+                  value={form.barcode} 
+                  onChange={e => setForm(f => ({ ...f, barcode: e.target.value }))} 
+                  onBlur={() => {
+                    const code = form.barcode.trim();
+                    if (code.length >= 8 && !form.name) {
+                      lookupBarcode(code);
+                    }
+                  }}
+                  onKeyDown={e => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      const code = form.barcode.trim();
+                      if (code.length >= 8) lookupBarcode(code);
+                    }
+                  }}
+                  placeholder="7891234567890" 
+                  required 
+                  className="flex-1" 
+                />
                 <Button type="button" variant="outline" size="icon" onClick={() => setShowBarcodeScanner(true)} title="Escanear câmera">
                   <Camera size={16} />
                 </Button>
