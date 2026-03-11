@@ -134,7 +134,13 @@ export default function PDVPage() {
   };
 
   const handleCameraScan = (code: string) => {
-    handleBarcode(code);
+    const found = products.find(p => p.barcode === code);
+    if (found) {
+      addToCart(found);
+      toast.success(`${found.name} adicionado!`);
+    } else {
+      toast.error("Produto não encontrado: " + code);
+    }
   };
 
 
