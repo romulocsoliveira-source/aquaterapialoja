@@ -261,9 +261,16 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
             <BarcodeScanner
               open={showBarcodeScanner}
               onOpenChange={setShowBarcodeScanner}
-              onScan={(code) => { setForm(f => ({ ...f, barcode: code })); toast.success("Código lido: " + code); }}
+              onScan={handleBarcodeScan}
               title="Ler Código de Barras"
             />
+
+            {lookingUp && (
+              <div className="col-span-full flex items-center gap-2 text-xs text-muted-foreground bg-secondary rounded-lg p-2">
+                <Loader2 size={14} className="animate-spin" />
+                Consultando bases de dados públicas...
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label>Estoque</Label>
