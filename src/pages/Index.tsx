@@ -11,24 +11,24 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Almoxarifado das Tintas | Tintas, Esmaltes e Acessórios em Assis SP</title>
-        <meta name="description" content="Loja de tintas em Assis SP. Tintas residenciais, industriais e automotivas. Simulador de cores, calculadora de tinta e entrega rápida. Frete grátis acima de R$ 299." />
-        <link rel="canonical" href="https://almoxarifadodastintas.com.br" />
+        <title>Aquaterapia Pet Shop | Banho e Tosa, Hotel Pet e Produtos em Assis SP</title>
+        <meta name="description" content="Pet shop em Assis SP. Banho e tosa, hotel pet e produtos premium. Agende online com entrega rápida. Frete grátis acima de R$ 199." />
+        <link rel="canonical" href="https://aquaterapia.com.br" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Store",
-          "name": "Almoxarifado das Tintas",
-          "description": "Loja especializada em tintas residenciais, industriais e automotivas em Assis SP",
+          "name": "Aquaterapia Pet Shop",
+          "description": "Pet shop especializado em banho e tosa, hotel pet e produtos premium em Assis SP",
           "address": {
             "@type": "PostalAddress",
-            "streetAddress": "Avenida Armando Sales de Oliveira, 173",
+            "streetAddress": "Avenida Getúlio Vargas, 339",
             "addressLocality": "Assis",
             "addressRegion": "SP",
-            "postalCode": "19800-000",
+            "postalCode": "19807-130",
             "addressCountry": "BR"
           },
-          "telephone": "(18) 3323-1220",
-          "url": "https://almoxarifadodastintas.com.br"
+          "telephone": "(18) 99657-0512",
+          "url": "https://aquaterapia.com.br"
         })}</script>
       </Helmet>
       <HeroSection />

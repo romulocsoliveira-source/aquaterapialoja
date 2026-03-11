@@ -13,18 +13,23 @@ import ReportsTab from "@/components/admin/ReportsTab";
 import MercadoLivreTab from "@/components/admin/MercadoLivreTab";
 import DeliveryMapTab from "@/components/admin/DeliveryMapTab";
 import SmartInventoryTab from "@/components/admin/SmartInventoryTab";
+import AdminAgendaTab from "@/components/admin/AdminAgendaTab";
+import AdminHotelTab from "@/components/admin/AdminHotelTab";
+import AdminServicosTab from "@/components/admin/AdminServicosTab";
+import AdminPetsTab from "@/components/admin/AdminPetsTab";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   BarChart3, Package, ShoppingCart, Users, Tag, AlertTriangle,
   TrendingUp, DollarSign, ArrowLeft, Search, Edit, Trash2, Plus,
-  Eye, Bell, Store, MessageCircle, Monitor, Smartphone, FileText, Truck, ShoppingBag, MapPin, Brain
+  Eye, Bell, Store, MessageCircle, Monitor, Smartphone, FileText, Truck, ShoppingBag, MapPin, Brain,
+  Scissors, Building2, PawPrint, Calendar
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
-type AdminTab = "dashboard" | "products" | "orders" | "financial" | "fiscal" | "suppliers" | "purchases" | "coupons" | "stock" | "inventory" | "deliveries" | "reports" | "notifications" | "integrations" | "mercadolivre";
+type AdminTab = "dashboard" | "products" | "orders" | "financial" | "fiscal" | "suppliers" | "purchases" | "coupons" | "stock" | "inventory" | "deliveries" | "reports" | "notifications" | "integrations" | "mercadolivre" | "agenda" | "hotel" | "servicos" | "pets";
 
 const CHANNELS = ["Loja Online", "WhatsApp", "Mercado Livre", "PDV"] as const;
 type Channel = typeof CHANNELS[number];
@@ -59,6 +64,10 @@ export default function AdminPage() {
 
   const tabs = [
      { id: "dashboard" as AdminTab, label: "Dashboard", icon: BarChart3 },
+     { id: "agenda" as AdminTab, label: "Agenda B&T", icon: Calendar },
+     { id: "servicos" as AdminTab, label: "Serviços", icon: Scissors },
+     { id: "hotel" as AdminTab, label: "Hotel Pet", icon: Building2 },
+     { id: "pets" as AdminTab, label: "Pets", icon: PawPrint },
      { id: "products" as AdminTab, label: "Produtos", icon: Package },
      { id: "orders" as AdminTab, label: "Central de Pedidos", icon: ShoppingCart },
      { id: "financial" as AdminTab, label: "Financeiro", icon: DollarSign },
@@ -82,7 +91,7 @@ export default function AdminPage() {
           <div className="flex items-center gap-4">
             <Link to="/" className="text-muted-foreground hover:text-foreground"><ArrowLeft size={20} /></Link>
             <div>
-              <h1 className="font-display text-lg font-bold text-gradient-gold">ADMIN · ALMOXARIFADO DAS TINTAS</h1>
+              <h1 className="font-display text-lg font-bold text-gradient-gold">ADMIN · AQUATERAPIA PET SHOP</h1>
               <p className="text-xs text-muted-foreground">Painel Administrativo</p>
             </div>
           </div>
@@ -110,6 +119,10 @@ export default function AdminPage() {
         </div>
 
         {activeTab === "dashboard" && <DashboardTab />}
+        {activeTab === "agenda" && <AdminAgendaTab />}
+        {activeTab === "servicos" && <AdminServicosTab />}
+        {activeTab === "hotel" && <AdminHotelTab />}
+        {activeTab === "pets" && <AdminPetsTab />}
         {activeTab === "products" && <ProductsTab searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}
         {activeTab === "orders" && <OrdersCentralTab />}
          {activeTab === "financial" && <FinancialTab />}

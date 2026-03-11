@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingBag, Search, User, Menu, X, Heart, Settings } from "lucide-react";
-import logoImg from "@/assets/logo-almoxarifado.jpeg";
+import logoImg from "@/assets/logo-aquaterapia.png";
 import { useCart } from "@/context/CartContext";
 import { useIsAdmin } from "@/hooks/useAdminRole";
 import { useProducts } from "@/hooks/useStoreData";
@@ -9,12 +9,10 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
   { label: "Início", href: "/" },
-  { label: "Tintas Residenciais", href: "/categoria/tintas-residenciais" },
-  { label: "Tintas Industriais", href: "/categoria/tintas-industriais" },
-  { label: "Automotivas", href: "/categoria/tintas-automotivas" },
-  { label: "Acessórios", href: "/categoria/acessorios-pintura" },
-  { label: "Simulador", href: "/simulador-cores" },
-  { label: "Orçamento", href: "/orcamento-pintura" },
+  { label: "Banho & Tosa", href: "/agendamento" },
+  { label: "Hotel Pet", href: "/hotel-pet" },
+  { label: "Produtos Pet", href: "/categoria/produtos-pet" },
+  { label: "Acessórios", href: "/categoria/acessorios-pet" },
   { label: "Promoções", href: "/categoria/promocoes" },
 ];
 
@@ -49,9 +47,8 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
-      {/* Top bar */}
-      <div className="bg-accent text-center py-1.5 text-xs font-body tracking-widest uppercase text-accent-foreground font-medium">
-        Frete grátis acima de R$ 299 · Entrega para todo o Brasil
+      <div className="bg-primary text-center py-1.5 text-xs font-body tracking-widest uppercase text-primary-foreground font-medium">
+        🐾 Agende o banho do seu pet online · Frete grátis acima de R$ 199
       </div>
 
       <div className="container flex items-center justify-between h-16 md:h-20">
@@ -60,12 +57,12 @@ export default function Header() {
         </button>
 
         <Link to="/" className="flex items-center">
-          <img src={logoImg} alt="Almoxarifado das Tintas" className="h-14 md:h-20 w-auto object-contain" />
+          <img src={logoImg} alt="Aquaterapia Pet Shop" className="h-14 md:h-20 w-auto object-contain" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-5">
           {navLinks.map(link => (
-            <Link key={link.href} to={link.href} className="text-sm font-body font-medium text-foreground/80 hover:text-accent transition-colors tracking-wide">
+            <Link key={link.href} to={link.href} className="text-sm font-body font-medium text-foreground/80 hover:text-primary transition-colors tracking-wide">
               {link.label}
             </Link>
           ))}
@@ -73,24 +70,24 @@ export default function Header() {
 
         <div className="flex items-center gap-3">
           {isAdmin && (
-            <Link to="/admin" className="hidden md:flex items-center gap-1.5 text-xs font-body font-semibold text-accent/80 hover:text-accent transition-colors uppercase tracking-wider" aria-label="Administrador">
+            <Link to="/admin" className="hidden md:flex items-center gap-1.5 text-xs font-body font-semibold text-primary/80 hover:text-primary transition-colors uppercase tracking-wider" aria-label="Administrador">
               <Settings size={16} />
               Admin
             </Link>
           )}
-          <button onClick={() => setSearchOpen(!searchOpen)} className="text-foreground/70 hover:text-accent transition-colors" aria-label="Buscar">
+          <button onClick={() => setSearchOpen(!searchOpen)} className="text-foreground/70 hover:text-primary transition-colors" aria-label="Buscar">
             <Search size={20} />
           </button>
-          <Link to="/conta" className="hidden md:block text-foreground/70 hover:text-accent transition-colors" aria-label="Conta">
+          <Link to="/conta" className="hidden md:block text-foreground/70 hover:text-primary transition-colors" aria-label="Conta">
             <User size={20} />
           </Link>
-          <Link to="/favoritos" className="hidden md:block text-foreground/70 hover:text-accent transition-colors" aria-label="Favoritos">
+          <Link to="/favoritos" className="hidden md:block text-foreground/70 hover:text-primary transition-colors" aria-label="Favoritos">
             <Heart size={20} />
           </Link>
-          <button onClick={() => setIsCartOpen(true)} className="relative text-foreground/70 hover:text-accent transition-colors" aria-label="Carrinho">
+          <button onClick={() => setIsCartOpen(true)} className="relative text-foreground/70 hover:text-primary transition-colors" aria-label="Carrinho">
             <ShoppingBag size={20} />
             {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
+              <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
                 {totalItems}
               </span>
             )}
@@ -109,8 +106,8 @@ export default function Header() {
                   type="text"
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  placeholder="Buscar tintas, esmaltes, acessórios..."
-                  className="w-full bg-secondary text-foreground pl-12 pr-4 py-3 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground"
+                  placeholder="Buscar produtos, rações, acessórios..."
+                  className="w-full bg-secondary text-foreground pl-12 pr-4 py-3 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-muted-foreground"
                   autoFocus
                 />
               </div>
@@ -128,7 +125,7 @@ export default function Header() {
                         <p className="text-xs text-muted-foreground">{p.category}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-bold text-accent">{formatPrice(p.promoPrice || p.price)}</p>
+                        <p className="text-sm font-bold text-primary">{formatPrice(p.promoPrice || p.price)}</p>
                         {p.promoPrice && <p className="text-xs text-muted-foreground line-through">{formatPrice(p.price)}</p>}
                       </div>
                     </button>
@@ -148,15 +145,15 @@ export default function Header() {
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="md:hidden overflow-hidden border-t border-border bg-background">
             <nav className="container py-4 flex flex-col gap-3">
               {navLinks.map(link => (
-                <Link key={link.href} to={link.href} onClick={() => setMobileMenuOpen(false)} className="text-sm font-body font-medium text-foreground/80 hover:text-accent py-2 border-b border-border/50 tracking-wide">
+                <Link key={link.href} to={link.href} onClick={() => setMobileMenuOpen(false)} className="text-sm font-body font-medium text-foreground/80 hover:text-primary py-2 border-b border-border/50 tracking-wide">
                   {link.label}
                 </Link>
               ))}
-              <Link to="/conta" onClick={() => setMobileMenuOpen(false)} className="text-sm font-body font-medium text-foreground/80 hover:text-accent py-2 tracking-wide flex items-center gap-2">
+              <Link to="/conta" onClick={() => setMobileMenuOpen(false)} className="text-sm font-body font-medium text-foreground/80 hover:text-primary py-2 tracking-wide flex items-center gap-2">
                 <User size={16} /> Minha Conta
               </Link>
               {isAdmin && (
-                <Link to="/admin" onClick={() => setMobileMenuOpen(false)} className="text-sm font-body font-medium text-accent hover:text-accent py-2 tracking-wide flex items-center gap-2">
+                <Link to="/admin" onClick={() => setMobileMenuOpen(false)} className="text-sm font-body font-medium text-primary hover:text-primary py-2 tracking-wide flex items-center gap-2">
                   <Settings size={16} /> Administrador
                 </Link>
               )}
