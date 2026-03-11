@@ -206,7 +206,7 @@ export default function OrdersCentralTab() {
                 <th className="text-left p-3 font-body font-semibold text-muted-foreground">Pedido</th>
                 <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden md:table-cell">Cliente</th>
                 <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden lg:table-cell">Telefone</th>
-                <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden xl:table-cell">Endereço</th>
+                <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden lg:table-cell">Cidade</th>
                 <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden md:table-cell">Pagamento</th>
                 <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden lg:table-cell">Data e hora</th>
                 <th className="text-right p-3 font-body font-semibold text-muted-foreground">Total</th>
