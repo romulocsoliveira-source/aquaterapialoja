@@ -16,6 +16,9 @@ import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import logoImg from "@/assets/logo-aquaterapia.png";
+import BarcodeScanner from "@/components/shared/BarcodeScanner";
+import ProductLabelPrint from "@/components/shared/ProductLabelPrint";
+
 
 interface PDVItem {
   product: Product;
