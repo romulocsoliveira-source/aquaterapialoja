@@ -238,7 +238,6 @@ export default function CheckoutPage() {
 
   const inputClass = "w-full bg-secondary text-foreground px-4 py-3 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground";
 
-  const selectedAddr = addresses.find(a => a.id === selectedAddress);
 
   const installmentOptions = Array.from({ length: 12 }, (_, i) => {
     const n = i + 1;
