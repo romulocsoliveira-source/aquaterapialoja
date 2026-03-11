@@ -187,6 +187,21 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
     lookupBarcode(normalizedCode);
   };
 
+  useEffect(() => {
+    const normalizedCode = form.barcode.replace(/\D/g, "");
+
+    if (!open || normalizedCode.length < 8 || lookingUp) return;
+    if (autoLookupRef.current === normalizedCode) return;
+    if (form.name && form.image && form.description) return;
+
+    const timer = window.setTimeout(() => {
+      autoLookupRef.current = normalizedCode;
+      lookupBarcode(normalizedCode);
+    }, 700);
+
+    return () => window.clearTimeout(timer);
+  }, [open, form.barcode, form.name, form.image, form.description, lookingUp, categories]);
+
   const handleCategorySelect = (slug: string) => {
     const cat = categories.find(c => c.slug === slug);
     if (cat) {
