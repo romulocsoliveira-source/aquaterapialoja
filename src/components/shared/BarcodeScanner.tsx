@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { Camera, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -12,24 +12,24 @@ interface BarcodeScannerProps {
 }
 
 export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Escanear Código de Barras", continuous = false }: BarcodeScannerProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const animFrameRef = useRef<number>(0);
+  const scannerRef = useRef<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [scanning, setScanning] = useState(false);
   const [lastScanned, setLastScanned] = useState<string | null>(null);
   const lastScannedTimeRef = useRef<number>(0);
   const lastScannedCodeRef = useRef<string>("");
-  const barcodeDetectorRef = useRef<any>(null);
+  const containerId = "barcode-scanner-container";
 
-  const stopScanner = useCallback(() => {
-    if (animFrameRef.current) {
-      cancelAnimationFrame(animFrameRef.current);
-      animFrameRef.current = 0;
-    }
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(t => t.stop());
-      streamRef.current = null;
+  const stopScanner = useCallback(async () => {
+    if (scannerRef.current) {
+      try {
+        const state = scannerRef.current.getState?.();
+        if (state === 2) { // SCANNING
+          await scannerRef.current.stop();
+        }
+      } catch {}
+      try { scannerRef.current.clear(); } catch {}
+      scannerRef.current = null;
     }
     setScanning(false);
     setLastScanned(null);
@@ -48,104 +48,65 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
     }
   }, [continuous, onScan, onOpenChange, stopScanner]);
 
-  // Called directly from user click — preserves gesture context
   const startScanner = useCallback(async () => {
     setError(null);
     try {
-      // CRITICAL: getUserMedia called directly in click handler
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } },
-      });
-      streamRef.current = stream;
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+      const { Html5Qrcode } = await import("html5-qrcode");
+      
+      // Wait for DOM element
+      await new Promise(r => setTimeout(r, 300));
+      
+      const el = document.getElementById(containerId);
+      if (!el) {
+        setError("Não foi possível inicializar o scanner.");
+        return;
       }
 
+      // Clear any previous instance
+      if (scannerRef.current) {
+        try { await scannerRef.current.stop(); } catch {}
+        try { scannerRef.current.clear(); } catch {}
+      }
+
+      const scanner = new Html5Qrcode(containerId);
+      scannerRef.current = scanner;
+
+      await scanner.start(
+        { facingMode: "environment" },
+        {
+          fps: 15,
+          qrbox: { width: 280, height: 160 },
+          aspectRatio: 1.5,
+          formatsToSupport: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        (decodedText: string) => {
+          handleDetection(decodedText);
+        },
+        () => {},
+      );
       setScanning(true);
-
-      // Use BarcodeDetector API if available (Chrome, Edge, Android)
-      if ("BarcodeDetector" in window) {
-        const detector = new (window as any).BarcodeDetector({
-          formats: ["ean_13", "ean_8", "upc_a", "upc_e", "code_128", "code_39", "qr_code"],
-        });
-        barcodeDetectorRef.current = detector;
-
-        const scanFrame = async () => {
-          if (!videoRef.current || !streamRef.current) return;
-          try {
-            const barcodes = await detector.detect(videoRef.current);
-            if (barcodes.length > 0) {
-              handleDetection(barcodes[0].rawValue);
-              if (continuous) {
-                animFrameRef.current = requestAnimationFrame(scanFrame);
-              }
-              return;
-            }
-          } catch {
-            // frame not ready
-          }
-          animFrameRef.current = requestAnimationFrame(scanFrame);
-        };
-        animFrameRef.current = requestAnimationFrame(scanFrame);
-      } else {
-        // Fallback: use html5-qrcode library
-        try {
-          const { Html5Qrcode } = await import("html5-qrcode");
-          
-          // We already have the stream, stop it and let html5-qrcode manage its own
-          stream.getTracks().forEach(t => t.stop());
-          streamRef.current = null;
-          
-          const containerId = "barcode-fallback-container";
-          // Wait for DOM element
-          await new Promise(r => setTimeout(r, 200));
-          
-          const el = document.getElementById(containerId);
-          if (!el) {
-            setError("Não foi possível inicializar o scanner.");
-            return;
-          }
-          
-          const scanner = new Html5Qrcode(containerId);
-          (barcodeDetectorRef.current as any) = scanner;
-          
-          await scanner.start(
-            { facingMode: "environment" },
-            { fps: 10, qrbox: { width: 280, height: 160 }, aspectRatio: 1.5 },
-            (decodedText: string) => {
-              handleDetection(decodedText);
-              if (!continuous) {
-                try { scanner.stop(); } catch {}
-              }
-            },
-            () => {},
-          );
-        } catch (fallbackErr) {
-          console.error("Fallback scanner error:", fallbackErr);
-          setError("Seu navegador não suporta leitura de código de barras. Use Chrome ou Edge.");
-        }
-      }
     } catch (err: any) {
       console.error("Scanner error:", err);
       setError(
-        err?.name === "NotAllowedError"
+        err?.message?.includes("NotAllowed") || err?.name === "NotAllowedError"
           ? "Permissão de câmera negada. Habilite nas configurações do navegador."
           : "Não foi possível acessar a câmera. Verifique se há uma câmera disponível."
       );
     }
-  }, [handleDetection, continuous]);
+  }, [handleDetection]);
 
-  const handleClose = () => {
-    stopScanner();
-    // Also stop html5-qrcode if it was used as fallback
-    if (barcodeDetectorRef.current && typeof barcodeDetectorRef.current.stop === "function") {
-      try { barcodeDetectorRef.current.stop(); } catch {}
-    }
-    barcodeDetectorRef.current = null;
+  const handleClose = useCallback(async () => {
+    await stopScanner();
     onOpenChange(false);
-  };
+  }, [stopScanner, onOpenChange]);
+
+  // Cleanup on unmount or when dialog closes
+  useEffect(() => {
+    if (!open) {
+      stopScanner();
+    }
+    return () => { stopScanner(); };
+  }, [open, stopScanner]);
 
   return (
     <Dialog
@@ -171,22 +132,12 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
         <div className="px-4 pb-4 space-y-3">
           {/* Scanner viewport */}
           <div className="relative rounded-xl overflow-hidden bg-black aspect-video">
-            {/* Native BarcodeDetector uses video element */}
-            <video
-              ref={videoRef}
-              className="w-full h-full object-cover"
-              playsInline
-              muted
-              style={{ display: scanning && "BarcodeDetector" in window ? "block" : "none" }}
-            />
-            {/* Fallback container for html5-qrcode */}
             <div
-              id="barcode-fallback-container"
+              id={containerId}
               className="w-full h-full"
-              style={{ display: !("BarcodeDetector" in window) ? "block" : "none" }}
             />
 
-            {/* Overlay guide */}
+            {/* Overlay guide when scanning */}
             {scanning && (
               <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
                 <div className="border-2 border-primary/60 rounded-lg w-[280px] h-[160px] relative">
@@ -194,7 +145,6 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
                   <div className="absolute -top-0.5 -right-0.5 w-6 h-6 border-t-4 border-r-4 border-primary rounded-tr-lg" />
                   <div className="absolute -bottom-0.5 -left-0.5 w-6 h-6 border-b-4 border-l-4 border-primary rounded-bl-lg" />
                   <div className="absolute -bottom-0.5 -right-0.5 w-6 h-6 border-b-4 border-r-4 border-primary rounded-br-lg" />
-                  <div className="absolute inset-x-4 h-0.5 bg-primary/80 animate-[scanline_2s_ease-in-out_infinite]" />
                 </div>
               </div>
             )}
