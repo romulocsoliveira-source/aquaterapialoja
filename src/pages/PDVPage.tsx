@@ -9,8 +9,9 @@ import { toast } from "sonner";
 import {
   Search, Plus, Minus, Trash2, ArrowLeft, ShoppingCart,
   CreditCard, QrCode, Banknote, Barcode, Receipt, CheckCircle,
-  Percent, Printer, RotateCcw, User, Clock
+  Percent, Printer, RotateCcw, User, Clock, Camera, Tag
 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
