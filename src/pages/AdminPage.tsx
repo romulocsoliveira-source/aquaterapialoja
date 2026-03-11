@@ -119,6 +119,10 @@ export default function AdminPage() {
         </div>
 
         {activeTab === "dashboard" && <DashboardTab />}
+        {activeTab === "agenda" && <AdminAgendaTab />}
+        {activeTab === "servicos" && <AdminServicosTab />}
+        {activeTab === "hotel" && <AdminHotelTab />}
+        {activeTab === "pets" && <AdminPetsTab />}
         {activeTab === "products" && <ProductsTab searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}
         {activeTab === "orders" && <OrdersCentralTab />}
          {activeTab === "financial" && <FinancialTab />}
