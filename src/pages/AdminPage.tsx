@@ -24,8 +24,12 @@ import {
   BarChart3, Package, ShoppingCart, Users, Tag, AlertTriangle,
   TrendingUp, DollarSign, ArrowLeft, Search, Edit, Trash2, Plus,
   Eye, Bell, Store, MessageCircle, Monitor, Smartphone, FileText, Truck, ShoppingBag, MapPin, Brain,
-  Scissors, Building2, PawPrint, Calendar
+  Scissors, Building2, PawPrint, Calendar, Camera
 } from "lucide-react";
+import BarcodeScanner from "@/components/shared/BarcodeScanner";
+import StockEntryDialog from "@/components/admin/StockEntryDialog";
+import ProductLabelPrint from "@/components/shared/ProductLabelPrint";
+
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
@@ -528,10 +532,53 @@ function CouponsTab() {
 /* ==================== STOCK ==================== */
 function StockTab() {
   const { data: products = [] } = useProducts();
+  const [showScanner, setShowScanner] = useState(false);
+  const [stockProduct, setStockProduct] = useState<(typeof products)[number] | null>(null);
+  const [showStockEntry, setShowStockEntry] = useState(false);
+  const [showLabels, setShowLabels] = useState(false);
   const lowStockProducts = products.filter(p => (p.stock || 0) < 20).sort((a, b) => (a.stock || 0) - (b.stock || 0));
+
+  const handleScanResult = (code: string) => {
+    const found = products.find(p => p.barcode === code);
+    if (found) {
+      setStockProduct(found as any);
+      setShowStockEntry(true);
+    } else {
+      toast.error("Produto não encontrado para o código: " + code);
+    }
+  };
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="font-display text-lg font-bold">Controle de Estoque</h2>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => setShowLabels(true)} className="gap-1 text-xs">
+            <Tag size={14} /> Etiquetas
+          </Button>
+          <Button onClick={() => setShowScanner(true)} className="gap-1 text-sm">
+            <Camera size={16} /> Entrada por Código de Barras
+          </Button>
+        </div>
+      </div>
+
+      <BarcodeScanner
+        open={showScanner}
+        onOpenChange={setShowScanner}
+        onScan={handleScanResult}
+        title="Entrada de Estoque — Escanear Produto"
+      />
+      <StockEntryDialog
+        open={showStockEntry}
+        onOpenChange={setShowStockEntry}
+        product={stockProduct}
+      />
+      <ProductLabelPrint
+        open={showLabels}
+        onOpenChange={setShowLabels}
+        products={products.slice(0, 30).map(p => ({ name: p.name, price: p.price, promoPrice: p.promoPrice, barcode: p.barcode }))}
+      />
+
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-card border border-border rounded-xl p-4 text-center">
           <p className="text-2xl font-bold text-green-400">{products.filter(p => (p.stock || 0) >= 20).length}</p>
@@ -554,6 +601,7 @@ function StockTab() {
               <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden md:table-cell">SKU</th>
               <th className="text-right p-3 font-body font-semibold text-muted-foreground">Estoque</th>
               <th className="text-right p-3 font-body font-semibold text-muted-foreground">Status</th>
+              <th className="text-right p-3 font-body font-semibold text-muted-foreground">Ação</th>
             </tr>
           </thead>
           <tbody>
@@ -567,6 +615,11 @@ function StockTab() {
                     {(p.stock || 0) < 10 ? "Crítico" : "Baixo"}
                   </span>
                 </td>
+                <td className="p-3 text-right">
+                  <Button variant="outline" size="sm" className="text-xs gap-1" onClick={() => { setStockProduct(p as any); setShowStockEntry(true); }}>
+                    <Plus size={12} /> Entrada
+                  </Button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -575,6 +628,7 @@ function StockTab() {
     </div>
   );
 }
+
 
 /* ReportsTab moved to src/components/admin/ReportsTab.tsx */
 

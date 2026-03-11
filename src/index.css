@@ -133,3 +133,9 @@
     box-shadow: 0 4px 20px hsl(195, 80%, 45%, 0.25);
   }
 }
+
+@keyframes scanline {
+  0%, 100% { top: 10%; }
+  50% { top: 85%; }
+}
+

@@ -9,12 +9,16 @@ import { toast } from "sonner";
 import {
   Search, Plus, Minus, Trash2, ArrowLeft, ShoppingCart,
   CreditCard, QrCode, Banknote, Barcode, Receipt, CheckCircle,
-  Percent, Printer, RotateCcw, User, Clock
+  Percent, Printer, RotateCcw, User, Clock, Camera, Tag
 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import logoImg from "@/assets/logo-aquaterapia.png";
+import BarcodeScanner from "@/components/shared/BarcodeScanner";
+import ProductLabelPrint from "@/components/shared/ProductLabelPrint";
+
 
 interface PDVItem {
   product: Product;
@@ -39,8 +43,11 @@ export default function PDVPage() {
   const [customerName, setCustomerName] = useState("");
   const [salesHistory, setSalesHistory] = useState<any[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [showCameraScanner, setShowCameraScanner] = useState(false);
+  const [showLabels, setShowLabels] = useState(false);
   const barcodeRef = useRef<HTMLInputElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+
 
   useEffect(() => {
     barcodeRef.current?.focus();
@@ -114,15 +121,22 @@ export default function PDVPage() {
   const total = Math.max(0, subtotal - discountAmount);
   const changeAmount = showCashInput && Number(cashReceived) > total ? Number(cashReceived) - total : 0;
 
-  const handleBarcode = () => {
-    const found = products.find(p => p.barcode === barcodeInput);
+  const handleBarcode = (code?: string) => {
+    const bc = code || barcodeInput;
+    const found = products.find(p => p.barcode === bc);
     if (found) {
       addToCart(found);
-    } else if (barcodeInput) {
-      toast.error("Produto não encontrado");
+      toast.success(`${found.name} adicionado!`);
+    } else if (bc) {
+      toast.error("Produto não encontrado para o código: " + bc);
     }
     setBarcodeInput("");
   };
+
+  const handleCameraScan = (code: string) => {
+    handleBarcode(code);
+  };
+
 
   const formatPrice = (p: number) => p.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -295,10 +309,16 @@ export default function PDVPage() {
             <Button variant="outline" size="sm" onClick={loadHistory} className="gap-1 text-xs">
               <Clock size={14} /> Vendas do Dia
             </Button>
-            <span className="text-xs text-muted-foreground">
+            {cart.length > 0 && (
+              <Button variant="outline" size="sm" onClick={() => setShowLabels(true)} className="gap-1 text-xs">
+                <Tag size={14} /> Etiquetas
+              </Button>
+            )}
+            <span className="text-xs text-muted-foreground hidden md:block">
               {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" })}
             </span>
           </div>
+
         </div>
       </div>
 
@@ -493,10 +513,26 @@ export default function PDVPage() {
                 className="w-full bg-secondary text-foreground pl-10 pr-4 py-3 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground"
               />
             </div>
-            <Button onClick={handleBarcode} className="bg-accent text-accent-foreground px-6">
+            <Button onClick={() => handleBarcode()} className="bg-accent text-accent-foreground px-4">
               Buscar
             </Button>
+            <Button onClick={() => setShowCameraScanner(true)} variant="outline" className="gap-1 border-primary text-primary">
+              <Camera size={16} /> Escanear
+            </Button>
           </div>
+
+          <BarcodeScanner
+            open={showCameraScanner}
+            onOpenChange={setShowCameraScanner}
+            onScan={handleCameraScan}
+            title="Escanear Produto — PDV"
+          />
+          <ProductLabelPrint
+            open={showLabels}
+            onOpenChange={setShowLabels}
+            products={cart.map(i => ({ name: i.product.name, price: i.product.price, promoPrice: i.product.promoPrice, barcode: i.product.barcode }))}
+          />
+
 
           {/* Product Search */}
           <div className="relative">

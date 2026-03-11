@@ -9,8 +9,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useCategories } from "@/hooks/useStoreData";
 import { toast } from "sonner";
+import { Camera, Wand2 } from "lucide-react";
 import ImageUpload from "./ImageUpload";
+import BarcodeScanner from "@/components/shared/BarcodeScanner";
+import BarcodeGenerator, { generateEAN13 } from "@/components/shared/BarcodeGenerator";
 import type { Product } from "@/data/products";
+
 
 interface Props {
   open: boolean;
@@ -32,6 +36,8 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
   const isEditing = !!product;
 
   const [loading, setLoading] = useState(false);
+  const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
+
   const [form, setForm] = useState({
     name: "",
     slug: "",
@@ -201,8 +207,28 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
             </div>
             <div className="space-y-2">
               <Label>Código de Barras *</Label>
-              <Input value={form.barcode} onChange={e => setForm(f => ({ ...f, barcode: e.target.value }))} placeholder="7891234567890" required />
+              <div className="flex gap-1">
+                <Input value={form.barcode} onChange={e => setForm(f => ({ ...f, barcode: e.target.value }))} placeholder="7891234567890" required className="flex-1" />
+                <Button type="button" variant="outline" size="icon" onClick={() => setShowBarcodeScanner(true)} title="Escanear câmera">
+                  <Camera size={16} />
+                </Button>
+                <Button type="button" variant="outline" size="icon" onClick={() => setForm(f => ({ ...f, barcode: generateEAN13() }))} title="Gerar EAN-13">
+                  <Wand2 size={16} />
+                </Button>
+              </div>
+              {form.barcode && (
+                <div className="bg-white rounded p-2 flex justify-center">
+                  <BarcodeGenerator value={form.barcode} height={40} width={1.5} />
+                </div>
+              )}
             </div>
+            <BarcodeScanner
+              open={showBarcodeScanner}
+              onOpenChange={setShowBarcodeScanner}
+              onScan={(code) => { setForm(f => ({ ...f, barcode: code })); toast.success("Código lido: " + code); }}
+              title="Ler Código de Barras"
+            />
+
             <div className="space-y-2">
               <Label>Estoque</Label>
               <Input type="number" value={form.stock} onChange={e => setForm(f => ({ ...f, stock: e.target.value }))} />
