@@ -274,6 +274,7 @@ function ProductsTab({ searchTerm, setSearchTerm }: { searchTerm: string; setSea
 
   const handleSaved = () => {
     queryClient.invalidateQueries({ queryKey: ["store-products"] });
+    queryClient.invalidateQueries({ queryKey: ["store-categories"] });
   };
 
   return (

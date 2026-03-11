@@ -41,7 +41,7 @@ const Index = () => {
       <InspirationSection />
       <FeaturedProducts title="Lançamentos" subtitle="Novidades que acabaram de chegar" filter={p => !!p.isNew} limit={8} />
       <FeaturedProducts title="Promoções da Semana" subtitle="Descontos imperdíveis" filter={p => !!p.promoPrice} limit={4} />
-      <FeaturedProducts title="Toda a Coleção" subtitle="Catálogo completo" limit={8} />
+      <FeaturedProducts title="Toda a Coleção" subtitle="Catálogo completo" limit={20} />
       <BrandSection />
     </>
   );
