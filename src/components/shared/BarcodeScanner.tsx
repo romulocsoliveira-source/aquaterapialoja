@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from "react";
-import { Camera, X } from "lucide-react";
+import { Camera, X, Flashlight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -19,6 +19,7 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
   const lastScannedTimeRef = useRef<number>(0);
   const lastScannedCodeRef = useRef<string>("");
   const containerId = "barcode-scanner-container";
+  const autoStartedRef = useRef(false);
 
   const stopScanner = useCallback(async () => {
     if (scannerRef.current) {
@@ -53,7 +54,7 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
     try {
       const { Html5Qrcode } = await import("html5-qrcode");
 
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 400));
 
       const el = document.getElementById(containerId);
       if (!el) {
@@ -72,30 +73,21 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
       } as any);
       scannerRef.current = scanner;
 
-      // Get available cameras and prefer back camera
-      const cameras = await Html5Qrcode.getCameras();
-      let cameraId: any = { facingMode: "environment" };
-      
-      if (cameras && cameras.length > 0) {
-        // Find back/rear camera
-        const backCamera = cameras.find(c => 
-          c.label.toLowerCase().includes("back") || 
-          c.label.toLowerCase().includes("rear") ||
-          c.label.toLowerCase().includes("traseira") ||
-          c.label.toLowerCase().includes("environment")
-        );
-        if (backCamera) {
-          cameraId = backCamera.id;
-        }
-      }
-
       await scanner.start(
-        cameraId,
+        { facingMode: "environment" },
         {
-          fps: 10,
-          qrbox: { width: 300, height: 150 },
+          fps: 15,
+          qrbox: { width: 280, height: 120 },
           aspectRatio: 1.7778,
           disableFlip: false,
+          videoConstraints: {
+            facingMode: "environment",
+            advanced: [
+              { focusMode: "continuous" } as any,
+              { exposureMode: "continuous" } as any,
+              { whiteBalanceMode: "continuous" } as any,
+            ],
+          } as any,
         },
         (decodedText: string) => {
           handleDetection(decodedText);
@@ -103,6 +95,24 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
         () => {},
       );
       setScanning(true);
+
+      // Try to apply advanced constraints for better image quality
+      try {
+        const videoElem = el.querySelector("video");
+        if (videoElem && videoElem.srcObject) {
+          const track = (videoElem.srcObject as MediaStream).getVideoTracks()[0];
+          if (track) {
+            const caps = track.getCapabilities?.() as any;
+            const constraints: any = {};
+            if (caps?.focusMode?.includes("continuous")) constraints.focusMode = "continuous";
+            if (caps?.exposureMode?.includes("continuous")) constraints.exposureMode = "continuous";
+            if (caps?.torch) constraints.torch = true;
+            if (Object.keys(constraints).length > 0) {
+              await track.applyConstraints({ advanced: [constraints] });
+            }
+          }
+        }
+      } catch {}
     } catch (err: any) {
       console.error("Scanner error:", err);
       if (err?.message?.includes("NotAllowed") || err?.name === "NotAllowedError") {
@@ -117,15 +127,27 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
 
   const handleClose = useCallback(async () => {
     await stopScanner();
+    autoStartedRef.current = false;
     onOpenChange(false);
   }, [stopScanner, onOpenChange]);
 
+  // Auto-start camera when dialog opens
   useEffect(() => {
+    if (open && !autoStartedRef.current) {
+      autoStartedRef.current = true;
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => startScanner(), 600);
+      return () => clearTimeout(timer);
+    }
     if (!open) {
+      autoStartedRef.current = false;
       stopScanner();
     }
+  }, [open, startScanner, stopScanner]);
+
+  useEffect(() => {
     return () => { stopScanner(); };
-  }, [open, stopScanner]);
+  }, [stopScanner]);
 
   return (
     <Dialog
@@ -154,12 +176,11 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
 
             {scanning && (
               <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                <div className="border-2 border-primary/60 rounded-lg w-[300px] h-[150px] relative">
+                <div className="border-2 border-primary/60 rounded-lg w-[280px] h-[120px] relative">
                   <div className="absolute -top-0.5 -left-0.5 w-6 h-6 border-t-4 border-l-4 border-primary rounded-tl-lg" />
                   <div className="absolute -top-0.5 -right-0.5 w-6 h-6 border-t-4 border-r-4 border-primary rounded-tr-lg" />
                   <div className="absolute -bottom-0.5 -left-0.5 w-6 h-6 border-b-4 border-l-4 border-primary rounded-bl-lg" />
                   <div className="absolute -bottom-0.5 -right-0.5 w-6 h-6 border-b-4 border-r-4 border-primary rounded-br-lg" />
-                  {/* Scanning line animation */}
                   <div className="absolute top-0 left-2 right-2 h-0.5 bg-primary animate-pulse" 
                        style={{ animation: 'scanLine 2s ease-in-out infinite' }} />
                 </div>
@@ -168,9 +189,10 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
 
             {!scanning && !error && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/80">
-                <Button onClick={startScanner} className="gap-2">
-                  <Camera size={18} /> Iniciar Câmera
-                </Button>
+                <div className="text-center space-y-3">
+                  <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto" />
+                  <p className="text-white/70 text-xs">Iniciando câmera...</p>
+                </div>
               </div>
             )}
           </div>
@@ -178,7 +200,7 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
           <p className="text-xs text-muted-foreground text-center">
             {scanning 
               ? "Posicione o código de barras dentro da área marcada. Mantenha o celular firme." 
-              : "Clique em 'Iniciar Câmera' para começar a leitura"}
+              : error ? "" : "Aguarde a câmera iniciar..."}
           </p>
 
           {continuous && lastScanned && (
@@ -197,6 +219,11 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
           )}
 
           <div className="flex gap-2">
+            {scanning && (
+              <Button variant="outline" className="flex-1 text-xs" onClick={() => { stopScanner(); startScanner(); }}>
+                <Camera size={14} className="mr-1" /> Reiniciar Câmera
+              </Button>
+            )}
             <Button variant="outline" className="flex-1 text-xs" onClick={handleClose}>
               <X size={14} className="mr-1" /> {continuous ? "Fechar Scanner" : "Cancelar"}
             </Button>
