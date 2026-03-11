@@ -249,7 +249,7 @@ export default function OrdersCentralTab() {
                         </td>
                         <td className="p-3 hidden md:table-cell align-top">{order.customer}</td>
                         <td className="p-3 hidden lg:table-cell align-top text-muted-foreground">{order.phone}</td>
-                        <td className="p-3 hidden xl:table-cell align-top text-muted-foreground max-w-[280px]">{order.address}</td>
+                        <td className="p-3 hidden lg:table-cell align-top text-muted-foreground">{order.city}</td>
                         <td className="p-3 hidden md:table-cell align-top text-muted-foreground text-xs">{order.payment_method || "—"}</td>
                         <td className="p-3 hidden lg:table-cell align-top text-muted-foreground">{order.dateTime}</td>
                         <td className="p-3 text-right align-top font-bold">{order.totalLabel}</td>

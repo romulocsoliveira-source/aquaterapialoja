@@ -134,12 +134,23 @@ export default function PDVPage() {
   };
 
   const handleCameraScan = (code: string) => {
-    const found = products.find(p => p.barcode === code);
+    console.log("PDV Scanner detected code:", code);
+    setBarcodeInput(code);
+    const found = products.find(p => p.barcode === code || p.barcode === code.trim());
     if (found) {
       addToCart(found);
       toast.success(`${found.name} adicionado!`);
     } else {
-      toast.error("Produto não encontrado: " + code);
+      // Try partial match (some scanners add/remove leading zeros)
+      const flexMatch = products.find(p => 
+        p.barcode.replace(/^0+/, '') === code.replace(/^0+/, '')
+      );
+      if (flexMatch) {
+        addToCart(flexMatch);
+        toast.success(`${flexMatch.name} adicionado!`);
+      } else {
+        toast.error("Produto não encontrado: " + code);
+      }
     }
   };
 
