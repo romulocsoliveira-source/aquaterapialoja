@@ -339,19 +339,75 @@ function ProductsTab({ searchTerm, setSearchTerm }: { searchTerm: string; setSea
 /* ==================== CENTRAL DE PEDIDOS (multi-channel) ==================== */
 function OrdersCentralTab() {
   const [channelFilter, setChannelFilter] = useState<string>("Todos");
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
 
-  const mockOrders = [
-    { id: "#1001", customer: "Maria Silva", date: "09/03/2026", total: "R$ 289,80", status: "Pagamento Aprovado", statusColor: "text-green-400", channel: "Loja Online" as Channel },
-    { id: "#1002", customer: "João Santos", date: "09/03/2026", total: "R$ 159,90", status: "Aguardando Pagamento", statusColor: "text-yellow-400", channel: "WhatsApp" as Channel },
-    { id: "#1003", customer: "Ana Oliveira", date: "08/03/2026", total: "R$ 449,70", status: "Enviado", statusColor: "text-blue-400", channel: "Mercado Livre" as Channel },
-    { id: "#1004", customer: "Carlos Lima", date: "08/03/2026", total: "R$ 89,90", status: "Entregue", statusColor: "text-green-400", channel: "PDV" as Channel },
-    { id: "#1005", customer: "Fernanda Costa", date: "07/03/2026", total: "R$ 329,90", status: "Em Separação", statusColor: "text-purple-400", channel: "Loja Online" as Channel },
-    { id: "#1006", customer: "Ricardo Alves", date: "07/03/2026", total: "R$ 199,90", status: "Pagamento Aprovado", statusColor: "text-green-400", channel: "WhatsApp" as Channel },
-    { id: "#1007", customer: "Paula Mendes", date: "06/03/2026", total: "R$ 549,00", status: "Enviado", statusColor: "text-blue-400", channel: "Mercado Livre" as Channel },
-    { id: "#1008", customer: "Venda Balcão", date: "06/03/2026", total: "R$ 75,00", status: "Finalizado", statusColor: "text-green-400", channel: "PDV" as Channel },
-  ];
+  const statusLabels: Record<string, { label: string; color: string }> = {
+    pending_payment: { label: "Aguardando Pagamento", color: "text-yellow-400" },
+    paid: { label: "Pagamento Aprovado", color: "text-green-400" },
+    processing: { label: "Em Separação", color: "text-purple-400" },
+    shipped: { label: "Enviado", color: "text-blue-400" },
+    delivered: { label: "Entregue", color: "text-green-400" },
+    completed: { label: "Finalizado", color: "text-green-400" },
+    cancelled: { label: "Cancelado", color: "text-red-400" },
+  };
 
-  const filtered = channelFilter === "Todos" ? mockOrders : mockOrders.filter(o => o.channel === channelFilter);
+  const getChannel = (method: string | null): Channel => {
+    if (!method) return "Loja Online";
+    if (method.startsWith("pdv") || method === "cash" || method === "debit_card") return "PDV";
+    return "Loja Online";
+  };
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setLoadingOrders(true);
+      const { data: ordersData } = await supabase
+        .from("orders")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(50);
+
+      if (ordersData && ordersData.length > 0) {
+        // Fetch profile names for all user_ids
+        const userIds = [...new Set(ordersData.map(o => o.user_id))];
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("user_id, full_name")
+          .in("user_id", userIds);
+        
+        const profileMap = new Map((profiles || []).map(p => [p.user_id, p.full_name]));
+        
+        setOrders(ordersData.map(o => ({
+          ...o,
+          customer_name: profileMap.get(o.user_id) || null,
+        })));
+      } else {
+        setOrders([]);
+      }
+      setLoadingOrders(false);
+    };
+    fetchOrders();
+  }, []);
+
+  const formatPrice = (p: number) => p.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+  const mappedOrders = orders.map(o => {
+    const channel = getChannel(o.payment_method);
+    const statusInfo = statusLabels[o.status] || { label: o.status, color: "text-muted-foreground" };
+    return {
+      id: `#${o.id.slice(0, 8).toUpperCase()}`,
+      fullId: o.id,
+      customer: o.customer_name || "Cliente",
+      date: new Date(o.created_at).toLocaleDateString("pt-BR"),
+      total: formatPrice(Number(o.total)),
+      status: statusInfo.label,
+      statusColor: statusInfo.color,
+      channel,
+      paymentMethod: o.payment_method,
+    };
+  });
+
+  const filtered = channelFilter === "Todos" ? mappedOrders : mappedOrders.filter(o => o.channel === channelFilter);
 
   return (
     <div className="space-y-4">
@@ -379,14 +435,19 @@ function OrdersCentralTab() {
                 <th className="text-left p-3 font-body font-semibold text-muted-foreground">Pedido</th>
                 <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden md:table-cell">Cliente</th>
                 <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden md:table-cell">Canal</th>
+                <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden md:table-cell">Pagamento</th>
                 <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden md:table-cell">Data</th>
                 <th className="text-right p-3 font-body font-semibold text-muted-foreground">Total</th>
                 <th className="text-right p-3 font-body font-semibold text-muted-foreground">Status</th>
               </tr>
             </thead>
             <tbody>
-              {filtered.map(o => (
-                <tr key={o.id} className="border-b border-border/50 hover:bg-secondary/30">
+              {loadingOrders ? (
+                <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">Carregando pedidos...</td></tr>
+              ) : filtered.length === 0 ? (
+                <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">Nenhum pedido encontrado</td></tr>
+              ) : filtered.map(o => (
+                <tr key={o.fullId} className="border-b border-border/50 hover:bg-secondary/30">
                   <td className="p-3 font-bold">{o.id}</td>
                   <td className="p-3 hidden md:table-cell">{o.customer}</td>
                   <td className="p-3 hidden md:table-cell">
@@ -394,6 +455,7 @@ function OrdersCentralTab() {
                       {channelIcons[o.channel]} {o.channel}
                     </span>
                   </td>
+                  <td className="p-3 text-muted-foreground hidden md:table-cell text-xs">{o.paymentMethod || "—"}</td>
                   <td className="p-3 text-muted-foreground hidden md:table-cell">{o.date}</td>
                   <td className="p-3 text-right font-bold">{o.total}</td>
                   <td className="p-3 text-right"><span className={`text-xs font-semibold ${o.statusColor}`}>{o.status}</span></td>
@@ -401,6 +463,9 @@ function OrdersCentralTab() {
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="p-3 text-center text-xs text-muted-foreground border-t border-border">
+          {filtered.length} pedido(s)
         </div>
       </div>
     </div>

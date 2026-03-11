@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useCategories } from "@/hooks/useStoreData";
 import { toast } from "sonner";
-import { Camera, Wand2, Loader2 } from "lucide-react";
+import { Camera, Wand2, Loader2, Search } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import BarcodeScanner from "@/components/shared/BarcodeScanner";
 import BarcodeGenerator, { generateEAN13 } from "@/components/shared/BarcodeGenerator";
@@ -116,6 +116,10 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
   };
 
   const lookupBarcode = async (code: string) => {
+    if (!code || code.length < 8) {
+      toast.error("Código de barras deve ter pelo menos 8 dígitos");
+      return;
+    }
     setLookingUp(true);
     try {
       const { data, error } = await supabase.functions.invoke("barcode-lookup", {
@@ -247,6 +251,9 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
                 <Input value={form.barcode} onChange={e => setForm(f => ({ ...f, barcode: e.target.value }))} placeholder="7891234567890" required className="flex-1" />
                 <Button type="button" variant="outline" size="icon" onClick={() => setShowBarcodeScanner(true)} title="Escanear câmera">
                   <Camera size={16} />
+                </Button>
+                <Button type="button" variant="outline" size="icon" onClick={() => lookupBarcode(form.barcode)} title="Buscar produto pelo código" disabled={lookingUp || !form.barcode}>
+                  <Search size={16} />
                 </Button>
                 <Button type="button" variant="outline" size="icon" onClick={() => setForm(f => ({ ...f, barcode: generateEAN13() }))} title="Gerar EAN-13">
                   <Wand2 size={16} />
@@ -417,7 +424,8 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
           <div className="flex justify-end gap-3 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
             <Button type="submit" disabled={loading} className="gradient-purple-pink text-primary-foreground">
-              {loading ? "Salvando..." : isEditing ? "Salvar Alterações" : "Criar Produto"}
+              {loading ? <Loader2 size={16} className="animate-spin mr-2" /> : null}
+              {isEditing ? "Atualizar" : "Criar Produto"}
             </Button>
           </div>
         </form>
