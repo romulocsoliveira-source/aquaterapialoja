@@ -361,25 +361,28 @@ function OrdersCentralTab() {
   useEffect(() => {
     const fetchOrders = async () => {
       setLoadingOrders(true);
-      const { data, error } = await supabase
+      const { data: ordersData } = await supabase
         .from("orders")
-        .select("*, profiles!inner(full_name)")
+        .select("*")
         .order("created_at", { ascending: false })
         .limit(50);
 
-      if (error) {
-        // If join fails (no FK), fetch without profiles
-        const { data: ordersOnly } = await supabase
-          .from("orders")
-          .select("*")
-          .order("created_at", { ascending: false })
-          .limit(50);
-        setOrders((ordersOnly || []).map(o => ({ ...o, customer_name: null })));
-      } else {
-        setOrders((data || []).map((o: any) => ({
+      if (ordersData && ordersData.length > 0) {
+        // Fetch profile names for all user_ids
+        const userIds = [...new Set(ordersData.map(o => o.user_id))];
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("user_id, full_name")
+          .in("user_id", userIds);
+        
+        const profileMap = new Map((profiles || []).map(p => [p.user_id, p.full_name]));
+        
+        setOrders(ordersData.map(o => ({
           ...o,
-          customer_name: o.profiles?.full_name || null,
+          customer_name: profileMap.get(o.user_id) || null,
         })));
+      } else {
+        setOrders([]);
       }
       setLoadingOrders(false);
     };
