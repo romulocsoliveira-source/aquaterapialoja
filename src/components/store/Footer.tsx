@@ -43,6 +43,7 @@ export default function Footer() {
             {[
               { label: "Banho & Tosa", href: "/agendamento" },
               { label: "Hotel Pet", href: "/hotel-pet" },
+              { label: "Aquarismo", href: "/categoria/aquarios" },
               { label: "Produtos Pet", href: "/categoria/produtos-pet" },
               { label: "Acessórios", href: "/categoria/acessorios-pet" },
               { label: "Promoções", href: "/categoria/promocoes" },

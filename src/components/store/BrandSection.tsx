@@ -12,7 +12,7 @@ export default function BrandSection() {
             <span className="text-gradient-gold"> amor e dedicação</span>
           </h2>
           <p className="text-muted-foreground font-body leading-relaxed">
-            A Aquaterapia Pet Shop é referência em cuidado animal em Assis e região. Oferecemos serviços de banho e tosa, hotel pet e uma linha completa de produtos premium para o bem-estar do seu melhor amigo.
+            A Aquaterapia é referência em cuidado animal e aquarismo em Assis e região. Oferecemos serviços de banho e tosa, hotel pet, a maior variedade de aquários e peixes ornamentais, e uma linha completa de produtos premium.
           </p>
           <div className="grid grid-cols-3 gap-4 pt-4">
             {[
