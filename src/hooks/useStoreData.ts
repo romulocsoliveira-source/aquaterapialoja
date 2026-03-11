@@ -70,7 +70,7 @@ export function useCategories() {
   return useQuery({
     queryKey: ["store-categories"],
     queryFn: fetchCategories,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 30,
     select: (categories) => {
       const products = productsQuery.data || [];
       return categories.map(cat => ({
