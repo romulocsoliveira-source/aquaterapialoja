@@ -24,7 +24,7 @@ export default function HeroSection() {
             <span className="block text-gradient-gold">Nosso Amor.</span>
           </h1>
           <p className="text-muted-foreground font-body text-base md:text-lg max-w-md leading-relaxed">
-            Banho e tosa, hotel pet e produtos de qualidade. Cuidamos do seu melhor amigo com carinho e profissionalismo.
+            Pet shop, aquarismo, banho e tosa, hotel pet e produtos de qualidade. A maior loja de aquários e produtos pet de Assis.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link to="/agendamento">
@@ -41,8 +41,8 @@ export default function HeroSection() {
 
           <div className="flex items-center gap-2 pt-4">
             <span className="text-xs text-muted-foreground font-body">Nossos serviços:</span>
-            <div className="flex gap-2">
-              {["🛁 Banho", "✂️ Tosa", "🏨 Hotel", "🛍️ Loja"].map((s) => (
+            <div className="flex gap-2 flex-wrap">
+              {["🛁 Banho", "✂️ Tosa", "🏨 Hotel", "🐠 Aquarismo", "🛍️ Loja"].map((s) => (
                 <span key={s} className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full font-medium">{s}</span>
               ))}
             </div>

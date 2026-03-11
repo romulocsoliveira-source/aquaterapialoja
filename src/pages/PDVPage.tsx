@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import logoImg from "@/assets/logo-almoxarifado.jpeg";
+import logoImg from "@/assets/logo-aquaterapia.png";
 
 interface PDVItem {
   product: Product;
@@ -147,9 +147,9 @@ export default function PDVPage() {
       </style>
       </head>
       <body>
-        <div class="center bold" style="font-size:16px">ALMOXARIFADO DAS TINTAS</div>
-        <div class="center">Tintas • Esmaltes • Acessórios</div>
-        <div class="center" style="font-size:10px">(18) 3323-1220</div>
+      <div class="center bold" style="font-size:16px">AQUATERAPIA PET SHOP</div>
+        <div class="center">Pet Shop • Aquarismo • Banho & Tosa</div>
+        <div class="center" style="font-size:10px">(18) 99657-0512</div>
         <div class="line"></div>
         <div class="center bold">CUPOM NÃO FISCAL</div>
         <div class="center" style="font-size:10px">${new Date().toLocaleString("pt-BR")}</div>
@@ -177,8 +177,8 @@ export default function PDVPage() {
           <div class="item bold"><span>Troco</span><span>${formatPrice(sale.change)}</span></div>
         ` : ""}
         <div class="line"></div>
-        <div class="center" style="font-size:10px;margin-top:12px">Obrigado pela preferência!</div>
-        <div class="center" style="font-size:10px">Almoxarifado das Tintas</div>
+         <div class="center" style="font-size:10px;margin-top:12px">Obrigado pela preferência!</div>
+        <div class="center" style="font-size:10px">Aquaterapia Pet Shop</div>
         <script>window.print();</script>
       </body></html>
     `);
@@ -285,9 +285,9 @@ export default function PDVPage() {
             <Link to="/admin" className="text-muted-foreground hover:text-foreground">
               <ArrowLeft size={20} />
             </Link>
-            <img src={logoImg} alt="Almoxarifado das Tintas" className="h-14 w-auto object-contain" />
+             <img src={logoImg} alt="Aquaterapia Pet Shop" className="h-14 w-auto object-contain" />
             <div>
-              <h1 className="font-display text-lg font-bold text-gradient-gold">PDV · ALMOXARIFADO DAS TINTAS</h1>
+              <h1 className="font-display text-lg font-bold text-gradient-gold">PDV · AQUATERAPIA PET SHOP</h1>
               <p className="text-xs text-muted-foreground">Frente de Caixa</p>
             </div>
           </div>
@@ -314,10 +314,10 @@ export default function PDVPage() {
               <div className="bg-white text-black rounded-xl shadow-2xl overflow-hidden" id="receipt-content">
                 {/* Receipt header */}
                 <div className="text-center pt-6 pb-3 px-6">
-                  <p className="text-lg font-bold tracking-wide">ALMOXARIFADO DAS TINTAS</p>
-                  <p className="text-xs text-gray-500">Tintas • Esmaltes • Acessórios</p>
-                  <p className="text-[10px] text-gray-400 mt-1">CNPJ: 00.000.000/0001-00</p>
-                  <p className="text-[10px] text-gray-400">Av. Armando Sales de Oliveira, 173 - Assis/SP · (18) 3323-1220</p>
+                   <p className="text-lg font-bold tracking-wide">AQUATERAPIA PET SHOP</p>
+                   <p className="text-xs text-gray-500">Pet Shop • Aquarismo • Banho & Tosa</p>
+                   <p className="text-[10px] text-gray-400 mt-1">CNPJ: 00.000.000/0001-00</p>
+                   <p className="text-[10px] text-gray-400">Av. Getúlio Vargas, 339 – Vila Nova Santana, Assis/SP · (18) 99657-0512</p>
                 </div>
 
                 <div className="mx-4 border-t border-dashed border-gray-300" />
@@ -403,7 +403,7 @@ export default function PDVPage() {
                   </p>
                   <p className="text-[10px] text-gray-400 mt-2">Consulte em www.nfe.fazenda.gov.br</p>
                   <p className="text-[10px] text-gray-400 mt-3">Obrigado pela preferência!</p>
-                  <p className="text-[10px] text-gray-400">Almoxarifado das Tintas</p>
+                  <p className="text-[10px] text-gray-400">Aquaterapia Pet Shop</p>
                 </div>
               </div>
 

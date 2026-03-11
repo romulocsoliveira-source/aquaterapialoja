@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Scissors, Building2, ShoppingBag, Calendar } from "lucide-react";
+import { Scissors, Building2, ShoppingBag, Calendar, Fish } from "lucide-react";
 
 const tools = [
   {
@@ -16,6 +16,13 @@ const tools = [
     desc: "Hospedagem com conforto",
     href: "/hotel-pet",
     gradient: "from-emerald-500 to-green-500",
+  },
+  {
+    icon: Fish,
+    title: "Aquarismo",
+    desc: "A maior loja de Assis",
+    href: "/categoria/aquarios",
+    gradient: "from-blue-500 to-indigo-500",
   },
   {
     icon: ShoppingBag,
@@ -42,7 +49,7 @@ export default function ToolsSection() {
         <p className="text-muted-foreground mt-2">Tudo que seu pet precisa em um só lugar</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
         {tools.map((tool, i) => (
           <motion.div
             key={tool.title}
