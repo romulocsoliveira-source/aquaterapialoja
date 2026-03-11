@@ -28,7 +28,7 @@ export default function AdminAgendaTab() {
   const [pets, setPets] = useState<Record<string, string>>({});
   const [servicos, setServicos] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
-  const [filterDate, setFilterDate] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [filterDate, setFilterDate] = useState("");
   const [selected, setSelected] = useState<Agendamento | null>(null);
   const [editStatus, setEditStatus] = useState("");
   const [editObs, setEditObs] = useState("");
