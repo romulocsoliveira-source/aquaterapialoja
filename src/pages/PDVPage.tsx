@@ -121,15 +121,22 @@ export default function PDVPage() {
   const total = Math.max(0, subtotal - discountAmount);
   const changeAmount = showCashInput && Number(cashReceived) > total ? Number(cashReceived) - total : 0;
 
-  const handleBarcode = () => {
-    const found = products.find(p => p.barcode === barcodeInput);
+  const handleBarcode = (code?: string) => {
+    const bc = code || barcodeInput;
+    const found = products.find(p => p.barcode === bc);
     if (found) {
       addToCart(found);
-    } else if (barcodeInput) {
-      toast.error("Produto não encontrado");
+      toast.success(`${found.name} adicionado!`);
+    } else if (bc) {
+      toast.error("Produto não encontrado para o código: " + bc);
     }
     setBarcodeInput("");
   };
+
+  const handleCameraScan = (code: string) => {
+    handleBarcode(code);
+  };
+
 
   const formatPrice = (p: number) => p.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
