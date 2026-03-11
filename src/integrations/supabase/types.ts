@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      acomodacoes_hotel: {
+        Row: {
+          ativo: boolean
+          capacidade: number
+          created_at: string
+          descricao: string | null
+          id: string
+          nome: string
+          preco_diaria: number
+        }
+        Insert: {
+          ativo?: boolean
+          capacidade?: number
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          preco_diaria?: number
+        }
+        Update: {
+          ativo?: boolean
+          capacidade?: number
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          preco_diaria?: number
+        }
+        Relationships: []
+      }
       addresses: {
         Row: {
           city: string
@@ -61,6 +91,60 @@ export type Database = {
           zip_code?: string
         }
         Relationships: []
+      }
+      agendamentos: {
+        Row: {
+          created_at: string
+          data: string
+          horario: string
+          id: string
+          observacoes: string | null
+          pet_id: string
+          servico_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data: string
+          horario: string
+          id?: string
+          observacoes?: string | null
+          pet_id: string
+          servico_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data?: string
+          horario?: string
+          id?: string
+          observacoes?: string | null
+          pet_id?: string
+          servico_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agendamentos_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agendamentos_servico_id_fkey"
+            columns: ["servico_id"]
+            isOneToOne: false
+            referencedRelation: "servicos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       coupons: {
         Row: {
@@ -339,6 +423,45 @@ export type Database = {
         }
         Relationships: []
       }
+      pets: {
+        Row: {
+          created_at: string
+          especie: string
+          id: string
+          idade: string | null
+          nome: string
+          observacoes: string | null
+          peso: string | null
+          raca: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          especie?: string
+          id?: string
+          idade?: string | null
+          nome: string
+          observacoes?: string | null
+          peso?: string | null
+          raca?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          especie?: string
+          id?: string
+          idade?: string | null
+          nome?: string
+          observacoes?: string | null
+          peso?: string | null
+          raca?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           cpf: string | null
@@ -463,6 +586,99 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      reservas_hotel: {
+        Row: {
+          acomodacao_id: string
+          checkin: string
+          checkout: string
+          created_at: string
+          forma_pagamento: string | null
+          id: string
+          observacoes: string | null
+          pet_id: string
+          servicos_extras: string[] | null
+          status: string
+          updated_at: string
+          user_id: string
+          valor_total: number
+        }
+        Insert: {
+          acomodacao_id: string
+          checkin: string
+          checkout: string
+          created_at?: string
+          forma_pagamento?: string | null
+          id?: string
+          observacoes?: string | null
+          pet_id: string
+          servicos_extras?: string[] | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          valor_total?: number
+        }
+        Update: {
+          acomodacao_id?: string
+          checkin?: string
+          checkout?: string
+          created_at?: string
+          forma_pagamento?: string | null
+          id?: string
+          observacoes?: string | null
+          pet_id?: string
+          servicos_extras?: string[] | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservas_hotel_acomodacao_id_fkey"
+            columns: ["acomodacao_id"]
+            isOneToOne: false
+            referencedRelation: "acomodacoes_hotel"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reservas_hotel_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      servicos: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          descricao: string | null
+          duracao: string | null
+          id: string
+          nome: string
+          preco: number
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          descricao?: string | null
+          duracao?: string | null
+          id?: string
+          nome: string
+          preco?: number
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          descricao?: string | null
+          duracao?: string | null
+          id?: string
+          nome?: string
+          preco?: number
+        }
+        Relationships: []
       }
       store_categories: {
         Row: {
