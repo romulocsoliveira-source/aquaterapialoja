@@ -9,8 +9,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useCategories } from "@/hooks/useStoreData";
 import { toast } from "sonner";
+import { Camera, Wand2 } from "lucide-react";
 import ImageUpload from "./ImageUpload";
+import BarcodeScanner from "@/components/shared/BarcodeScanner";
+import BarcodeGenerator, { generateEAN13 } from "@/components/shared/BarcodeGenerator";
 import type { Product } from "@/data/products";
+
 
 interface Props {
   open: boolean;
