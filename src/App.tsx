@@ -19,11 +19,8 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import AdminPage from "./pages/AdminPage";
 import PDVPage from "./pages/PDVPage";
 import CheckoutPage from "./pages/CheckoutPage";
-import ColorSimulatorPage from "./pages/ColorSimulatorPage";
-import PaintCalculatorPage from "./pages/PaintCalculatorPage";
-import ColorCatalogPage from "./pages/ColorCatalogPage";
-import PaintTipsPage from "./pages/PaintTipsPage";
-import PaintBudgetPage from "./pages/PaintBudgetPage";
+import AgendamentoPage from "./pages/AgendamentoPage";
+import HotelPetPage from "./pages/HotelPetPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
