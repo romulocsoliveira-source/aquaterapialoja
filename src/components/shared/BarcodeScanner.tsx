@@ -77,8 +77,7 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
           fps: 15,
           qrbox: { width: 280, height: 160 },
           aspectRatio: 1.5,
-          formatsToSupport: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-        },
+        } as any,
         (decodedText: string) => {
           handleDetection(decodedText);
         },
