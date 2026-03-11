@@ -150,11 +150,14 @@ export default function OrdersCentralTab() {
       const items = order.order_items || [];
       const itemsCount = items.reduce((total, item) => total + item.quantity, 0);
 
+      const city = (order.shipping_address as any)?.city || "—";
+
       return {
         ...order,
         orderLabel: `#${order.id.slice(0, 8).toUpperCase()}`,
         customer: order.customer_name || "Cliente não identificado",
         phone: order.customer_phone || "—",
+        city,
         address: formatAddress(order.shipping_address),
         dateTime: new Date(order.created_at).toLocaleString("pt-BR"),
         totalLabel: formatCurrency(Number(order.total)),
