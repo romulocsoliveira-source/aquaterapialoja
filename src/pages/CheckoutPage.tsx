@@ -49,7 +49,12 @@ export default function CheckoutPage() {
   const [cardForm, setCardForm] = useState({ number: "", name: "", expiry: "", cvv: "", installments: "1" });
 
   const formatPrice = (p: number) => p.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-  const shippingCost = totalPrice >= 499 ? 0 : 29.90;
+
+  // Free shipping logic: free for city "Assis" (case-insensitive) or orders >= 499
+  const selectedAddr = addresses.find(a => a.id === selectedAddress);
+  const isAssisCity = selectedAddr?.city?.trim().toLowerCase() === "assis";
+  const shippingCost = isAssisCity || totalPrice >= 499 ? 0 : 29.90;
+  const shippingLabel = isAssisCity ? "Frete grátis para Assis" : shippingCost === 0 ? "Grátis" : null;
   const finalTotal = Math.max(0, totalPrice - couponDiscount + shippingCost);
 
   // CEP auto-fill
@@ -233,7 +238,6 @@ export default function CheckoutPage() {
 
   const inputClass = "w-full bg-secondary text-foreground px-4 py-3 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground";
 
-  const selectedAddr = addresses.find(a => a.id === selectedAddress);
 
   const installmentOptions = Array.from({ length: 12 }, (_, i) => {
     const n = i + 1;
@@ -610,7 +614,9 @@ export default function CheckoutPage() {
                   )}
                   <div className="flex justify-between text-sm font-body">
                     <span className="text-muted-foreground flex items-center gap-1"><Truck size={14} /> Frete</span>
-                    <span className={shippingCost === 0 ? "text-green-500 font-semibold" : ""}>{shippingCost === 0 ? "Grátis" : formatPrice(shippingCost)}</span>
+                    <span className={shippingCost === 0 ? "text-green-500 font-semibold" : ""}>
+                      {shippingLabel || (shippingCost === 0 ? "Grátis" : formatPrice(shippingCost))}
+                    </span>
                   </div>
                   <div className="flex justify-between font-display text-lg font-bold pt-2 border-t border-border">
                     <span>Total</span>

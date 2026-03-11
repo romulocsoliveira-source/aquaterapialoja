@@ -150,11 +150,14 @@ export default function OrdersCentralTab() {
       const items = order.order_items || [];
       const itemsCount = items.reduce((total, item) => total + item.quantity, 0);
 
+      const city = (order.shipping_address as any)?.city || "—";
+
       return {
         ...order,
         orderLabel: `#${order.id.slice(0, 8).toUpperCase()}`,
         customer: order.customer_name || "Cliente não identificado",
         phone: order.customer_phone || "—",
+        city,
         address: formatAddress(order.shipping_address),
         dateTime: new Date(order.created_at).toLocaleString("pt-BR"),
         totalLabel: formatCurrency(Number(order.total)),
@@ -203,7 +206,7 @@ export default function OrdersCentralTab() {
                 <th className="text-left p-3 font-body font-semibold text-muted-foreground">Pedido</th>
                 <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden md:table-cell">Cliente</th>
                 <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden lg:table-cell">Telefone</th>
-                <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden xl:table-cell">Endereço</th>
+                <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden lg:table-cell">Cidade</th>
                 <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden md:table-cell">Pagamento</th>
                 <th className="text-left p-3 font-body font-semibold text-muted-foreground hidden lg:table-cell">Data e hora</th>
                 <th className="text-right p-3 font-body font-semibold text-muted-foreground">Total</th>
@@ -246,7 +249,7 @@ export default function OrdersCentralTab() {
                         </td>
                         <td className="p-3 hidden md:table-cell align-top">{order.customer}</td>
                         <td className="p-3 hidden lg:table-cell align-top text-muted-foreground">{order.phone}</td>
-                        <td className="p-3 hidden xl:table-cell align-top text-muted-foreground max-w-[280px]">{order.address}</td>
+                        <td className="p-3 hidden lg:table-cell align-top text-muted-foreground">{order.city}</td>
                         <td className="p-3 hidden md:table-cell align-top text-muted-foreground text-xs">{order.payment_method || "—"}</td>
                         <td className="p-3 hidden lg:table-cell align-top text-muted-foreground">{order.dateTime}</td>
                         <td className="p-3 text-right align-top font-bold">{order.totalLabel}</td>
