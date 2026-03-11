@@ -42,6 +42,7 @@ export default function HotelPetPage() {
   const [checkout, setCheckout] = useState("");
   const [extras, setExtras] = useState<string[]>([]);
   const [observacoes, setObservacoes] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("pix");
 
   useEffect(() => {
     const fetchData = async () => {
