@@ -192,6 +192,12 @@ export default function AgendamentoPage() {
 
         {user && (
           <div className="mb-8">
+            <PaymentMethodSelector value={paymentMethod} onChange={setPaymentMethod} />
+          </div>
+        )}
+
+        {user && (
+          <div className="mb-8">
             <label className="text-sm font-medium mb-2 block">Observações (opcional)</label>
             <textarea
               className="w-full px-4 py-2.5 rounded-lg border bg-background text-sm min-h-[80px]"

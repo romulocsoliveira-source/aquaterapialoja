@@ -239,6 +239,8 @@ export default function HotelPetPage() {
               </div>
             </div>
 
+            <PaymentMethodSelector value={paymentMethod} onChange={setPaymentMethod} />
+
             <div>
               <Label>Observações Especiais</Label>
               <textarea
