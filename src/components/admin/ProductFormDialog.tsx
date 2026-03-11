@@ -115,6 +115,41 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
     setForm(f => ({ ...f, name, slug: isEditing ? f.slug : slugify(name) }));
   };
 
+  const lookupBarcode = async (code: string) => {
+    setLookingUp(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("barcode-lookup", {
+        body: { barcode: code },
+      });
+      if (error) throw error;
+      if (data?.success && data?.data) {
+        const info = data.data;
+        setForm(f => ({
+          ...f,
+          barcode: code,
+          name: info.name && !f.name ? info.name : f.name,
+          slug: info.name && !f.name ? slugify(info.name) : f.slug,
+          description: info.description && !f.description ? info.description : f.description,
+          image: info.image && !f.image ? info.image : f.image,
+        }));
+        toast.success(`Produto encontrado: ${info.name || code} (${data.source})`);
+      } else {
+        toast.info("Produto não encontrado nas bases públicas. Preencha manualmente.");
+      }
+    } catch (err: any) {
+      console.error("Barcode lookup error:", err);
+      toast.info("Não foi possível consultar bases de dados. Preencha manualmente.");
+    } finally {
+      setLookingUp(false);
+    }
+  };
+
+  const handleBarcodeScan = (code: string) => {
+    setForm(f => ({ ...f, barcode: code }));
+    toast.success("Código lido: " + code);
+    lookupBarcode(code);
+  };
+
   const handleCategorySelect = (slug: string) => {
     const cat = categories.find(c => c.slug === slug);
     if (cat) {
