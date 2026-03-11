@@ -36,6 +36,8 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
   const isEditing = !!product;
 
   const [loading, setLoading] = useState(false);
+  const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
+
   const [form, setForm] = useState({
     name: "",
     slug: "",
