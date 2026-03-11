@@ -38,6 +38,7 @@ const statusConfig: Record<DeliveryStatus, { label: string; color: string; bgCol
   delivered: { label: "Entregue", color: "text-green-400", bgColor: "bg-green-500", icon: CheckCircle },
 };
 
+// Aquaterapia Pet Shop - Av. Getúlio Vargas, 339, Vila Nova Santana, Assis-SP
 const STORE_LAT = -22.6617;
 const STORE_LNG = -50.4122;
 
