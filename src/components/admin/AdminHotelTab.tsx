@@ -181,6 +181,7 @@ export default function AdminHotelTab() {
                 <div><span className="text-muted-foreground">Valor:</span> R$ {Number(selected.valor_total).toFixed(2).replace(".", ",")}</div>
                 <div><span className="text-muted-foreground">Check-in:</span> {format(new Date(selected.checkin + "T12:00:00"), "dd/MM/yyyy")}</div>
                 <div><span className="text-muted-foreground">Check-out:</span> {format(new Date(selected.checkout + "T12:00:00"), "dd/MM/yyyy")}</div>
+                <div><span className="text-muted-foreground">Pagamento:</span> {selected.forma_pagamento?.replace("_", " ") || "—"}</div>
               </div>
               <div>
                 <Label>Status</Label>

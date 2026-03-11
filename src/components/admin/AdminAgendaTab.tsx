@@ -159,6 +159,7 @@ export default function AdminAgendaTab() {
                 <div><span className="text-muted-foreground">Serviço:</span> {servicos[selected.servico_id || ""] || "—"}</div>
                 <div><span className="text-muted-foreground">Horário:</span> {selected.horario}</div>
                 <div><span className="text-muted-foreground">Data:</span> {format(new Date(selected.data + "T12:00:00"), "dd/MM/yyyy")}</div>
+                <div><span className="text-muted-foreground">Pagamento:</span> {(selected as any).forma_pagamento?.replace("_", " ") || "—"}</div>
               </div>
 
               <div>
