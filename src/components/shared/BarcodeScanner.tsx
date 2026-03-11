@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
-import { Camera, X, SwitchCamera } from "lucide-react";
+import { Camera, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -9,12 +9,15 @@ interface BarcodeScannerProps {
   onOpenChange: (open: boolean) => void;
   onScan: (code: string) => void;
   title?: string;
+  continuous?: boolean;
 }
 
-export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Escanear Código de Barras" }: BarcodeScannerProps) {
+export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Escanear Código de Barras", continuous = false }: BarcodeScannerProps) {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [scanning, setScanning] = useState(false);
+  const [lastScanned, setLastScanned] = useState<string | null>(null);
+  const lastScannedTimeRef = useRef<number>(0);
   const containerId = "barcode-scanner-container";
 
   const stopScanner = async () => {
@@ -28,14 +31,13 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
     }
     scannerRef.current = null;
     setScanning(false);
+    setLastScanned(null);
   };
 
   const startScanner = async () => {
     setError(null);
     try {
       await stopScanner();
-
-      // Small delay to ensure DOM is ready
       await new Promise((r) => setTimeout(r, 300));
 
       const el = document.getElementById(containerId);
@@ -52,9 +54,19 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
           aspectRatio: 1.5,
         },
         (decodedText) => {
+          const now = Date.now();
+          // Debounce: ignore same code within 2 seconds
+          if (decodedText === lastScannedTimeRef.toString() && now - lastScannedTimeRef.current < 2000) {
+            return;
+          }
+          lastScannedTimeRef.current = now;
+          setLastScanned(decodedText);
           onScan(decodedText);
-          stopScanner();
-          onOpenChange(false);
+
+          if (!continuous) {
+            stopScanner();
+            onOpenChange(false);
+          }
         },
         () => {
           // ignore errors during scanning
@@ -93,6 +105,11 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
           <DialogTitle className="flex items-center gap-2 text-base">
             <Camera size={18} className="text-primary" />
             {title}
+            {continuous && (
+              <span className="ml-auto text-[10px] font-normal bg-accent/20 text-accent px-2 py-0.5 rounded-full">
+                Contínuo
+              </span>
+            )}
           </DialogTitle>
         </DialogHeader>
 
@@ -120,6 +137,13 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
             Posicione o código de barras dentro da área de leitura
           </p>
 
+          {/* Last scanned in continuous mode */}
+          {continuous && lastScanned && (
+            <div className="bg-accent/10 border border-accent/30 rounded-lg p-2 text-xs text-center text-accent font-mono">
+              ✓ Último lido: {lastScanned}
+            </div>
+          )}
+
           {error && (
             <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-3 text-xs text-destructive text-center">
               {error}
@@ -131,7 +155,7 @@ export default function BarcodeScanner({ open, onOpenChange, onScan, title = "Es
 
           <div className="flex gap-2">
             <Button variant="outline" className="flex-1 text-xs" onClick={() => onOpenChange(false)}>
-              <X size={14} className="mr-1" /> Cancelar
+              <X size={14} className="mr-1" /> {continuous ? "Fechar Scanner" : "Cancelar"}
             </Button>
           </div>
         </div>
