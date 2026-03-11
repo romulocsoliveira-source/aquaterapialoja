@@ -24,7 +24,7 @@ export default function HeroSection() {
             <span className="block text-gradient-gold">Nosso Amor.</span>
           </h1>
           <p className="text-muted-foreground font-body text-base md:text-lg max-w-md leading-relaxed">
-            Banho e tosa, hotel pet e produtos de qualidade. Cuidamos do seu melhor amigo com carinho e profissionalismo.
+            Pet shop, aquarismo, banho e tosa, hotel pet e produtos de qualidade. A maior loja de aquários e produtos pet de Assis.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link to="/agendamento">
