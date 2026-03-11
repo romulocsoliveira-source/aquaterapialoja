@@ -199,8 +199,25 @@ export default function AgendamentoPage() {
           </div>
         )}
 
+        {selectedService && (
+          <div className="bg-muted/50 rounded-xl p-4 mb-4">
+            <div className="flex justify-between items-center text-sm mb-2">
+              <span className="text-muted-foreground">Serviço</span>
+              <span className="font-medium">{selectedService.nome}</span>
+            </div>
+            <div className="flex justify-between items-center text-lg font-bold">
+              <span>Total</span>
+              <span className="text-primary">R$ {Number(selectedService.preco).toFixed(2).replace(".", ",")}</span>
+            </div>
+          </div>
+        )}
+
+        <div className="text-xs text-muted-foreground text-center mb-3">
+          O pagamento será realizado na loja ou pelo WhatsApp após confirmação.
+        </div>
+
         <Button className="w-full gradient-pet text-primary-foreground h-12 font-semibold" onClick={handleBook} disabled={loading}>
-          {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirmar Agendamento"}
+          {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirmar e Agendar Pagamento"}
         </Button>
       </motion.div>
     </div>

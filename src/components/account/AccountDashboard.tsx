@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { User, Package, Heart, MapPin, LogOut } from "lucide-react";
+import { User, Package, Heart, MapPin, PawPrint, LogOut } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import ProfileTab from "./tabs/ProfileTab";
 import OrdersTab from "./tabs/OrdersTab";
 import WishlistTab from "./tabs/WishlistTab";
 import AddressesTab from "./tabs/AddressesTab";
+import PetsTab from "./tabs/PetsTab";
 
 const tabs = [
   { id: "profile", label: "Perfil", icon: User },
+  { id: "pets", label: "Meus Pets", icon: PawPrint },
   { id: "orders", label: "Pedidos", icon: Package },
   { id: "wishlist", label: "Favoritos", icon: Heart },
   { id: "addresses", label: "Endereços", icon: MapPin },
@@ -29,8 +31,7 @@ export default function AccountDashboard() {
         </Button>
       </div>
 
-      {/* Tab nav */}
-      <div className="grid grid-cols-4 gap-2 mb-8">
+      <div className="grid grid-cols-5 gap-2 mb-8">
         {tabs.map(tab => (
           <button
             key={tab.id}
@@ -47,8 +48,8 @@ export default function AccountDashboard() {
         ))}
       </div>
 
-      {/* Content */}
       {activeTab === "profile" && <ProfileTab />}
+      {activeTab === "pets" && <PetsTab />}
       {activeTab === "orders" && <OrdersTab />}
       {activeTab === "wishlist" && <WishlistTab />}
       {activeTab === "addresses" && <AddressesTab />}
