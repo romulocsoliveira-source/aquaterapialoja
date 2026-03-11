@@ -84,7 +84,7 @@ export default function DeliveryMapTab() {
 
   const openRoute = (address: string) => {
     const encoded = encodeURIComponent(`${address}, Assis, SP`);
-    window.open(`https://www.google.com/maps/dir/Av.+Getúlio+Vargas,+339,+Assis+-+SP/${encoded}`, "_blank");
+    window.open(`https://www.google.com/maps/dir/Av.+Get%C3%BAlio+Vargas,+339+-+Vila+Nova+Santana,+Assis+-+SP,+19807-130/${encoded}`, "_blank");
   };
 
   return (
