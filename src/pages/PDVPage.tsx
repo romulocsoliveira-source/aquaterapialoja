@@ -538,12 +538,15 @@ export default function PDVPage() {
             </Button>
           </div>
 
-          <BarcodeScanner
+           <BarcodeScanner
             open={showCameraScanner}
             onOpenChange={setShowCameraScanner}
-            onScan={handleCameraScan}
+            onScan={(code) => {
+              handleCameraScan(code);
+              // Re-open scanner after short delay for next product
+              setTimeout(() => setShowCameraScanner(true), 800);
+            }}
             title="Escanear Produto — PDV"
-            continuous
           />
           <ProductLabelPrint
             open={showLabels}
