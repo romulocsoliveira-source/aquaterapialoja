@@ -10,6 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format, differenceInDays } from "date-fns";
+import PaymentMethodSelector from "@/components/shared/PaymentMethodSelector";
 
 const EXTRAS = [
   { id: "banho", label: "Banho diário", preco: 35 },
@@ -41,6 +42,7 @@ export default function HotelPetPage() {
   const [checkout, setCheckout] = useState("");
   const [extras, setExtras] = useState<string[]>([]);
   const [observacoes, setObservacoes] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("pix");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,9 +90,24 @@ export default function HotelPetPage() {
         observacoes,
         valor_total: totalFinal,
         status: "pendente",
+        forma_pagamento: paymentMethod,
       } as any);
 
       if (error) throw error;
+
+      // Create financial transaction
+      await supabase.from("financial_transactions").insert({
+        type: "income",
+        category: "Hotel Pet",
+        description: `Reserva Hotel: ${selectedAcomData?.nome || "Acomodação"} - ${checkin} a ${checkout}`,
+        amount: totalFinal,
+        due_date: checkin,
+        is_paid: false,
+        payment_method: paymentMethod,
+        reference_type: "reserva_hotel",
+        created_by: user.id,
+      } as any);
+
       setSuccess(true);
       toast.success("Reserva criada com sucesso!");
     } catch (err: any) {
@@ -221,6 +238,8 @@ export default function HotelPetPage() {
                 ))}
               </div>
             </div>
+
+            <PaymentMethodSelector value={paymentMethod} onChange={setPaymentMethod} />
 
             <div>
               <Label>Observações Especiais</Label>

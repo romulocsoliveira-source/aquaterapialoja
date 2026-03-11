@@ -96,6 +96,7 @@ export type Database = {
         Row: {
           created_at: string
           data: string
+          forma_pagamento: string | null
           horario: string
           id: string
           observacoes: string | null
@@ -108,6 +109,7 @@ export type Database = {
         Insert: {
           created_at?: string
           data: string
+          forma_pagamento?: string | null
           horario: string
           id?: string
           observacoes?: string | null
@@ -120,6 +122,7 @@ export type Database = {
         Update: {
           created_at?: string
           data?: string
+          forma_pagamento?: string | null
           horario?: string
           id?: string
           observacoes?: string | null

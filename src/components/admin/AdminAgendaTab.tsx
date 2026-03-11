@@ -135,6 +135,7 @@ export default function AdminAgendaTab() {
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   🐾 {pets[a.pet_id] || "Pet"} • 👤 {profiles[a.user_id] || "Cliente"}
+                  {a.forma_pagamento && <> • 💳 {a.forma_pagamento.replace("_", " ")}</>}
                 </p>
               </div>
               <div className="text-right text-sm text-muted-foreground">
@@ -158,6 +159,7 @@ export default function AdminAgendaTab() {
                 <div><span className="text-muted-foreground">Serviço:</span> {servicos[selected.servico_id || ""] || "—"}</div>
                 <div><span className="text-muted-foreground">Horário:</span> {selected.horario}</div>
                 <div><span className="text-muted-foreground">Data:</span> {format(new Date(selected.data + "T12:00:00"), "dd/MM/yyyy")}</div>
+                <div><span className="text-muted-foreground">Pagamento:</span> {(selected as any).forma_pagamento?.replace("_", " ") || "—"}</div>
               </div>
 
               <div>
