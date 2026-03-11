@@ -49,7 +49,12 @@ export default function CheckoutPage() {
   const [cardForm, setCardForm] = useState({ number: "", name: "", expiry: "", cvv: "", installments: "1" });
 
   const formatPrice = (p: number) => p.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-  const shippingCost = totalPrice >= 499 ? 0 : 29.90;
+
+  // Free shipping logic: free for city "Assis" (case-insensitive) or orders >= 499
+  const selectedAddr = addresses.find(a => a.id === selectedAddress);
+  const isAssisCity = selectedAddr?.city?.trim().toLowerCase() === "assis";
+  const shippingCost = isAssisCity || totalPrice >= 499 ? 0 : 29.90;
+  const shippingLabel = isAssisCity ? "Frete grátis para Assis" : shippingCost === 0 ? "Grátis" : null;
   const finalTotal = Math.max(0, totalPrice - couponDiscount + shippingCost);
 
   // CEP auto-fill
