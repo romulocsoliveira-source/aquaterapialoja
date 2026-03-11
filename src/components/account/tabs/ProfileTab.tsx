@@ -26,7 +26,13 @@ export default function ProfileTab() {
     e.preventDefault();
     if (!user) return;
     setLoading(true);
-    const { error } = await supabase.from("profiles").update({ full_name: fullName, phone, cpf }).eq("user_id", user.id);
+    
+    // Use upsert to handle both insert and update cases
+    const { error } = await supabase.from("profiles").upsert(
+      { user_id: user.id, full_name: fullName, phone, cpf },
+      { onConflict: "user_id" }
+    );
+    
     if (error) toast.error("Erro ao salvar perfil");
     else toast.success("Perfil atualizado!");
     setLoading(false);
