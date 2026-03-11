@@ -117,27 +117,57 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
   };
 
   const lookupBarcode = async (code: string) => {
-    if (!code || code.length < 8) {
+    const normalizedCode = code.replace(/\D/g, "");
+
+    if (!normalizedCode || normalizedCode.length < 8) {
       toast.error("Código de barras deve ter pelo menos 8 dígitos");
       return;
     }
+
     setLookingUp(true);
+
     try {
       const { data, error } = await supabase.functions.invoke("barcode-lookup", {
-        body: { barcode: code },
+        body: { barcode: normalizedCode },
       });
+
       if (error) throw error;
+
       if (data?.success && data?.data) {
         const info = data.data;
-        setForm(f => ({
-          ...f,
-          barcode: code,
-          name: info.name && !f.name ? info.name : f.name,
-          slug: info.name && !f.name ? slugify(info.name) : f.slug,
-          description: info.description && !f.description ? info.description : f.description,
-          image: info.image && !f.image ? info.image : f.image,
-        }));
-        toast.success(`Produto encontrado: ${info.name || code} (${data.source})`);
+        const normalizedCategory = info.category ? slugify(info.category) : "";
+        const matchedCategory = normalizedCategory
+          ? categories.find(
+              (category) =>
+                category.slug === normalizedCategory ||
+                normalizedCategory.includes(category.slug) ||
+                category.slug.includes(normalizedCategory),
+            )
+          : undefined;
+
+        setForm((currentForm) => {
+          const nextSpecs = currentForm.specs
+            ? currentForm.specs
+            : info.brand
+              ? `Marca: ${info.brand}`
+              : currentForm.specs;
+
+          return {
+            ...currentForm,
+            barcode: normalizedCode,
+            sku: currentForm.sku || normalizedCode,
+            name: info.name && !currentForm.name ? info.name : currentForm.name,
+            slug: info.name && !currentForm.name ? slugify(info.name) : currentForm.slug,
+            description: info.description && !currentForm.description ? info.description : currentForm.description,
+            image: info.image && !currentForm.image ? info.image : currentForm.image,
+            specs: nextSpecs,
+            category: !currentForm.category && matchedCategory ? matchedCategory.name : currentForm.category,
+            category_slug: !currentForm.category_slug && matchedCategory ? matchedCategory.slug : currentForm.category_slug,
+            parent_category: !currentForm.parent_category && matchedCategory ? matchedCategory.parent || "" : currentForm.parent_category,
+          };
+        });
+
+        toast.success(`Produto encontrado: ${info.name || normalizedCode} (${data.source})`);
       } else {
         toast.info("Produto não encontrado nas bases públicas. Preencha manualmente.");
       }
