@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useIsAdmin } from "@/hooks/useAdminRole";
 import AuthForm from "@/components/account/AuthForm";
 import ProductFormDialog from "@/components/admin/ProductFormDialog";
+import OrdersCentralTab from "@/components/admin/OrdersCentralTab";
 import FinancialTab from "@/components/admin/FinancialTab";
 import FiscalTab from "@/components/admin/FiscalTab";
 import SuppliersTab from "@/components/admin/SuppliersTab";
