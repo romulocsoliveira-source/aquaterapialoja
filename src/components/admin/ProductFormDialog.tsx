@@ -180,9 +180,11 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
   };
 
   const handleBarcodeScan = (code: string) => {
-    setForm(f => ({ ...f, barcode: code }));
-    toast.success("Código lido: " + code);
-    lookupBarcode(code);
+    const normalizedCode = code.replace(/\D/g, "");
+    autoLookupRef.current = normalizedCode;
+    setForm(f => ({ ...f, barcode: normalizedCode }));
+    toast.success("Código lido: " + normalizedCode);
+    lookupBarcode(normalizedCode);
   };
 
   const handleCategorySelect = (slug: string) => {
