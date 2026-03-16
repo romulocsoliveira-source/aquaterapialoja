@@ -4,6 +4,7 @@ import { MapPin, Truck, CheckCircle, Clock, AlertCircle, Navigation, Phone, Pack
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useStoreConfig } from "@/hooks/useStoreConfig";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -31,7 +32,7 @@ const statusConfig: Record<DeliveryStatus, { label: string; color: string; bgCol
   delivered: { label: "Entregue", color: "text-green-400", bgColor: "bg-green-500", icon: CheckCircle },
 };
 
-const STORE = {
+const DEFAULT_STORE = {
   name: "Aquaterapia Pet Shop",
   phone: "(18) 99657-0512",
   street: "Avenida Getúlio Vargas, 339",
@@ -79,11 +80,23 @@ function mapOrderStatus(status: string): DeliveryStatus {
 }
 
 export default function DeliveryMapTab() {
+  const { data: storeConfig } = useStoreConfig();
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedDelivery, setSelectedDelivery] = useState<Delivery | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const STORE = {
+    name: storeConfig?.trade_name || storeConfig?.company_name || DEFAULT_STORE.name,
+    phone: storeConfig?.phone || DEFAULT_STORE.phone,
+    street: storeConfig?.street ? `${storeConfig.street}, ${storeConfig.number || ""}` : DEFAULT_STORE.street,
+    neighborhood: storeConfig?.neighborhood || DEFAULT_STORE.neighborhood,
+    cityState: storeConfig?.city && storeConfig?.state ? `${storeConfig.city} - ${storeConfig.state}` : DEFAULT_STORE.cityState,
+    zipCode: storeConfig?.zip_code || DEFAULT_STORE.zipCode,
+    lat: DEFAULT_STORE.lat,
+    lng: DEFAULT_STORE.lng,
+  };
 
   const loadDeliveries = useCallback(async () => {
     setLoading(true);

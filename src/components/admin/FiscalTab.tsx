@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
+import { useStoreConfig } from "@/hooks/useStoreConfig";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +43,9 @@ const statusConfig: Record<string, { label: string; color: string; icon: React.E
 
 export default function FiscalTab() {
   const { user } = useAuth();
+  const { data: storeConfig } = useStoreConfig();
+  const companyName = storeConfig?.trade_name || storeConfig?.company_name || "AQUATERAPIA PET SHOP";
+  const companyPhone = storeConfig?.phone || "";
   const [invoices, setInvoices] = useState<FiscalInvoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -185,9 +189,9 @@ export default function FiscalTab() {
         @media print { body { margin: 0; } }
       </style></head><body>
         <div class="header">
-          <h1>ALMOXARIFADO DAS TINTAS</h1>
+          <h1>${companyName.toUpperCase()}</h1>
           <h2>DOCUMENTO AUXILIAR DA ${typeName}</h2>
-          <p>(18) 3323-1220</p>
+          <p>${companyPhone}</p>
         </div>
 
         <div class="section">
@@ -231,7 +235,7 @@ export default function FiscalTab() {
 
         <div class="footer">
           <p>Documento auxiliar da ${typeName} - Sem valor fiscal para fins de auditoria</p>
-          <p>Almoxarifado das Tintas - Sistema Fiscal Integrado</p>
+          <p>${companyName} - Sistema Fiscal Integrado</p>
         </div>
         <script>window.print();</script>
       </body></html>
@@ -257,8 +261,8 @@ export default function FiscalTab() {
         <tpEmis>1</tpEmis>
       </ide>
       <emit>
-        <xNome>ALMOXARIFADO DAS TINTAS</xNome>
-        <xFone>1833231220</xFone>
+        <xNome>${companyName.toUpperCase()}</xNome>
+        <xFone>${companyPhone.replace(/\D/g, "")}</xFone>
       </emit>
       <dest>
         <xNome>${invoice.customer_name || "CONSUMIDOR FINAL"}</xNome>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -86,6 +87,7 @@ const defaultConfig: ConfigData = {
 
 export default function StoreSetupWizard() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [config, setConfig] = useState<ConfigData>(defaultConfig);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -170,6 +172,7 @@ export default function StoreSetupWizard() {
       toast.error("Erro ao salvar: " + error.message);
     } else {
       setConfig(prev => ({ ...prev, completed_steps: completedSteps }));
+      queryClient.invalidateQueries({ queryKey: ["store-config"] });
       if (markComplete) toast.success("Etapa salva!");
     }
     setSaving(false);

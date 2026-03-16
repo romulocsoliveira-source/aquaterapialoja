@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useProducts, useCategories } from "@/hooks/useStoreData";
+import { useStoreConfig } from "@/hooks/useStoreConfig";
 import { useAuth } from "@/context/AuthContext";
 import { useIsAdmin } from "@/hooks/useAdminRole";
 import AuthForm from "@/components/account/AuthForm";
@@ -19,6 +20,7 @@ import AdminHotelTab from "@/components/admin/AdminHotelTab";
 import AdminServicosTab from "@/components/admin/AdminServicosTab";
 import AdminPetsTab from "@/components/admin/AdminPetsTab";
 import StoreSetupWizard from "@/components/admin/StoreSetupWizard";
+import CompanySettingsTab from "@/components/admin/CompanySettingsTab";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -26,7 +28,7 @@ import {
   BarChart3, Package, ShoppingCart, Users, Tag, AlertTriangle,
   TrendingUp, DollarSign, ArrowLeft, Search, Edit, Trash2, Plus,
   Eye, Bell, Store, MessageCircle, Monitor, Smartphone, FileText, Truck, ShoppingBag, MapPin, Brain,
-  Scissors, Building2, PawPrint, Calendar, Camera, Rocket, CreditCard
+  Scissors, Building2, PawPrint, Calendar, Camera, Rocket, CreditCard, Settings2
 } from "lucide-react";
 import BarcodeScanner from "@/components/shared/BarcodeScanner";
 import StockEntryDialog from "@/components/admin/StockEntryDialog";
@@ -35,7 +37,7 @@ import ProductLabelPrint from "@/components/shared/ProductLabelPrint";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
-type AdminTab = "dashboard" | "products" | "orders" | "financial" | "fiscal" | "suppliers" | "purchases" | "coupons" | "stock" | "inventory" | "deliveries" | "reports" | "notifications" | "integrations" | "mercadolivre" | "agenda" | "hotel" | "servicos" | "pets" | "setup";
+type AdminTab = "dashboard" | "products" | "orders" | "financial" | "fiscal" | "suppliers" | "purchases" | "coupons" | "stock" | "inventory" | "deliveries" | "reports" | "notifications" | "integrations" | "mercadolivre" | "agenda" | "hotel" | "servicos" | "pets" | "setup" | "settings";
 
 const CHANNELS = ["Loja Online", "WhatsApp", "Mercado Livre", "PDV"] as const;
 type Channel = typeof CHANNELS[number];
@@ -57,6 +59,7 @@ const channelColors: Record<Channel, string> = {
 export default function AdminPage() {
   const { user } = useAuth();
   const { data: isAdmin } = useIsAdmin();
+  const { data: storeConfig } = useStoreConfig();
   const [activeTab, setActiveTab] = useState<AdminTab>("dashboard");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -91,6 +94,7 @@ export default function AdminPage() {
      { id: "integrations" as AdminTab, label: "Integrações", icon: Store },
      { id: "mercadolivre" as AdminTab, label: "Mercado Livre", icon: Store },
      { id: "setup" as AdminTab, label: "Implantação da Loja", icon: Rocket },
+     { id: "settings" as AdminTab, label: "Configurações", icon: Settings2 },
   ];
 
   return (
@@ -100,7 +104,7 @@ export default function AdminPage() {
           <div className="flex items-center gap-4">
             <Link to="/" className="text-muted-foreground hover:text-foreground"><ArrowLeft size={20} /></Link>
             <div>
-              <h1 className="font-display text-lg font-bold text-gradient-gold">ADMIN · AQUATERAPIA PET SHOP</h1>
+              <h1 className="font-display text-lg font-bold text-gradient-gold">ADMIN · {(storeConfig?.trade_name || storeConfig?.company_name || "AQUATERAPIA PET SHOP").toUpperCase()}</h1>
               <p className="text-xs text-muted-foreground">Painel Administrativo</p>
             </div>
           </div>
@@ -147,6 +151,7 @@ export default function AdminPage() {
         {activeTab === "integrations" && <IntegrationsTab />}
         {activeTab === "mercadolivre" && <MercadoLivreTab />}
         {activeTab === "setup" && <StoreSetupWizard />}
+        {activeTab === "settings" && <CompanySettingsTab />}
         
       </div>
     </div>
