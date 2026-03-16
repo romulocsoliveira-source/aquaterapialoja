@@ -87,6 +87,7 @@ const defaultConfig: ConfigData = {
 
 export default function StoreSetupWizard() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [config, setConfig] = useState<ConfigData>(defaultConfig);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(true);
