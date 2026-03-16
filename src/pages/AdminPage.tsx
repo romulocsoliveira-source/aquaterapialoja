@@ -88,6 +88,7 @@ export default function AdminPage() {
      { id: "notifications" as AdminTab, label: "Notificações", icon: Bell },
      { id: "integrations" as AdminTab, label: "Integrações", icon: Store },
      { id: "mercadolivre" as AdminTab, label: "Mercado Livre", icon: Store },
+     { id: "setup" as AdminTab, label: "Implantação da Loja", icon: Rocket },
   ];
 
   return (
