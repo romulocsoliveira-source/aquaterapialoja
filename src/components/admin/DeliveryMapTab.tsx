@@ -32,7 +32,7 @@ const statusConfig: Record<DeliveryStatus, { label: string; color: string; bgCol
   delivered: { label: "Entregue", color: "text-green-400", bgColor: "bg-green-500", icon: CheckCircle },
 };
 
-const STORE = {
+const DEFAULT_STORE = {
   name: "Aquaterapia Pet Shop",
   phone: "(18) 99657-0512",
   street: "Avenida Getúlio Vargas, 339",
