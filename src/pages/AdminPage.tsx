@@ -61,8 +61,13 @@ export default function AdminPage() {
   const { user } = useAuth();
   const { data: isAdmin } = useIsAdmin();
   const { data: storeConfig } = useStoreConfig();
+  const { needsPasswordChange, loading: firstLoginLoading } = useFirstLogin();
   const [activeTab, setActiveTab] = useState<AdminTab>("dashboard");
   const [searchTerm, setSearchTerm] = useState("");
+
+  if (user && !firstLoginLoading && needsPasswordChange) {
+    return <Navigate to="/trocar-senha" replace />;
+  }
 
   if (!user) {
     return (

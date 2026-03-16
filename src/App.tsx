@@ -38,6 +38,7 @@ const App = () => (
               <Routes>
                 {/* Admin & PDV routes without store header/footer */}
                 <Route path="/admin" element={<AdminPage />} />
+                <Route path="/trocar-senha" element={<ForcePasswordChangePage />} />
                 <Route path="/pdv" element={<PDVPage />} />
 
                 {/* Store routes with header/footer */}
