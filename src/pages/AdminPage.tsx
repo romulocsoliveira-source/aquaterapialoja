@@ -102,7 +102,7 @@ export default function AdminPage() {
           <div className="flex items-center gap-4">
             <Link to="/" className="text-muted-foreground hover:text-foreground"><ArrowLeft size={20} /></Link>
             <div>
-              <h1 className="font-display text-lg font-bold text-gradient-gold">ADMIN · AQUATERAPIA PET SHOP</h1>
+              <h1 className="font-display text-lg font-bold text-gradient-gold">ADMIN · {(storeConfig?.trade_name || storeConfig?.company_name || "AQUATERAPIA PET SHOP").toUpperCase()}</h1>
               <p className="text-xs text-muted-foreground">Painel Administrativo</p>
             </div>
           </div>
