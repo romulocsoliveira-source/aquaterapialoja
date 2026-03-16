@@ -5,6 +5,15 @@ import { useStoreConfig, getStoreAddress } from "@/hooks/useStoreConfig";
 
 export default function Footer() {
   const { data: isAdmin } = useIsAdmin();
+  const { data: storeConfig } = useStoreConfig();
+
+  const companyName = storeConfig?.trade_name || storeConfig?.company_name || "Aquaterapia";
+  const phone = storeConfig?.phone || "(18) 99657-0512";
+  const email = storeConfig?.email || "contato@aquaterapia.com.br";
+  const address = storeConfig?.street
+    ? `${storeConfig.street}, ${storeConfig.number || ""}${storeConfig.complement ? ` - ${storeConfig.complement}` : ""} – ${storeConfig.neighborhood || ""}, ${storeConfig.city || ""} – ${storeConfig.state || ""}, ${storeConfig.zip_code || ""}`
+    : "Av. Getúlio Vargas, 339 – Vila Nova Santana, Assis – SP, 19807-130";
+
   return (
     <footer className="bg-secondary border-t border-border mt-20">
       <div className="border-b border-border">
