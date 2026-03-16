@@ -261,8 +261,8 @@ export default function FiscalTab() {
         <tpEmis>1</tpEmis>
       </ide>
       <emit>
-        <xNome>ALMOXARIFADO DAS TINTAS</xNome>
-        <xFone>1833231220</xFone>
+        <xNome>${companyName.toUpperCase()}</xNome>
+        <xFone>${companyPhone.replace(/\D/g, "")}</xFone>
       </emit>
       <dest>
         <xNome>${invoice.customer_name || "CONSUMIDOR FINAL"}</xNome>
