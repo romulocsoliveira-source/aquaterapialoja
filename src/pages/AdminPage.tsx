@@ -151,6 +151,7 @@ export default function AdminPage() {
         {activeTab === "integrations" && <IntegrationsTab />}
         {activeTab === "mercadolivre" && <MercadoLivreTab />}
         {activeTab === "setup" && <StoreSetupWizard />}
+        {activeTab === "settings" && <CompanySettingsTab />}
         
       </div>
     </div>
