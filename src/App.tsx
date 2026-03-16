@@ -21,6 +21,7 @@ import PDVPage from "./pages/PDVPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import AgendamentoPage from "./pages/AgendamentoPage";
 import HotelPetPage from "./pages/HotelPetPage";
+import ForcePasswordChangePage from "./pages/ForcePasswordChangePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
               <Routes>
                 {/* Admin & PDV routes without store header/footer */}
                 <Route path="/admin" element={<AdminPage />} />
+                <Route path="/trocar-senha" element={<ForcePasswordChangePage />} />
                 <Route path="/pdv" element={<PDVPage />} />
 
                 {/* Store routes with header/footer */}
