@@ -171,6 +171,7 @@ export default function StoreSetupWizard() {
       toast.error("Erro ao salvar: " + error.message);
     } else {
       setConfig(prev => ({ ...prev, completed_steps: completedSteps }));
+      queryClient.invalidateQueries({ queryKey: ["store-config"] });
       if (markComplete) toast.success("Etapa salva!");
     }
     setSaving(false);
