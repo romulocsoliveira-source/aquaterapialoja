@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useProducts, useCategories } from "@/hooks/useStoreData";
+import { useStoreConfig } from "@/hooks/useStoreConfig";
 import { useAuth } from "@/context/AuthContext";
 import { useIsAdmin } from "@/hooks/useAdminRole";
 import AuthForm from "@/components/account/AuthForm";
