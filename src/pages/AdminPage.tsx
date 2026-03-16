@@ -161,25 +161,54 @@ export default function AdminPage() {
 /* ==================== DASHBOARD ==================== */
 function DashboardTab() {
   const { data: products = [] } = useProducts();
+  const [ordersToday, setOrdersToday] = useState(0);
+  const [revenueToday, setRevenueToday] = useState(0);
+  const [revenueMonth, setRevenueMonth] = useState(0);
+  const [totalClients, setTotalClients] = useState(0);
+
   const totalProducts = products.length;
   const totalStock = products.reduce((s, p) => s + (p.stock || 0), 0);
   const lowStock = products.filter(p => (p.stock || 0) < 10).length;
 
-  const channelRevenue = [
-    { channel: "Loja Online", today: "R$ 1.280,00", month: "R$ 28.450,00", orders: 8 },
-    { channel: "WhatsApp", today: "R$ 650,00", month: "R$ 12.300,00", orders: 3 },
-    { channel: "Mercado Livre", today: "R$ 380,00", month: "R$ 5.670,00", orders: 2 },
-    { channel: "PDV", today: "R$ 140,00", month: "R$ 2.500,00", orders: 1 },
-  ];
+  const formatPrice = (p: number) => p.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+  useEffect(() => {
+    const today = new Date();
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString();
+
+    // Fetch today's orders & revenue
+    supabase.from("orders").select("id, total, created_at").gte("created_at", startOfDay).then(({ data }) => {
+      setOrdersToday(data?.length || 0);
+      setRevenueToday((data || []).reduce((s, o) => s + Number(o.total), 0));
+    });
+
+    // Fetch month revenue
+    supabase.from("orders").select("total").gte("created_at", startOfMonth).then(({ data }) => {
+      setRevenueMonth((data || []).reduce((s, o) => s + Number(o.total), 0));
+    });
+
+    // Fetch total clients
+    supabase.from("profiles").select("id", { count: "exact", head: true }).then(({ count }) => {
+      setTotalClients(count || 0);
+    });
+  }, []);
 
   const stats = [
-    { label: "Faturamento Hoje", value: "R$ 2.450,00", icon: DollarSign, color: "text-green-400" },
-    { label: "Faturamento Mês", value: "R$ 48.920,00", icon: TrendingUp, color: "text-accent" },
-    { label: "Pedidos Novos", value: "14", icon: ShoppingCart, color: "text-blue-400" },
+    { label: "Faturamento Hoje", value: formatPrice(revenueToday), icon: DollarSign, color: "text-green-400" },
+    { label: "Faturamento Mês", value: formatPrice(revenueMonth), icon: TrendingUp, color: "text-accent" },
+    { label: "Pedidos Hoje", value: String(ordersToday), icon: ShoppingCart, color: "text-blue-400" },
     { label: "Produtos", value: String(totalProducts), icon: Package, color: "text-purple-400" },
     { label: "Estoque Total", value: String(totalStock), icon: Package, color: "text-yellow-400" },
     { label: "Estoque Baixo", value: String(lowStock), icon: AlertTriangle, color: "text-red-400" },
   ];
+
+  const emptyMessage = (msg: string) => (
+    <p className="text-sm text-muted-foreground text-center py-6">Ainda não há dados para exibição</p>
+  );
+
+  const topProducts = [...products].sort((a, b) => b.reviews - a.reviews).slice(0, 5);
+  const lowStockProducts = products.filter(p => (p.stock || 0) < 15).sort((a, b) => (a.stock || 0) - (b.stock || 0)).slice(0, 6);
 
   return (
     <div className="space-y-8">
@@ -193,19 +222,22 @@ function DashboardTab() {
         ))}
       </div>
 
-      {/* Revenue by Channel */}
+      {/* Revenue by Channel - real data only */}
       <div className="bg-card border border-border rounded-xl p-6">
-        <h3 className="font-body font-semibold mb-4">Faturamento por Canal</h3>
+        <h3 className="font-body font-semibold mb-4">Resumo</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {channelRevenue.map(ch => (
-            <div key={ch.channel} className="bg-secondary rounded-lg p-4">
+          {[
+            { label: "Clientes", value: String(totalClients), icon: Users, color: "text-accent" },
+            { label: "Produtos", value: String(totalProducts), icon: Package, color: "text-purple-400" },
+            { label: "Pedidos Hoje", value: String(ordersToday), icon: ShoppingCart, color: "text-blue-400" },
+            { label: "Estoque Baixo", value: String(lowStock), icon: AlertTriangle, color: "text-red-400" },
+          ].map(item => (
+            <div key={item.label} className="bg-secondary rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                {channelIcons[ch.channel as Channel]}
-                <span className="text-xs font-semibold">{ch.channel}</span>
+                <item.icon size={14} className={item.color} />
+                <span className="text-xs font-semibold">{item.label}</span>
               </div>
-              <p className="text-lg font-bold">{ch.today}</p>
-              <p className="text-xs text-muted-foreground">Mês: {ch.month}</p>
-              <p className="text-xs text-muted-foreground">{ch.orders} pedidos hoje</p>
+              <p className="text-lg font-bold">{item.value}</p>
             </div>
           ))}
         </div>
@@ -214,35 +246,39 @@ function DashboardTab() {
       <div className="grid md:grid-cols-2 gap-6">
         <div className="bg-card border border-border rounded-xl p-6">
           <h3 className="font-body font-semibold mb-4">Produtos Mais Vendidos</h3>
-          <div className="space-y-3">
-            {[...products].sort((a, b) => b.reviews - a.reviews).slice(0, 5).map((p, i) => (
-              <div key={p.id} className="flex items-center gap-3">
-                <span className="text-xs font-bold text-accent w-6">{i + 1}º</span>
-                <img src={p.image} alt={p.name} className="w-10 h-10 rounded object-cover" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{p.name}</p>
-                  <p className="text-xs text-muted-foreground">{p.reviews} vendas</p>
+          {topProducts.length === 0 ? emptyMessage("produtos") : (
+            <div className="space-y-3">
+              {topProducts.map((p, i) => (
+                <div key={p.id} className="flex items-center gap-3">
+                  <span className="text-xs font-bold text-accent w-6">{i + 1}º</span>
+                  <img src={p.image || "/placeholder.svg"} alt={p.name} className="w-10 h-10 rounded object-cover" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{p.name}</p>
+                    <p className="text-xs text-muted-foreground">{p.reviews} vendas</p>
+                  </div>
+                  <span className="text-sm font-bold text-accent">{formatPrice(p.promoPrice || p.price)}</span>
                 </div>
-                <span className="text-sm font-bold text-accent">R$ {(p.promoPrice || p.price).toFixed(2)}</span>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="bg-card border border-border rounded-xl p-6">
           <h3 className="font-body font-semibold mb-4">Alertas de Estoque</h3>
-          <div className="space-y-3">
-            {products.filter(p => (p.stock || 0) < 15).sort((a, b) => (a.stock || 0) - (b.stock || 0)).slice(0, 6).map(p => (
-              <div key={p.id} className="flex items-center gap-3">
-                <AlertTriangle size={14} className={(p.stock || 0) < 5 ? "text-red-400" : "text-yellow-400"} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm truncate">{p.name}</p>
-                  <p className="text-xs text-muted-foreground">SKU: {p.sku}</p>
+          {lowStockProducts.length === 0 ? emptyMessage("estoque") : (
+            <div className="space-y-3">
+              {lowStockProducts.map(p => (
+                <div key={p.id} className="flex items-center gap-3">
+                  <AlertTriangle size={14} className={(p.stock || 0) < 5 ? "text-red-400" : "text-yellow-400"} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm truncate">{p.name}</p>
+                    <p className="text-xs text-muted-foreground">SKU: {p.sku}</p>
+                  </div>
+                  <span className={`text-sm font-bold ${(p.stock || 0) < 5 ? "text-red-400" : "text-yellow-400"}`}>{p.stock} un</span>
                 </div>
-                <span className={`text-sm font-bold ${(p.stock || 0) < 5 ? "text-red-400" : "text-yellow-400"}`}>{p.stock} un</span>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
