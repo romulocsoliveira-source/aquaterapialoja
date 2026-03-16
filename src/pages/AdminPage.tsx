@@ -58,7 +58,7 @@ export default function AdminPage() {
   const { user } = useAuth();
   const { data: isAdmin } = useIsAdmin();
   const [activeTab, setActiveTab] = useState<AdminTab>("dashboard");
-  const [activated, setActivated] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   if (!user) {
     return (
