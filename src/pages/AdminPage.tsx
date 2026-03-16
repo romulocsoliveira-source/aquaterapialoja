@@ -59,8 +59,11 @@ const channelColors: Record<Channel, string> = {
 
 export default function AdminPage() {
   const { user } = useAuth();
+  const { data: isAdmin } = useIsAdmin();
+  const { isPaid, isLoading: paymentLoading } = useDeploymentPayment();
   const [activeTab, setActiveTab] = useState<AdminTab>("dashboard");
   const [searchTerm, setSearchTerm] = useState("");
+  const [activated, setActivated] = useState(false);
 
   if (!user) {
     return (
@@ -69,6 +72,11 @@ export default function AdminPage() {
         <AuthForm />
       </div>
     );
+  }
+
+  // Admins bypass payment gate
+  if (!isAdmin && !isPaid && !paymentLoading && !activated) {
+    return <PixActivationScreen onActivated={() => setActivated(true)} />;
   }
 
   const tabs = [
