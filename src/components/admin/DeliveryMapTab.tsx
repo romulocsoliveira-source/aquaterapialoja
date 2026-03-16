@@ -4,6 +4,7 @@ import { MapPin, Truck, CheckCircle, Clock, AlertCircle, Navigation, Phone, Pack
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useStoreConfig } from "@/hooks/useStoreConfig";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
