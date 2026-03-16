@@ -280,7 +280,6 @@ function DashboardTab() {
             </div>
           )}
         </div>
-        </div>
       </div>
     </div>
   );
