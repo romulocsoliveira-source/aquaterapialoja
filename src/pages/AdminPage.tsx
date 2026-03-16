@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useProducts, useCategories } from "@/hooks/useStoreData";
 import { useStoreConfig } from "@/hooks/useStoreConfig";
 import { useAuth } from "@/context/AuthContext";
 import { useIsAdmin } from "@/hooks/useAdminRole";
+import { useFirstLogin } from "@/hooks/useFirstLogin";
 import AuthForm from "@/components/account/AuthForm";
 import ProductFormDialog from "@/components/admin/ProductFormDialog";
 import OrdersCentralTab from "@/components/admin/OrdersCentralTab";
