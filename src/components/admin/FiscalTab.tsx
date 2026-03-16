@@ -235,7 +235,7 @@ export default function FiscalTab() {
 
         <div class="footer">
           <p>Documento auxiliar da ${typeName} - Sem valor fiscal para fins de auditoria</p>
-          <p>Almoxarifado das Tintas - Sistema Fiscal Integrado</p>
+          <p>${companyName} - Sistema Fiscal Integrado</p>
         </div>
         <script>window.print();</script>
       </body></html>
