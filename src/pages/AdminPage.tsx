@@ -58,6 +58,7 @@ const channelColors: Record<Channel, string> = {
 export default function AdminPage() {
   const { user } = useAuth();
   const { data: isAdmin } = useIsAdmin();
+  const { data: storeConfig } = useStoreConfig();
   const [activeTab, setActiveTab] = useState<AdminTab>("dashboard");
   const [searchTerm, setSearchTerm] = useState("");
 
