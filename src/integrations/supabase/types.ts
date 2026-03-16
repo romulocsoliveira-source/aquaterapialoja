@@ -508,6 +508,7 @@ export type Database = {
         Row: {
           cpf: string | null
           created_at: string
+          first_login: boolean
           full_name: string | null
           id: string
           phone: string | null
@@ -517,6 +518,7 @@ export type Database = {
         Insert: {
           cpf?: string | null
           created_at?: string
+          first_login?: boolean
           full_name?: string | null
           id?: string
           phone?: string | null
@@ -526,6 +528,7 @@ export type Database = {
         Update: {
           cpf?: string | null
           created_at?: string
+          first_login?: boolean
           full_name?: string | null
           id?: string
           phone?: string | null
