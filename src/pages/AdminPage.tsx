@@ -37,7 +37,7 @@ import ProductLabelPrint from "@/components/shared/ProductLabelPrint";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
-type AdminTab = "dashboard" | "products" | "orders" | "financial" | "fiscal" | "suppliers" | "purchases" | "coupons" | "stock" | "inventory" | "deliveries" | "reports" | "notifications" | "integrations" | "mercadolivre" | "agenda" | "hotel" | "servicos" | "pets" | "setup";
+type AdminTab = "dashboard" | "products" | "orders" | "financial" | "fiscal" | "suppliers" | "purchases" | "coupons" | "stock" | "inventory" | "deliveries" | "reports" | "notifications" | "integrations" | "mercadolivre" | "agenda" | "hotel" | "servicos" | "pets" | "setup" | "settings";
 
 const CHANNELS = ["Loja Online", "WhatsApp", "Mercado Livre", "PDV"] as const;
 type Channel = typeof CHANNELS[number];
