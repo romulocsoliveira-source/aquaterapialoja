@@ -710,6 +710,129 @@ export type Database = {
         }
         Relationships: []
       }
+      store_config: {
+        Row: {
+          auto_stock_control: boolean | null
+          certificate_password: string | null
+          certificate_url: string | null
+          city: string | null
+          cnpj: string | null
+          company_name: string | null
+          complement: string | null
+          completed_steps: number[] | null
+          created_at: string
+          created_by: string
+          current_step: number | null
+          delivery_fee: number | null
+          delivery_neighborhoods: string[] | null
+          delivery_radius: number | null
+          email: string | null
+          has_delivery: boolean | null
+          has_mercadolivre: boolean | null
+          id: string
+          invoice_type: string | null
+          issues_invoice: boolean | null
+          logo_url: string | null
+          min_stock_default: number | null
+          ml_email: string | null
+          ml_login: string | null
+          ml_store_name: string | null
+          neighborhood: string | null
+          number: string | null
+          payment_methods: string[] | null
+          phone: string | null
+          product_import_method: string | null
+          setup_completed: boolean | null
+          state: string | null
+          street: string | null
+          tax_regime: string | null
+          trade_name: string | null
+          updated_at: string
+          whatsapp: string | null
+          zip_code: string | null
+        }
+        Insert: {
+          auto_stock_control?: boolean | null
+          certificate_password?: string | null
+          certificate_url?: string | null
+          city?: string | null
+          cnpj?: string | null
+          company_name?: string | null
+          complement?: string | null
+          completed_steps?: number[] | null
+          created_at?: string
+          created_by: string
+          current_step?: number | null
+          delivery_fee?: number | null
+          delivery_neighborhoods?: string[] | null
+          delivery_radius?: number | null
+          email?: string | null
+          has_delivery?: boolean | null
+          has_mercadolivre?: boolean | null
+          id?: string
+          invoice_type?: string | null
+          issues_invoice?: boolean | null
+          logo_url?: string | null
+          min_stock_default?: number | null
+          ml_email?: string | null
+          ml_login?: string | null
+          ml_store_name?: string | null
+          neighborhood?: string | null
+          number?: string | null
+          payment_methods?: string[] | null
+          phone?: string | null
+          product_import_method?: string | null
+          setup_completed?: boolean | null
+          state?: string | null
+          street?: string | null
+          tax_regime?: string | null
+          trade_name?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+          zip_code?: string | null
+        }
+        Update: {
+          auto_stock_control?: boolean | null
+          certificate_password?: string | null
+          certificate_url?: string | null
+          city?: string | null
+          cnpj?: string | null
+          company_name?: string | null
+          complement?: string | null
+          completed_steps?: number[] | null
+          created_at?: string
+          created_by?: string
+          current_step?: number | null
+          delivery_fee?: number | null
+          delivery_neighborhoods?: string[] | null
+          delivery_radius?: number | null
+          email?: string | null
+          has_delivery?: boolean | null
+          has_mercadolivre?: boolean | null
+          id?: string
+          invoice_type?: string | null
+          issues_invoice?: boolean | null
+          logo_url?: string | null
+          min_stock_default?: number | null
+          ml_email?: string | null
+          ml_login?: string | null
+          ml_store_name?: string | null
+          neighborhood?: string | null
+          number?: string | null
+          payment_methods?: string[] | null
+          phone?: string | null
+          product_import_method?: string | null
+          setup_completed?: boolean | null
+          state?: string | null
+          street?: string | null
+          tax_regime?: string | null
+          trade_name?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
       store_products: {
         Row: {
           badge: string | null
