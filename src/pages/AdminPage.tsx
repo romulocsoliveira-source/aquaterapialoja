@@ -70,10 +70,6 @@ export default function AdminPage() {
   }
 
   // Admins bypass payment gate
-  if (!isAdmin && !isPaid && !paymentLoading && !activated) {
-    return <PixActivationScreen onActivated={() => setActivated(true)} />;
-  }
-
   const tabs = [
      { id: "dashboard" as AdminTab, label: "Dashboard", icon: BarChart3 },
      { id: "agenda" as AdminTab, label: "Agenda B&T", icon: Calendar },
