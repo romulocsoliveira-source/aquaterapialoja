@@ -19,6 +19,9 @@ import AdminHotelTab from "@/components/admin/AdminHotelTab";
 import AdminServicosTab from "@/components/admin/AdminServicosTab";
 import AdminPetsTab from "@/components/admin/AdminPetsTab";
 import StoreSetupWizard from "@/components/admin/StoreSetupWizard";
+import PixActivationScreen from "@/components/admin/PixActivationScreen";
+import AdminPaymentsTab from "@/components/admin/AdminPaymentsTab";
+import { useDeploymentPayment } from "@/hooks/useDeploymentPayment";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -26,7 +29,7 @@ import {
   BarChart3, Package, ShoppingCart, Users, Tag, AlertTriangle,
   TrendingUp, DollarSign, ArrowLeft, Search, Edit, Trash2, Plus,
   Eye, Bell, Store, MessageCircle, Monitor, Smartphone, FileText, Truck, ShoppingBag, MapPin, Brain,
-  Scissors, Building2, PawPrint, Calendar, Camera, Rocket
+  Scissors, Building2, PawPrint, Calendar, Camera, Rocket, CreditCard
 } from "lucide-react";
 import BarcodeScanner from "@/components/shared/BarcodeScanner";
 import StockEntryDialog from "@/components/admin/StockEntryDialog";
@@ -35,7 +38,7 @@ import ProductLabelPrint from "@/components/shared/ProductLabelPrint";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
-type AdminTab = "dashboard" | "products" | "orders" | "financial" | "fiscal" | "suppliers" | "purchases" | "coupons" | "stock" | "inventory" | "deliveries" | "reports" | "notifications" | "integrations" | "mercadolivre" | "agenda" | "hotel" | "servicos" | "pets" | "setup";
+type AdminTab = "dashboard" | "products" | "orders" | "financial" | "fiscal" | "suppliers" | "purchases" | "coupons" | "stock" | "inventory" | "deliveries" | "reports" | "notifications" | "integrations" | "mercadolivre" | "agenda" | "hotel" | "servicos" | "pets" | "setup" | "payments";
 
 const CHANNELS = ["Loja Online", "WhatsApp", "Mercado Livre", "PDV"] as const;
 type Channel = typeof CHANNELS[number];
@@ -56,8 +59,11 @@ const channelColors: Record<Channel, string> = {
 
 export default function AdminPage() {
   const { user } = useAuth();
+  const { data: isAdmin } = useIsAdmin();
+  const { isPaid, isLoading: paymentLoading } = useDeploymentPayment();
   const [activeTab, setActiveTab] = useState<AdminTab>("dashboard");
   const [searchTerm, setSearchTerm] = useState("");
+  const [activated, setActivated] = useState(false);
 
   if (!user) {
     return (
@@ -66,6 +72,11 @@ export default function AdminPage() {
         <AuthForm />
       </div>
     );
+  }
+
+  // Admins bypass payment gate
+  if (!isAdmin && !isPaid && !paymentLoading && !activated) {
+    return <PixActivationScreen onActivated={() => setActivated(true)} />;
   }
 
   const tabs = [
@@ -89,6 +100,7 @@ export default function AdminPage() {
      { id: "integrations" as AdminTab, label: "Integrações", icon: Store },
      { id: "mercadolivre" as AdminTab, label: "Mercado Livre", icon: Store },
      { id: "setup" as AdminTab, label: "Implantação da Loja", icon: Rocket },
+     { id: "payments" as AdminTab, label: "Pagamentos", icon: CreditCard },
   ];
 
   return (
@@ -145,6 +157,7 @@ export default function AdminPage() {
         {activeTab === "integrations" && <IntegrationsTab />}
         {activeTab === "mercadolivre" && <MercadoLivreTab />}
         {activeTab === "setup" && <StoreSetupWizard />}
+        {activeTab === "payments" && <AdminPaymentsTab />}
       </div>
     </div>
   );
