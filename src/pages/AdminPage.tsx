@@ -94,6 +94,7 @@ export default function AdminPage() {
      { id: "integrations" as AdminTab, label: "Integrações", icon: Store },
      { id: "mercadolivre" as AdminTab, label: "Mercado Livre", icon: Store },
      { id: "setup" as AdminTab, label: "Implantação da Loja", icon: Rocket },
+     { id: "settings" as AdminTab, label: "Configurações", icon: Settings2 },
   ];
 
   return (
