@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Instagram, Facebook, Mail, Phone, MapPin, Shield, Truck, PawPrint, Lock, CreditCard, Heart } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useAdminRole";
+import { useStoreConfig, getStoreAddress } from "@/hooks/useStoreConfig";
 
 export default function Footer() {
   const { data: isAdmin } = useIsAdmin();
