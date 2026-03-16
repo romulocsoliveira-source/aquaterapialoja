@@ -18,6 +18,7 @@ import AdminAgendaTab from "@/components/admin/AdminAgendaTab";
 import AdminHotelTab from "@/components/admin/AdminHotelTab";
 import AdminServicosTab from "@/components/admin/AdminServicosTab";
 import AdminPetsTab from "@/components/admin/AdminPetsTab";
+import StoreSetupWizard from "@/components/admin/StoreSetupWizard";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
