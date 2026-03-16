@@ -189,9 +189,9 @@ export default function FiscalTab() {
         @media print { body { margin: 0; } }
       </style></head><body>
         <div class="header">
-          <h1>ALMOXARIFADO DAS TINTAS</h1>
+          <h1>${companyName.toUpperCase()}</h1>
           <h2>DOCUMENTO AUXILIAR DA ${typeName}</h2>
-          <p>(18) 3323-1220</p>
+          <p>${companyPhone}</p>
         </div>
 
         <div class="section">
