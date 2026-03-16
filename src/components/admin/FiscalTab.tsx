@@ -43,6 +43,9 @@ const statusConfig: Record<string, { label: string; color: string; icon: React.E
 
 export default function FiscalTab() {
   const { user } = useAuth();
+  const { data: storeConfig } = useStoreConfig();
+  const companyName = storeConfig?.trade_name || storeConfig?.company_name || "AQUATERAPIA PET SHOP";
+  const companyPhone = storeConfig?.phone || "";
   const [invoices, setInvoices] = useState<FiscalInvoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");

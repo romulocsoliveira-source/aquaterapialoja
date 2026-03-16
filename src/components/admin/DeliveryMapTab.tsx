@@ -80,11 +80,23 @@ function mapOrderStatus(status: string): DeliveryStatus {
 }
 
 export default function DeliveryMapTab() {
+  const { data: storeConfig } = useStoreConfig();
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedDelivery, setSelectedDelivery] = useState<Delivery | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const STORE = {
+    name: storeConfig?.trade_name || storeConfig?.company_name || DEFAULT_STORE.name,
+    phone: storeConfig?.phone || DEFAULT_STORE.phone,
+    street: storeConfig?.street ? `${storeConfig.street}, ${storeConfig.number || ""}` : DEFAULT_STORE.street,
+    neighborhood: storeConfig?.neighborhood || DEFAULT_STORE.neighborhood,
+    cityState: storeConfig?.city && storeConfig?.state ? `${storeConfig.city} - ${storeConfig.state}` : DEFAULT_STORE.cityState,
+    zipCode: storeConfig?.zip_code || DEFAULT_STORE.zipCode,
+    lat: DEFAULT_STORE.lat,
+    lng: DEFAULT_STORE.lng,
+  };
 
   const loadDeliveries = useCallback(async () => {
     setLoading(true);

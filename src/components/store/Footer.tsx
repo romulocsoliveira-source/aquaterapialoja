@@ -75,9 +75,9 @@ export default function Footer() {
         <div>
           <h4 className="font-body text-sm font-semibold uppercase tracking-wider text-foreground mb-4">Contato</h4>
           <div className="space-y-3">
-            <a href="tel:+5518996570512" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><Phone size={16} /> (18) 99657-0512</a>
-            <a href="mailto:contato@aquaterapia.com.br" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><Mail size={16} /> contato@aquaterapia.com.br</a>
-            <span className="flex items-start gap-2 text-sm text-muted-foreground"><MapPin size={16} className="mt-0.5 flex-shrink-0" /> Av. Getúlio Vargas, 339 – Vila Nova Santana, Assis – SP, 19807-130</span>
+            <a href={`tel:${phone.replace(/\D/g, "")}`} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><Phone size={16} /> {phone}</a>
+            <a href={`mailto:${email}`} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><Mail size={16} /> {email}</a>
+            <span className="flex items-start gap-2 text-sm text-muted-foreground"><MapPin size={16} className="mt-0.5 flex-shrink-0" /> {address}</span>
           </div>
         </div>
       </div>
