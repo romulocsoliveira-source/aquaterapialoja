@@ -149,6 +149,45 @@ export type Database = {
           },
         ]
       }
+      bank_accounts: {
+        Row: {
+          bank_name: string | null
+          created_at: string
+          created_by: string
+          current_balance: number
+          id: string
+          initial_balance: number
+          is_active: boolean
+          name: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          bank_name?: string | null
+          created_at?: string
+          created_by: string
+          current_balance?: number
+          id?: string
+          initial_balance?: number
+          is_active?: boolean
+          name: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          bank_name?: string | null
+          created_at?: string
+          created_by?: string
+          current_balance?: number
+          id?: string
+          initial_balance?: number
+          is_active?: boolean
+          name?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       coupons: {
         Row: {
           code: string
@@ -233,6 +272,7 @@ export type Database = {
       financial_transactions: {
         Row: {
           amount: number
+          bank_account_id: string | null
           category: string
           created_at: string
           created_by: string
@@ -245,11 +285,13 @@ export type Database = {
           payment_method: string | null
           reference_id: string | null
           reference_type: string | null
+          sales_channel: string | null
           type: string
           updated_at: string
         }
         Insert: {
           amount: number
+          bank_account_id?: string | null
           category?: string
           created_at?: string
           created_by: string
@@ -262,11 +304,13 @@ export type Database = {
           payment_method?: string | null
           reference_id?: string | null
           reference_type?: string | null
+          sales_channel?: string | null
           type: string
           updated_at?: string
         }
         Update: {
           amount?: number
+          bank_account_id?: string | null
           category?: string
           created_at?: string
           created_by?: string
@@ -279,6 +323,7 @@ export type Database = {
           payment_method?: string | null
           reference_id?: string | null
           reference_type?: string | null
+          sales_channel?: string | null
           type?: string
           updated_at?: string
         }
