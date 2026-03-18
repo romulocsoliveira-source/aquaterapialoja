@@ -7,6 +7,7 @@ import { useIsAdmin } from "@/hooks/useAdminRole";
 import { useFirstLogin } from "@/hooks/useFirstLogin";
 import AuthForm from "@/components/account/AuthForm";
 import ProductFormDialog from "@/components/admin/ProductFormDialog";
+import CategoryManagement from "@/components/admin/CategoryManagement";
 import OrdersCentralTab from "@/components/admin/OrdersCentralTab";
 import FinancialTab from "@/components/admin/FinancialTab";
 import FiscalTab from "@/components/admin/FiscalTab";
@@ -386,6 +387,11 @@ function ProductsTab({ searchTerm, setSearchTerm }: { searchTerm: string; setSea
       </div>
 
       <ProductFormDialog open={formOpen} onOpenChange={setFormOpen} product={editingProduct} onSaved={handleSaved} />
+
+      {/* Category Management */}
+      <div className="mt-8 border-t border-border pt-6">
+        <CategoryManagement />
+      </div>
     </div>
   );
 }
