@@ -28,6 +28,7 @@ interface PDVItem {
 export default function PDVPage() {
   const { user } = useAuth();
   const { data: products = [], refetch: refetchProducts } = useProducts();
+  const { data: storeConfig } = useStoreConfig();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [cart, setCart] = useState<PDVItem[]>([]);
