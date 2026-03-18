@@ -283,6 +283,16 @@ export default function PDVPage() {
         description: `Venda PDV #${order.id.slice(0, 8).toUpperCase()} - ${totalItems} itens${customerName ? ` - ${customerName}` : ""}`,
         amount: total, is_paid: true, paid_date: new Date().toISOString().split("T")[0],
         payment_method: method, reference_type: "order", reference_id: order.id, created_by: user.id,
+        sales_channel: "pdv",
+      });
+      // Save fiscal receipt record
+      await supabase.from("fiscal_invoices").insert({
+        order_id: order.id, invoice_type: "nfce", status: "authorized",
+        total_amount: total, discount_amount: discountAmount,
+        customer_name: customerName || "Consumidor Final",
+        payment_method: method, created_by: user.id,
+        authorized_at: new Date().toISOString(),
+        notes: `Cupom fiscal PDV automático`,
       });
       const saleData = { total, method, id: order.id, items: [...cart], discount: discountAmount, change: changeAmount, cashReceived: Number(cashReceived) || 0 };
       setLastSale(saleData);
