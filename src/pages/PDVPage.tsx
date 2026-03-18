@@ -342,10 +342,10 @@ export default function PDVPage() {
             <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="w-full max-w-sm mx-auto">
               <div className="bg-white text-black rounded-xl shadow-2xl overflow-hidden" id="receipt-content">
                 <div className="text-center pt-6 pb-3 px-6">
-                  <p className="text-lg font-bold tracking-wide">AQUATERAPIA PET SHOP</p>
-                  <p className="text-xs text-gray-500">Pet Shop • Aquarismo • Banho & Tosa</p>
-                  <p className="text-[10px] text-gray-400 mt-1">CNPJ: 00.000.000/0001-00</p>
-                  <p className="text-[10px] text-gray-400">Av. Getúlio Vargas, 339 – Vila Nova Santana, Assis/SP · (18) 99657-0512</p>
+                  <p className="text-lg font-bold tracking-wide">{companyName.toUpperCase()}</p>
+                  <p className="text-xs text-gray-500">{companyAddress}</p>
+                  <p className="text-[10px] text-gray-400 mt-1">CNPJ: {companyCnpj}</p>
+                  <p className="text-[10px] text-gray-400">Fone: {companyPhone}</p>
                 </div>
                 <div className="mx-4 border-t border-dashed border-gray-300" />
                 <div className="text-center py-2 px-6">
