@@ -203,13 +203,20 @@ export default function PDVPage() {
 
   const formatPrice = (p: number) => p.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
+  const companyName = storeConfig?.trade_name || storeConfig?.company_name || "AQUATERAPIA PET SHOP";
+  const companyCnpj = storeConfig?.cnpj || "00.000.000/0001-00";
+  const companyPhone = storeConfig?.phone || storeConfig?.whatsapp || "(18) 99657-0512";
+  const companyAddress = storeConfig?.street
+    ? `${storeConfig.street}, ${storeConfig.number || "S/N"} – ${storeConfig.neighborhood || ""}, ${storeConfig.city || ""}/${storeConfig.state || ""}`
+    : "Endereço não cadastrado";
+
   const printReceipt = (sale: typeof lastSale) => {
     if (!sale) return;
     const receiptWindow = window.open("", "_blank", "width=400,height=600");
     if (!receiptWindow) return;
-    const methodLabels: Record<string, string> = { pix: "Pix", credit_card: "Cartão de Crédito/Débito", cash: "Dinheiro", debit_card: "Cartão de Débito" };
+    const methodLabelsMap: Record<string, string> = { pix: "Pix", credit_card: "Cartão de Crédito/Débito", cash: "Dinheiro", debit_card: "Cartão de Débito" };
     receiptWindow.document.write(`
-      <html><head><title>Recibo</title>
+      <html><head><title>Cupom Fiscal</title>
       <style>
         body { font-family: 'Courier New', monospace; font-size: 12px; width: 280px; margin: 0 auto; padding: 20px; color: #000; }
         .center { text-align: center; } .bold { font-weight: bold; }
@@ -218,11 +225,12 @@ export default function PDVPage() {
         .total { font-size: 16px; font-weight: bold; }
         @media print { body { margin: 0; padding: 10px; } }
       </style></head><body>
-        <div class="center bold" style="font-size:16px">AQUATERAPIA PET SHOP</div>
-        <div class="center">Pet Shop • Aquarismo • Banho & Tosa</div>
-        <div class="center" style="font-size:10px">(18) 99657-0512</div>
+        <div class="center bold" style="font-size:16px">${companyName.toUpperCase()}</div>
+        <div class="center">CNPJ: ${companyCnpj}</div>
+        <div class="center" style="font-size:10px">${companyAddress}</div>
+        <div class="center" style="font-size:10px">Fone: ${companyPhone}</div>
         <div class="line"></div>
-        <div class="center bold">CUPOM NÃO FISCAL</div>
+        <div class="center bold">CUPOM FISCAL ELETRÔNICO</div>
         <div class="center" style="font-size:10px">${new Date().toLocaleString("pt-BR")}</div>
         <div class="center" style="font-size:10px">Pedido: #${sale.id.slice(0, 8).toUpperCase()}</div>
         ${sale.items.length > 0 ? `<div class="center" style="font-size:10px">Cliente: ${customerName || "Consumidor Final"}</div>` : ""}
@@ -238,14 +246,14 @@ export default function PDVPage() {
         <div class="line"></div>
         <div class="item total"><span>TOTAL</span><span>${formatPrice(sale.total)}</span></div>
         <div class="line"></div>
-        <div class="item"><span>Pagamento</span><span>${methodLabels[sale.method] || sale.method}</span></div>
+        <div class="item"><span>Pagamento</span><span>${methodLabelsMap[sale.method] || sale.method}</span></div>
         ${sale.method === "cash" && sale.cashReceived > 0 ? `
           <div class="item"><span>Recebido</span><span>${formatPrice(sale.cashReceived)}</span></div>
           <div class="item bold"><span>Troco</span><span>${formatPrice(sale.change)}</span></div>
         ` : ""}
         <div class="line"></div>
         <div class="center" style="font-size:10px;margin-top:12px">Obrigado pela preferência!</div>
-        <div class="center" style="font-size:10px">Aquaterapia Pet Shop</div>
+        <div class="center" style="font-size:10px">${companyName}</div>
         <script>window.print();</script>
       </body></html>
     `);
