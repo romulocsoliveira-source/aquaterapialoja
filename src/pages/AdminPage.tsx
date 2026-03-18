@@ -7,6 +7,7 @@ import { useIsAdmin } from "@/hooks/useAdminRole";
 import { useFirstLogin } from "@/hooks/useFirstLogin";
 import AuthForm from "@/components/account/AuthForm";
 import ProductFormDialog from "@/components/admin/ProductFormDialog";
+import CategoryManagement from "@/components/admin/CategoryManagement";
 import OrdersCentralTab from "@/components/admin/OrdersCentralTab";
 import FinancialTab from "@/components/admin/FinancialTab";
 import FiscalTab from "@/components/admin/FiscalTab";
