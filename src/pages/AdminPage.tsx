@@ -387,6 +387,11 @@ function ProductsTab({ searchTerm, setSearchTerm }: { searchTerm: string; setSea
       </div>
 
       <ProductFormDialog open={formOpen} onOpenChange={setFormOpen} product={editingProduct} onSaved={handleSaved} />
+
+      {/* Category Management */}
+      <div className="mt-8 border-t border-border pt-6">
+        <CategoryManagement />
+      </div>
     </div>
   );
 }
