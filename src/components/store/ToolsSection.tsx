@@ -4,20 +4,6 @@ import { Scissors, Building2, ShoppingBag, Calendar, Fish } from "lucide-react";
 
 const tools = [
   {
-    icon: Scissors,
-    title: "Banho & Tosa",
-    desc: "Agende online agora",
-    href: "/agendamento",
-    gradient: "from-sky-500 to-cyan-500",
-  },
-  {
-    icon: Building2,
-    title: "Hotel Pet",
-    desc: "Hospedagem com conforto",
-    href: "/hotel-pet",
-    gradient: "from-emerald-500 to-green-500",
-  },
-  {
     icon: Fish,
     title: "Aquarismo",
     desc: "A maior loja de Assis",
@@ -30,13 +16,6 @@ const tools = [
     desc: "Produtos de qualidade",
     href: "/categoria/produtos-pet",
     gradient: "from-violet-500 to-purple-500",
-  },
-  {
-    icon: Calendar,
-    title: "Meus Agendamentos",
-    desc: "Veja seus horários",
-    href: "/conta",
-    gradient: "from-amber-500 to-orange-500",
   },
 ];
 
