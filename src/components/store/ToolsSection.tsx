@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Scissors, Building2, ShoppingBag, Calendar, Fish } from "lucide-react";
+import { ShoppingBag, Fish } from "lucide-react";
 
 const tools = [
   {
