@@ -82,10 +82,10 @@ export default function AdminPage() {
   // Admins bypass payment gate
   const tabs = [
      { id: "dashboard" as AdminTab, label: "Dashboard", icon: BarChart3 },
-     { id: "agenda" as AdminTab, label: "Agenda B&T", icon: Calendar },
-     { id: "servicos" as AdminTab, label: "Serviços", icon: Scissors },
-     { id: "hotel" as AdminTab, label: "Hotel Pet", icon: Building2 },
-     { id: "pets" as AdminTab, label: "Pets", icon: PawPrint },
+     // { id: "agenda" as AdminTab, label: "Agenda B&T", icon: Calendar },
+     // { id: "servicos" as AdminTab, label: "Serviços", icon: Scissors },
+     // { id: "hotel" as AdminTab, label: "Hotel Pet", icon: Building2 },
+     // { id: "pets" as AdminTab, label: "Pets", icon: PawPrint },
      { id: "products" as AdminTab, label: "Produtos", icon: Package },
      { id: "orders" as AdminTab, label: "Central de Pedidos", icon: ShoppingCart },
      { id: "financial" as AdminTab, label: "Financeiro", icon: DollarSign },
@@ -139,10 +139,10 @@ export default function AdminPage() {
         </div>
 
         {activeTab === "dashboard" && <DashboardTab />}
-        {activeTab === "agenda" && <AdminAgendaTab />}
-        {activeTab === "servicos" && <AdminServicosTab />}
-        {activeTab === "hotel" && <AdminHotelTab />}
-        {activeTab === "pets" && <AdminPetsTab />}
+        {/* {activeTab === "agenda" && <AdminAgendaTab />} */}
+        {/* {activeTab === "servicos" && <AdminServicosTab />} */}
+        {/* {activeTab === "hotel" && <AdminHotelTab />} */}
+        {/* {activeTab === "pets" && <AdminPetsTab />} */}
         {activeTab === "products" && <ProductsTab searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}
         {activeTab === "orders" && <OrdersCentralTab />}
          {activeTab === "financial" && <FinancialTab />}
