@@ -54,8 +54,8 @@ export default function CategoryPage() {
   return (
     <>
       <Helmet>
-        <title>{categoryName} | Almoxarifado das Tintas</title>
-        <meta name="description" content={`Confira nossa coleção de ${categoryName.toLowerCase()}. Tintas, esmaltes e acessórios de pintura. Frete grátis acima de R$ 299.`} />
+        <title>{categoryName} | Aquaterapia</title>
+        <meta name="description" content={`Confira nossa coleção de ${categoryName.toLowerCase()}. Produtos de qualidade para seu pet. Frete grátis acima de R$ 199.`} />
       </Helmet>
       <div className="container py-8 md:py-16">
         <div className="mb-8">
