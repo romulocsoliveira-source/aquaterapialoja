@@ -48,13 +48,20 @@ const channelColors: Record<Channel, string> = {
 
 const statusLabels: Record<string, { label: string; color: string }> = {
   pending_payment: { label: "Aguardando Pagamento", color: "text-muted-foreground" },
+  awaiting_payment: { label: "Aguardando Pagamento", color: "text-yellow-500" },
   paid: { label: "Pagamento Aprovado", color: "text-accent" },
+  authorized: { label: "Autorizado", color: "text-green-500" },
+  under_review: { label: "Em Análise", color: "text-blue-500" },
   preparing: { label: "Em Separação", color: "text-foreground" },
   processing: { label: "Em Separação", color: "text-foreground" },
   shipped: { label: "Enviado", color: "text-foreground" },
   delivered: { label: "Entregue", color: "text-accent" },
   completed: { label: "Finalizado", color: "text-accent" },
   cancelled: { label: "Cancelado", color: "text-destructive" },
+  canceled: { label: "Cancelado", color: "text-destructive" },
+  expired: { label: "Expirado", color: "text-muted-foreground" },
+  failed: { label: "Falhou", color: "text-destructive" },
+  refunded: { label: "Reembolsado", color: "text-orange-500" },
 };
 
 function getChannel(method: string | null): Channel {
