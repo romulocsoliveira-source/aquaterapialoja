@@ -55,12 +55,12 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50">
       {/* Announcement bar */}
-      <div className="gradient-brand-gold text-center py-2 text-[11px] font-body tracking-[0.15em] uppercase text-foreground font-semibold">
+      <div className="bg-brand-gold text-center py-2 text-[11px] font-body tracking-[0.15em] uppercase text-black font-semibold">
         Frete grátis acima de R$ 199 · Parcele em até 12x
       </div>
 
       {/* Main header */}
-      <div className="gradient-dark border-b border-primary-foreground/[0.06]">
+      <div className="bg-black border-b border-white/[0.06]">
         <div className="container flex items-center justify-between h-20 md:h-[88px]">
           {/* Mobile menu */}
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden text-primary-foreground/70 p-2" aria-label="Menu">
