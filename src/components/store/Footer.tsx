@@ -44,7 +44,7 @@ export default function Footer() {
           <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-gold-light mb-5">Categorias</h4>
           <ul className="space-y-2.5">
             {topCats.map(cat => (
-              <li key={cat.slug}><Link to={`/categoria/${cat.slug}`} className="text-sm text-primary-foreground/40 hover:text-primary-foreground/80 transition-colors">{cat.name}</Link></li>
+              <li key={cat.slug}><Link to={`/categoria/${cat.slug}`} className="text-sm text-white/40 hover:text-white/80 transition-colors">{cat.name}</Link></li>
             ))}
             <li><Link to="/categoria/promocoes" className="text-sm text-brand-gold-light hover:text-brand-gold transition-colors font-medium">Promoções</Link></li>
           </ul>
