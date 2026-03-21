@@ -19,85 +19,86 @@ export default function ProductCard({ product, index = 0 }: Props) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.08 }}
-      className="group relative bg-card rounded-2xl overflow-hidden border border-border hover:border-accent/40 transition-all duration-300 hover:shadow-xl hover:shadow-accent/5"
+      transition={{ duration: 0.35, delay: index * 0.06 }}
+      className="group relative bg-card rounded-xl overflow-hidden border border-border hover:border-primary/25 transition-all duration-300 hover:shadow-brand"
     >
       {/* Badges */}
       <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
         {product.badge && (
-          <span className="gradient-gold text-accent-foreground text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">
+          <span className="gradient-brand text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md">
             {product.badge}
           </span>
         )}
         {product.isBestSeller && (
-          <span className="bg-foreground text-background text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full flex items-center gap-1">
-            <Award size={10} /> Mais Vendido
+          <span className="bg-foreground text-background text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md flex items-center gap-1">
+            <Award size={10} /> Top
           </span>
         )}
         {product.isNew && (
-          <span className="bg-green-500 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full flex items-center gap-1">
+          <span className="bg-accent text-accent-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md flex items-center gap-1">
             <Zap size={10} /> Novo
           </span>
         )}
       </div>
 
-      {/* Discount badge */}
       {discount > 0 && (
-        <span className="absolute top-3 right-3 z-10 bg-destructive text-destructive-foreground text-xs font-bold px-2.5 py-1 rounded-full">
+        <span className="absolute top-3 right-3 z-10 bg-destructive text-destructive-foreground text-[10px] font-bold px-2 py-0.5 rounded-md">
           -{discount}%
         </span>
       )}
 
       {/* Image */}
-      <div className="relative overflow-hidden aspect-[3/4]">
+      <div className="relative overflow-hidden aspect-square bg-secondary/30">
         <Link to={`/produto/${product.slug}`} className="block w-full h-full">
-           <img
-             src={product.image || "/placeholder.svg"}
-             alt={product.name}
-             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-             loading="lazy"
-             onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
-           />
+          <img
+            src={product.image || "/placeholder.svg"}
+            alt={product.name}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+            onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
+          />
         </Link>
-        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
-           <button
-             onClick={(e) => { e.preventDefault(); addItem(product); }}
-             className="bg-accent text-accent-foreground p-3 rounded-full hover:scale-110 transition-transform glow-gold"
+        <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors pointer-events-none" />
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-3 group-hover:translate-y-0">
+          <button
+            onClick={(e) => { e.preventDefault(); addItem(product); }}
+            className="gradient-brand text-primary-foreground p-2.5 rounded-lg hover:scale-105 transition-transform shadow-brand"
             aria-label="Adicionar ao carrinho"
           >
-            <ShoppingBag size={16} />
+            <ShoppingBag size={15} />
           </button>
-          <Link to={`/produto/${product.slug}`} className="bg-card text-foreground p-3 rounded-full hover:scale-110 transition-transform border border-border" aria-label="Ver detalhes">
-            <Eye size={16} />
+          <Link to={`/produto/${product.slug}`} className="bg-card text-foreground p-2.5 rounded-lg hover:scale-105 transition-transform border border-border shadow-sm" aria-label="Ver detalhes">
+            <Eye size={15} />
           </Link>
         </div>
       </div>
 
       {/* Info */}
-      <div className="p-4 space-y-2">
-        <span className="text-[10px] font-body uppercase tracking-widest text-accent">{product.category}</span>
+      <div className="p-3.5 space-y-1.5">
+        <span className="text-[10px] font-body uppercase tracking-widest text-primary/70">{product.category}</span>
         <Link to={`/produto/${product.slug}`}>
-          <h3 className="font-body text-sm font-semibold text-foreground line-clamp-2 hover:text-accent transition-colors">
+          <h3 className="font-body text-sm font-medium text-foreground line-clamp-2 hover:text-primary transition-colors leading-snug">
             {product.name}
           </h3>
         </Link>
-        <div className="flex items-center gap-1">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star key={i} size={12} className={i < Math.floor(product.rating) ? "text-amber-400 fill-amber-400" : "text-muted-foreground"} />
-          ))}
-          <span className="text-[10px] text-muted-foreground ml-1">({product.reviews})</span>
-        </div>
-        <div className="flex items-center gap-2">
+        {product.rating > 0 && (
+          <div className="flex items-center gap-1">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star key={i} size={11} className={i < Math.floor(product.rating) ? "text-amber-400 fill-amber-400" : "text-border"} />
+            ))}
+            <span className="text-[10px] text-muted-foreground ml-1">({product.reviews})</span>
+          </div>
+        )}
+        <div className="flex items-baseline gap-2 pt-0.5">
           {product.promoPrice ? (
             <>
+              <span className="font-body font-bold text-primary text-base">{formatPrice(product.promoPrice)}</span>
               <span className="text-xs text-muted-foreground line-through">{formatPrice(product.price)}</span>
-              <span className="font-body font-bold text-accent text-lg">{formatPrice(product.promoPrice)}</span>
             </>
           ) : (
-            <span className="font-body font-bold text-foreground text-lg">{formatPrice(product.price)}</span>
+            <span className="font-body font-bold text-foreground text-base">{formatPrice(product.price)}</span>
           )}
         </div>
         {product.promoPrice && (
