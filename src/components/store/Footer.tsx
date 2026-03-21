@@ -29,7 +29,7 @@ export default function Footer() {
           ) : (
             <h3 className="font-display text-2xl font-bold text-white">{storeName}</h3>
           )}
-          <p className="text-sm text-primary-foreground/40 leading-relaxed">
+          <p className="text-sm text-white/40 leading-relaxed">
             Sua loja premium de produtos para pets. Qualidade, carinho e confiança em cada entrega.
           </p>
           <div className="flex gap-3">
