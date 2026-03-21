@@ -71,17 +71,17 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-primary-foreground/[0.06]">
+      <div className="border-t border-white/[0.06]">
         <div className="container py-5 flex flex-col md:flex-row items-center justify-between gap-3">
-          <span className="text-[11px] text-primary-foreground/25">
+          <span className="text-[11px] text-white/25">
             © {new Date().getFullYear()} {storeName}. Todos os direitos reservados.
           </span>
-          <span className="text-[11px] text-primary-foreground/25">
-            Desenvolvido por <span className="font-semibold text-primary-foreground/35">Romulo de Oliveira</span>
+          <span className="text-[11px] text-white/25">
+            Desenvolvido por <span className="font-semibold text-white/35">Romulo de Oliveira</span>
           </span>
           {isAdmin && (
             <div className="flex items-center gap-4">
-              <Link to="/admin" className="flex items-center gap-1 text-[11px] text-primary-foreground/15 hover:text-primary-foreground/40 transition-colors">
+              <Link to="/admin" className="flex items-center gap-1 text-[11px] text-white/15 hover:text-white/40 transition-colors">
                 <Lock size={11} /> Admin
               </Link>
               <Link to="/pdv" className="flex items-center gap-1 text-[11px] text-primary-foreground/15 hover:text-primary-foreground/40 transition-colors">
