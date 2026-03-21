@@ -203,7 +203,7 @@ export default function PDVPage() {
 
   const formatPrice = (p: number) => p.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-  const companyName = storeConfig?.trade_name || storeConfig?.company_name || "AQUATERAPIA PET SHOP";
+  const companyName = storeConfig?.trade_name || storeConfig?.company_name || "AQUATERAPIA";
   const companyCnpj = storeConfig?.cnpj || "00.000.000/0001-00";
   const companyPhone = storeConfig?.phone || storeConfig?.whatsapp || "(18) 99657-0512";
   const companyAddress = storeConfig?.street
