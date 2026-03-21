@@ -21,33 +21,16 @@ export default function Footer() {
 
   return (
     <footer className="gradient-dark text-primary-foreground/80 mt-20">
-      {/* Trust bar */}
-      <div className="border-b border-primary-foreground/[0.08]">
-        <div className="container py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          {[
-            { title: "Qualidade Garantida", desc: "Marcas premium" },
-            { title: "Entrega Rápida", desc: "Assis e região" },
-            { title: "Pagamento Seguro", desc: "Cartão, PIX e boleto" },
-            { title: "Atendimento", desc: "Suporte especializado" },
-          ].map(item => (
-            <div key={item.title} className="flex flex-col items-center gap-1.5">
-              <span className="text-sm font-body font-semibold text-primary-foreground/70">{item.title}</span>
-              <span className="text-xs text-primary-foreground/40">{item.desc}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="container py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
+      <div className="container py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
         {/* Brand */}
-        <div className="space-y-4">
+        <div className="space-y-5">
           {logoUrl ? (
-            <img src={logoUrl} alt={storeName} className="h-14 w-auto object-contain brightness-0 invert opacity-70" />
+            <img src={logoUrl} alt={storeName} className="h-16 w-auto object-contain" />
           ) : (
             <h3 className="font-display text-2xl font-bold text-primary-foreground/90">{storeName}</h3>
           )}
           <p className="text-sm text-primary-foreground/40 leading-relaxed">
-            Produtos premium para cães, gatos, peixes e mais. Cuidado e qualidade em cada detalhe.
+            Sua loja premium de produtos para pets. Qualidade, carinho e confiança em cada entrega.
           </p>
           <div className="flex gap-3">
             <a href="#" className="text-primary-foreground/30 hover:text-brand-gold transition-colors" aria-label="Instagram"><Instagram size={18} /></a>
@@ -58,7 +41,7 @@ export default function Footer() {
 
         {/* Categories */}
         <div>
-          <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-primary-foreground/50 mb-5">Categorias</h4>
+          <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-gold-light mb-5">Categorias</h4>
           <ul className="space-y-2.5">
             {topCats.map(cat => (
               <li key={cat.slug}><Link to={`/categoria/${cat.slug}`} className="text-sm text-primary-foreground/40 hover:text-primary-foreground/80 transition-colors">{cat.name}</Link></li>
@@ -69,7 +52,7 @@ export default function Footer() {
 
         {/* Institutional */}
         <div>
-          <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-primary-foreground/50 mb-5">Institucional</h4>
+          <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-gold-light mb-5">Institucional</h4>
           <ul className="space-y-2.5">
             {["Sobre Nós", "Política de Privacidade", "Trocas e Devoluções", "Termos de Uso", "FAQ"].map(l => (
               <li key={l}><Link to="/" className="text-sm text-primary-foreground/40 hover:text-primary-foreground/80 transition-colors">{l}</Link></li>
@@ -79,7 +62,7 @@ export default function Footer() {
 
         {/* Contact */}
         <div>
-          <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-primary-foreground/50 mb-5">Contato</h4>
+          <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-gold-light mb-5">Contato</h4>
           <div className="space-y-3">
             <a href={`tel:${phone.replace(/\D/g, "")}`} className="flex items-center gap-2.5 text-sm text-primary-foreground/40 hover:text-primary-foreground/80 transition-colors"><Phone size={14} /> {phone}</a>
             <a href={`mailto:${email}`} className="flex items-center gap-2.5 text-sm text-primary-foreground/40 hover:text-primary-foreground/80 transition-colors"><Mail size={14} /> {email}</a>
