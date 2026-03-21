@@ -263,7 +263,13 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!user || !selectedAddress) return;
-    if (paymentMethod === "credit_card" && !validateCardForm()) return;
+    if (paymentMethod === "credit_card") {
+      if (!validateCardForm()) return;
+      if (pagbankActive && !publicKey) {
+        toast.error("Cartão de crédito não está configurado corretamente. Chave pública ausente.");
+        return;
+      }
+    }
     if (paymentSettings?.require_buyer_cpf && cpf.replace(/\D/g, "").length !== 11) {
       toast.error("CPF é obrigatório");
       return;
