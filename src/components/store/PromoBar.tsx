@@ -12,15 +12,15 @@ export default function PromoBar() {
               <span className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-brand-gold-light font-body font-semibold">
                 <Sparkles size={13} /> Oferta Especial
               </span>
-              <h2 className="font-display text-3xl md:text-5xl font-bold text-primary-foreground leading-tight">
+              <h2 className="font-display text-3xl md:text-5xl font-bold text-white leading-tight">
                 Até <span className="text-brand-gold-light">20% off</span> em produtos selecionados
               </h2>
-              <p className="text-primary-foreground/55 font-body max-w-md text-sm leading-relaxed">
+              <p className="text-white/55 font-body max-w-md text-sm leading-relaxed">
                 Aproveite condições exclusivas enquanto durar o estoque. Produtos das melhores marcas com preços imperdíveis.
               </p>
               <Link
                 to="/categoria/promocoes"
-                className="inline-flex items-center gap-2 gradient-brand-gold text-foreground font-body font-semibold text-sm tracking-wider px-8 py-3.5 rounded-xl hover:opacity-90 transition-opacity shadow-gold"
+                className="inline-flex items-center gap-2 gradient-brand-gold text-black font-body font-semibold text-sm tracking-wider px-8 py-3.5 rounded-xl hover:opacity-90 transition-opacity shadow-gold"
               >
                 Ver Ofertas <ArrowRight size={14} />
               </Link>
@@ -32,12 +32,12 @@ export default function PromoBar() {
                   <div className="w-48 h-48 rounded-full border border-brand-gold-light/10 flex items-center justify-center">
                     <div className="text-center">
                       <span className="font-display text-6xl font-bold text-brand-gold-light block">20%</span>
-                      <span className="text-primary-foreground/50 font-body text-sm uppercase tracking-widest">desconto</span>
+                      <span className="text-white/50 font-body text-sm uppercase tracking-widest">desconto</span>
                     </div>
                   </div>
                 </div>
                 <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full gradient-brand-gold flex items-center justify-center shadow-gold">
-                  <Sparkles size={24} className="text-foreground" />
+                  <Sparkles size={24} className="text-black" />
                 </div>
               </div>
             </motion.div>
