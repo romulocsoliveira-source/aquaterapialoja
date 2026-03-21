@@ -20,11 +20,11 @@ export default function FeaturedProducts({ title, subtitle, filter, limit = 4, l
 
   if (isLoading) {
     return (
-      <section className={dark ? "bg-foreground/[0.03]" : ""}>
-        <div className="container py-14 md:py-20">
+      <section className={dark ? "gradient-dark" : ""}>
+        <div className="container py-16 md:py-24">
           <div className="text-center mb-10">
-            {subtitle && <span className="text-[11px] font-body uppercase tracking-[0.3em] text-accent font-semibold">{subtitle}</span>}
-            <h2 className="font-display text-2xl md:text-3xl font-bold mt-1.5">{title}</h2>
+            {subtitle && <span className={`text-[11px] font-body uppercase tracking-[0.3em] font-semibold ${dark ? "text-brand-gold-light" : "text-accent"}`}>{subtitle}</span>}
+            <h2 className={`font-display text-2xl md:text-3xl font-bold mt-1.5 ${dark ? "text-primary-foreground" : ""}`}>{title}</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {Array.from({ length: limit > 4 ? 4 : limit }).map((_, i) => (
@@ -39,15 +39,15 @@ export default function FeaturedProducts({ title, subtitle, filter, limit = 4, l
   if (display.length === 0) return null;
 
   return (
-    <section className={dark ? "bg-foreground/[0.03]" : ""}>
-      <div className="container py-14 md:py-20">
+    <section className={dark ? "gradient-dark" : ""}>
+      <div className="container py-16 md:py-24">
         <div className="flex items-end justify-between mb-10">
           <div>
-            {subtitle && <span className="text-[11px] font-body uppercase tracking-[0.3em] text-accent font-semibold block">{subtitle}</span>}
-            <h2 className="font-display text-2xl md:text-3xl font-bold mt-1.5">{title}</h2>
+            {subtitle && <span className={`text-[11px] font-body uppercase tracking-[0.3em] font-semibold block ${dark ? "text-brand-gold-light" : "text-accent"}`}>{subtitle}</span>}
+            <h2 className={`font-display text-2xl md:text-3xl font-bold mt-1.5 ${dark ? "text-primary-foreground" : ""}`}>{title}</h2>
           </div>
           {linkTo && (
-            <Link to={linkTo} className="hidden md:flex items-center gap-1.5 text-sm font-body font-medium text-primary hover:text-primary/80 transition-colors">
+            <Link to={linkTo} className={`hidden md:flex items-center gap-1.5 text-sm font-body font-medium transition-colors ${dark ? "text-brand-gold-light hover:text-brand-gold" : "text-primary hover:text-primary/80"}`}>
               Ver todos <ArrowRight size={14} />
             </Link>
           )}
@@ -59,7 +59,7 @@ export default function FeaturedProducts({ title, subtitle, filter, limit = 4, l
         </div>
         {linkTo && (
           <div className="md:hidden text-center mt-8">
-            <Link to={linkTo} className="inline-flex items-center gap-1.5 text-sm font-body font-medium text-primary hover:text-primary/80 transition-colors">
+            <Link to={linkTo} className={`inline-flex items-center gap-1.5 text-sm font-body font-medium transition-colors ${dark ? "text-brand-gold-light hover:text-brand-gold" : "text-primary hover:text-primary/80"}`}>
               Ver todos <ArrowRight size={14} />
             </Link>
           </div>

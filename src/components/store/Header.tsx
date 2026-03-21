@@ -54,20 +54,20 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Announcement bar — gold accent */}
-      <div className="bg-accent text-center py-2 text-[11px] font-body tracking-[0.15em] uppercase text-accent-foreground font-semibold">
+      {/* Announcement bar */}
+      <div className="gradient-brand-gold text-center py-2 text-[11px] font-body tracking-[0.15em] uppercase text-foreground font-semibold">
         Frete grátis acima de R$ 199 · Parcele em até 12x
       </div>
 
-      {/* Main header — DARK background so the black-bg logo integrates */}
-      <div className="gradient-dark border-b border-primary-foreground/[0.08]">
+      {/* Main header */}
+      <div className="gradient-dark border-b border-primary-foreground/[0.06]">
         <div className="container flex items-center justify-between h-20 md:h-[88px]">
           {/* Mobile menu */}
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden text-primary-foreground/70 p-2" aria-label="Menu">
             {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
 
-          {/* Logo — larger, no more black square on white */}
+          {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
             {logoUrl ? (
               <img src={logoUrl} alt={storeName} className="h-14 md:h-16 w-auto object-contain" />
@@ -78,13 +78,13 @@ export default function Header() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link to="/" className="text-[13px] font-body font-medium text-primary-foreground/60 hover:text-primary-foreground transition-colors tracking-wide">
+            <Link to="/" className="text-[13px] font-body font-medium text-primary-foreground/55 hover:text-primary-foreground transition-colors tracking-wide">
               Início
             </Link>
             <div ref={catRef} className="relative">
               <button
                 onClick={() => setCatDropdown(!catDropdown)}
-                className="flex items-center gap-1 text-[13px] font-body font-medium text-primary-foreground/60 hover:text-primary-foreground transition-colors tracking-wide"
+                className="flex items-center gap-1 text-[13px] font-body font-medium text-primary-foreground/55 hover:text-primary-foreground transition-colors tracking-wide"
               >
                 Categorias <ChevronDown size={13} className={`transition-transform ${catDropdown ? "rotate-180" : ""}`} />
               </button>
@@ -94,7 +94,7 @@ export default function Header() {
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 8 }}
-                    className="absolute top-full left-0 mt-3 bg-card border border-border rounded-xl shadow-elegant min-w-[240px] py-2 z-50"
+                    className="absolute top-full left-0 mt-3 bg-card border border-border rounded-xl shadow-premium min-w-[240px] py-2 z-50"
                   >
                     {topCategories.length > 0 ? topCategories.map(cat => (
                       <Link
@@ -123,24 +123,24 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* Actions — light icons on dark bg */}
+          {/* Actions */}
           <div className="flex items-center gap-3">
             {isAdmin && (
-              <Link to="/admin" className="hidden md:flex items-center gap-1.5 text-[11px] font-body font-semibold text-primary-foreground/40 hover:text-primary-foreground/70 transition-colors uppercase tracking-wider" aria-label="Administrador">
+              <Link to="/admin" className="hidden md:flex items-center gap-1.5 text-[11px] font-body font-semibold text-primary-foreground/35 hover:text-primary-foreground/65 transition-colors uppercase tracking-wider" aria-label="Administrador">
                 <Settings size={13} />
                 Admin
               </Link>
             )}
-            <button onClick={() => setSearchOpen(!searchOpen)} className="text-primary-foreground/50 hover:text-primary-foreground transition-colors p-2" aria-label="Buscar">
+            <button onClick={() => setSearchOpen(!searchOpen)} className="text-primary-foreground/45 hover:text-primary-foreground transition-colors p-2" aria-label="Buscar">
               <Search size={18} />
             </button>
-            <Link to="/conta" className="hidden md:block text-primary-foreground/50 hover:text-primary-foreground transition-colors p-2" aria-label="Conta">
+            <Link to="/conta" className="hidden md:block text-primary-foreground/45 hover:text-primary-foreground transition-colors p-2" aria-label="Conta">
               <User size={18} />
             </Link>
-            <Link to="/favoritos" className="hidden md:block text-primary-foreground/50 hover:text-primary-foreground transition-colors p-2" aria-label="Favoritos">
+            <Link to="/favoritos" className="hidden md:block text-primary-foreground/45 hover:text-primary-foreground transition-colors p-2" aria-label="Favoritos">
               <Heart size={18} />
             </Link>
-            <button onClick={() => setIsCartOpen(true)} className="relative text-primary-foreground/50 hover:text-primary-foreground transition-colors p-2" aria-label="Carrinho">
+            <button onClick={() => setIsCartOpen(true)} className="relative text-primary-foreground/45 hover:text-primary-foreground transition-colors p-2" aria-label="Carrinho">
               <ShoppingBag size={18} />
               {totalItems > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 gradient-brand-gold text-foreground text-[9px] font-bold w-[18px] h-[18px] rounded-full flex items-center justify-center shadow-gold">
@@ -170,7 +170,7 @@ export default function Header() {
                 />
               </div>
               {searchResults.length > 0 && (
-                <div className="mt-3 max-w-xl mx-auto bg-card border border-border rounded-xl overflow-hidden shadow-elegant">
+                <div className="mt-3 max-w-xl mx-auto bg-card border border-border rounded-xl overflow-hidden shadow-premium">
                   {searchResults.map(p => (
                     <button key={p.id} onClick={() => handleProductClick(p.slug)} className="w-full flex items-center gap-3 p-3 hover:bg-secondary/60 transition-colors border-b border-border/40 last:border-0 text-left">
                       <img src={p.image || "/placeholder.svg"} alt={p.name} className="w-11 h-11 rounded-lg object-cover bg-secondary" />
