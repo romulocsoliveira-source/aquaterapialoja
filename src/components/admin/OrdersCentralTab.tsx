@@ -100,7 +100,7 @@ export default function OrdersCentralTab() {
     try {
       const { data: ordersData, error: ordersError } = await supabase
         .from("orders")
-        .select("id, user_id, total, status, payment_method, shipping_address, tracking_code, created_at, order_items(id, product_name, quantity, unit_price, product_image, variation)")
+        .select("id, user_id, total, status, payment_method, shipping_address, tracking_code, created_at, gateway_transaction_id, gateway_status, gateway_paid_at, order_items(id, product_name, quantity, unit_price, product_image, variation)")
         .order("created_at", { ascending: false })
         .limit(100);
 
