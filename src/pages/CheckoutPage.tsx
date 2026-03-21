@@ -6,10 +6,11 @@ import { useCart } from "@/context/CartContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { MapPin, Plus, CreditCard, ShoppingBag, CheckCircle, ArrowLeft, Truck, Loader2, Lock, QrCode, Copy } from "lucide-react";
+import { MapPin, Plus, CreditCard, ShoppingBag, CheckCircle, ArrowLeft, Truck, Loader2, Lock, QrCode, Copy, AlertTriangle, Receipt, Clock, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCepLookup } from "@/hooks/useCepLookup";
 import { QRCodeSVG } from "qrcode.react";
+import { usePaymentSettings, getEnabledMethods } from "@/hooks/usePaymentSettings";
 
 interface Address {
   id: string;
@@ -26,16 +27,36 @@ interface Address {
 
 type Step = "address" | "payment" | "confirmation";
 
+interface PaymentResult {
+  method: string;
+  // PIX
+  qr_code_text?: string;
+  qr_code_image?: string;
+  pix_expiration?: string;
+  // Card
+  charge_status?: string;
+  // Boleto
+  barcode?: string;
+  formatted_barcode?: string;
+  boleto_pdf?: string;
+  boleto_due_date?: string;
+  // Common
+  transaction_id?: string;
+  order_status?: string;
+  error?: string;
+}
+
 export default function CheckoutPage() {
   const { user, loading: authLoading } = useAuth();
   const { items, totalPrice, clearCart } = useCart();
   const navigate = useNavigate();
   const { lookupCep, loading: cepLoading, formatCep } = useCepLookup();
+  const { data: paymentSettings, isLoading: settingsLoading } = usePaymentSettings();
 
   const [step, setStep] = useState<Step>("address");
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<string>("pix");
+  const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [showAddressForm, setShowAddressForm] = useState(false);
@@ -44,18 +65,47 @@ export default function CheckoutPage() {
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [couponApplied, setCouponApplied] = useState<string | null>(null);
   const [couponLoading, setCouponLoading] = useState(false);
-
-  // Card form state
   const [cardForm, setCardForm] = useState({ number: "", name: "", expiry: "", cvv: "", installments: "1" });
+  const [cpf, setCpf] = useState("");
+  const [paymentResult, setPaymentResult] = useState<PaymentResult | null>(null);
+  const [processingPayment, setProcessingPayment] = useState(false);
+
+  const enabledMethods = getEnabledMethods(paymentSettings);
+  const pagbankActive = paymentSettings?.is_active && enabledMethods.length > 0;
+
+  // Fallback methods when PagBank is not configured
+  const fallbackMethods = [
+    { id: "pix", label: "PIX", desc: "Pagamento instantâneo" },
+    { id: "credit_card", label: "Cartão de Crédito", desc: "Até 12x" },
+    { id: "boleto", label: "Boleto Bancário", desc: "Vencimento em 3 dias" },
+  ];
+
+  const displayMethods = pagbankActive ? enabledMethods : fallbackMethods;
+
+  // Auto-select first method
+  useEffect(() => {
+    if (displayMethods.length > 0 && !paymentMethod) {
+      setPaymentMethod(displayMethods[0].id);
+    }
+  }, [displayMethods, paymentMethod]);
 
   const formatPrice = (p: number) => p.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-  // Free shipping logic: free for city "Assis" (case-insensitive) or orders >= 499
   const selectedAddr = addresses.find(a => a.id === selectedAddress);
   const isAssisCity = selectedAddr?.city?.trim().toLowerCase() === "assis";
   const shippingCost = isAssisCity || totalPrice >= 499 ? 0 : 29.90;
   const shippingLabel = isAssisCity ? "Frete grátis para Assis" : shippingCost === 0 ? "Grátis" : null;
   const finalTotal = Math.max(0, totalPrice - couponDiscount + shippingCost);
+
+  const maxInstallments = paymentSettings?.max_installments || 12;
+  const minInstallmentValue = paymentSettings?.min_installment_value || 10;
+
+  const installmentOptions = Array.from({ length: maxInstallments }, (_, i) => {
+    const n = i + 1;
+    const installmentValue = finalTotal / n;
+    if (n > 1 && installmentValue < minInstallmentValue) return null;
+    return { value: String(n), label: n === 1 ? `1x de ${formatPrice(finalTotal)} (à vista)` : `${n}x de ${formatPrice(installmentValue)} sem juros` };
+  }).filter(Boolean) as { value: string; label: string }[];
 
   // CEP auto-fill
   const handleCepChange = async (value: string) => {
@@ -78,7 +128,6 @@ export default function CheckoutPage() {
     }
   };
 
-  // Card formatting helpers
   const formatCardNumber = (value: string) => {
     const digits = value.replace(/\D/g, "").slice(0, 16);
     return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
@@ -86,6 +135,13 @@ export default function CheckoutPage() {
   const formatExpiry = (value: string) => {
     const digits = value.replace(/\D/g, "").slice(0, 4);
     if (digits.length > 2) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+    return digits;
+  };
+  const formatCpf = (value: string) => {
+    const digits = value.replace(/\D/g, "").slice(0, 11);
+    if (digits.length > 9) return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`;
+    if (digits.length > 6) return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
+    if (digits.length > 3) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
     return digits;
   };
 
@@ -134,9 +190,7 @@ export default function CheckoutPage() {
   };
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      navigate("/conta");
-    }
+    if (!authLoading && !user) navigate("/conta");
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
@@ -175,52 +229,163 @@ export default function CheckoutPage() {
     return true;
   };
 
+  const callPagbankApi = async (action: string, body: Record<string, any>) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) throw new Error("Sessão expirada");
+
+    const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+    const resp = await fetch(`https://${projectId}.supabase.co/functions/v1/pagbank-api`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+        apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+      },
+      body: JSON.stringify({ action, ...body }),
+    });
+
+    return resp.json();
+  };
+
   const handlePlaceOrder = async () => {
     if (!user || !selectedAddress) return;
-
-    // Validate card if credit_card is selected
     if (paymentMethod === "credit_card" && !validateCardForm()) return;
+    if (paymentSettings?.require_buyer_cpf && cpf.replace(/\D/g, "").length !== 11) {
+      toast.error("CPF é obrigatório");
+      return;
+    }
 
     setLoading(true);
+    setProcessingPayment(true);
     const addr = addresses.find(a => a.id === selectedAddress);
 
-    const { data: order, error: orderError } = await supabase.from("orders").insert({
-      user_id: user.id,
-      total: finalTotal,
-      discount: couponDiscount,
-      shipping_cost: shippingCost,
-      payment_method: paymentMethod === "credit_card" ? `credit_card_${cardForm.installments}x` : paymentMethod,
-      shipping_address: addr ? { street: addr.street, number: addr.number, complement: addr.complement, neighborhood: addr.neighborhood, city: addr.city, state: addr.state, zip_code: addr.zip_code } : null,
-      status: "pending_payment",
-    }).select("id").single();
+    try {
+      // 1. Create order
+      const { data: order, error: orderError } = await supabase.from("orders").insert({
+        user_id: user.id,
+        total: finalTotal,
+        discount: couponDiscount,
+        shipping_cost: shippingCost,
+        payment_method: paymentMethod === "credit_card" ? `credit_card_${cardForm.installments}x` : paymentMethod,
+        shipping_address: addr ? { street: addr.street, number: addr.number, complement: addr.complement, neighborhood: addr.neighborhood, city: addr.city, state: addr.state, zip_code: addr.zip_code } : null,
+        status: "pending_payment",
+      }).select("id").single();
 
-    if (orderError || !order) {
-      toast.error("Erro ao criar pedido");
+      if (orderError || !order) {
+        toast.error("Erro ao criar pedido");
+        setLoading(false);
+        setProcessingPayment(false);
+        return;
+      }
+
+      // 2. Insert order items
+      const orderItems = items.map(i => ({
+        order_id: order.id,
+        product_id: i.product.id,
+        product_name: i.product.name,
+        product_image: i.product.image,
+        quantity: i.quantity,
+        unit_price: i.product.promoPrice || i.product.price,
+        variation: i.variation || null,
+      }));
+
+      await supabase.from("order_items").insert(orderItems);
+
+      // 3. Get profile for customer data
+      const { data: profile } = await supabase.from("profiles").select("full_name, phone, cpf").eq("user_id", user.id).maybeSingle();
+
+      const customer = {
+        name: profile?.full_name || user.email?.split("@")[0] || "Cliente",
+        email: user.email || "",
+        cpf: cpf.replace(/\D/g, "") || profile?.cpf?.replace(/\D/g, "") || "",
+      };
+
+      // 4. Process payment via PagBank if active
+      if (pagbankActive) {
+        let result: any;
+
+        if (paymentMethod === "pix") {
+          result = await callPagbankApi("create-pix", {
+            order_id: order.id,
+            amount: finalTotal,
+            customer,
+          });
+
+          if (result.success) {
+            setPaymentResult({
+              method: "pix",
+              qr_code_text: result.qr_code_text,
+              qr_code_image: result.qr_code,
+              pix_expiration: result.expiration,
+              transaction_id: result.transaction_id,
+            });
+          } else {
+            setPaymentResult({ method: "pix", error: result.error || "Erro ao gerar PIX" });
+          }
+        } else if (paymentMethod === "credit_card") {
+          result = await callPagbankApi("create-card", {
+            order_id: order.id,
+            amount: finalTotal,
+            customer,
+            card_token: cardForm.number.replace(/\s/g, ""), // In production, use PagBank.js tokenization
+            installments: parseInt(cardForm.installments),
+          });
+
+          if (result.success) {
+            setPaymentResult({
+              method: "credit_card",
+              charge_status: result.charge_status,
+              transaction_id: result.transaction_id,
+              order_status: result.order_status,
+            });
+          } else {
+            setPaymentResult({ method: "credit_card", error: result.error || "Erro no pagamento" });
+          }
+        } else if (paymentMethod === "boleto") {
+          result = await callPagbankApi("create-boleto", {
+            order_id: order.id,
+            amount: finalTotal,
+            customer,
+          });
+
+          if (result.success) {
+            setPaymentResult({
+              method: "boleto",
+              barcode: result.barcode,
+              formatted_barcode: result.formatted_barcode,
+              boleto_pdf: result.pdf_link,
+              boleto_due_date: result.due_date,
+              transaction_id: result.transaction_id,
+            });
+          } else {
+            setPaymentResult({ method: "boleto", error: result.error || "Erro ao gerar boleto" });
+          }
+        }
+      } else {
+        // No PagBank - just set basic result
+        setPaymentResult({ method: paymentMethod });
+      }
+
+      setOrderId(order.id);
+      setStep("confirmation");
+      clearCart();
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao processar pedido");
+    } finally {
       setLoading(false);
-      return;
+      setProcessingPayment(false);
     }
+  };
 
-    const orderItems = items.map(i => ({
-      order_id: order.id,
-      product_id: i.product.id,
-      product_name: i.product.name,
-      product_image: i.product.image,
-      quantity: i.quantity,
-      unit_price: i.product.promoPrice || i.product.price,
-      variation: i.variation || null,
-    }));
-
-    const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
-    if (itemsError) {
-      toast.error("Erro ao salvar itens do pedido");
-      setLoading(false);
-      return;
+  const handleCheckPaymentStatus = async () => {
+    if (!orderId) return;
+    const { data } = await supabase.from("orders").select("status, gateway_status").eq("id", orderId).single();
+    if (data?.gateway_status === "PAID" || data?.status === "paid") {
+      toast.success("Pagamento confirmado!");
+      setPaymentResult(prev => prev ? { ...prev, order_status: "paid" } : prev);
+    } else {
+      toast.info("Pagamento ainda pendente. Tente novamente em alguns instantes.");
     }
-
-    setOrderId(order.id);
-    setStep("confirmation");
-    clearCart();
-    setLoading(false);
   };
 
   if (authLoading) return null;
@@ -238,12 +403,221 @@ export default function CheckoutPage() {
 
   const inputClass = "w-full bg-secondary text-foreground px-4 py-3 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground";
 
+  // ============ CONFIRMATION VIEWS ============
 
-  const installmentOptions = Array.from({ length: 12 }, (_, i) => {
-    const n = i + 1;
-    const installmentValue = finalTotal / n;
-    return { value: String(n), label: n === 1 ? `1x de ${formatPrice(finalTotal)} (à vista)` : `${n}x de ${formatPrice(installmentValue)} sem juros` };
-  });
+  const renderPixConfirmation = () => {
+    const hasError = paymentResult?.error;
+    const qrText = paymentResult?.qr_code_text;
+
+    return (
+      <div className="text-center">
+        <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mx-auto mb-4">
+          <QrCode size={32} className="text-accent" />
+        </div>
+        <h2 className="font-display text-2xl font-bold mb-2">Pagamento via PIX</h2>
+        {orderId && <p className="text-xs text-muted-foreground font-body mb-4">Pedido: <span className="font-mono text-foreground">{orderId.slice(0, 8).toUpperCase()}</span></p>}
+
+        {hasError ? (
+          <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 max-w-sm mx-auto mb-6">
+            <AlertTriangle size={20} className="text-destructive mx-auto mb-2" />
+            <p className="text-sm text-destructive font-body">{paymentResult?.error}</p>
+            <p className="text-xs text-muted-foreground mt-2">O pedido foi registrado. Você pode tentar o pagamento pela área de pedidos.</p>
+          </div>
+        ) : (
+          <>
+            {qrText ? (
+              <>
+                <p className="text-muted-foreground font-body mb-1 text-sm">Escaneie o QR Code ou copie o código</p>
+                <div className="bg-white rounded-2xl p-6 inline-block mx-auto mb-4 shadow-lg">
+                  {paymentResult?.qr_code_image ? (
+                    <img src={paymentResult.qr_code_image} alt="QR Code PIX" className="w-[220px] h-[220px]" />
+                  ) : (
+                    <QRCodeSVG value={qrText} size={220} level="M" />
+                  )}
+                </div>
+                <div className="bg-card border border-border rounded-xl p-4 max-w-sm mx-auto mb-4">
+                  <p className="text-xs text-muted-foreground mb-2">Código PIX (copia e cola)</p>
+                  <div className="bg-secondary rounded-lg p-3 font-mono text-xs break-all text-left max-h-20 overflow-y-auto">
+                    {qrText}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-2 gap-1 w-full"
+                    onClick={() => { navigator.clipboard.writeText(qrText); toast.success("Código PIX copiado!"); }}
+                  >
+                    <Copy size={14} /> Copiar código
+                  </Button>
+                </div>
+                {paymentResult?.pix_expiration && (
+                  <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-4">
+                    <Clock size={12} />
+                    <span>Expira em: {new Date(paymentResult.pix_expiration).toLocaleString("pt-BR")}</span>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <p className="text-muted-foreground font-body mb-1 text-sm">Escaneie o QR Code abaixo para pagar</p>
+                <div className="bg-white rounded-2xl p-6 inline-block mx-auto mb-4 shadow-lg">
+                  <QRCodeSVG
+                    value={generateLocalPixPayload()}
+                    size={220}
+                    level="M"
+                  />
+                </div>
+                <div className="bg-card border border-border rounded-xl p-4 max-w-sm mx-auto mb-4">
+                  <p className="text-xs text-muted-foreground mb-1">Valor total</p>
+                  <p className="text-2xl font-display font-bold text-accent">{formatPrice(finalTotal)}</p>
+                </div>
+              </>
+            )}
+          </>
+        )}
+
+        <div className="bg-accent/10 border border-accent/20 rounded-xl p-4 max-w-sm mx-auto mb-4">
+          <p className="text-sm text-foreground font-body flex items-center justify-center gap-2">
+            <Clock size={14} /> Aguardando confirmação do pagamento
+          </p>
+        </div>
+
+        <Button variant="outline" size="sm" className="gap-1 mb-6" onClick={handleCheckPaymentStatus}>
+          <RefreshCw size={14} /> Verificar pagamento
+        </Button>
+
+        <div className="flex gap-3 justify-center">
+          <Button onClick={() => navigate("/conta")} variant="outline" className="gap-2">Meus Pedidos</Button>
+          <Button onClick={() => navigate("/")} className="gradient-gold text-primary-foreground font-body font-semibold gap-2">Continuar Comprando</Button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderCardConfirmation = () => {
+    const hasError = paymentResult?.error;
+    const status = paymentResult?.charge_status;
+    const isPaid = status === "PAID" || status === "AUTHORIZED";
+    const isAnalysis = status === "IN_ANALYSIS";
+
+    return (
+      <div className="text-center">
+        <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 ${hasError ? "bg-destructive/20" : isPaid ? "bg-green-500/20" : "bg-yellow-500/20"}`}>
+          {hasError ? <AlertTriangle size={40} className="text-destructive" /> : isPaid ? <CheckCircle size={40} className="text-green-500" /> : <Clock size={40} className="text-yellow-500" />}
+        </div>
+        <h2 className="font-display text-2xl font-bold mb-2">
+          {hasError ? "Erro no Pagamento" : isPaid ? "Pagamento Aprovado!" : isAnalysis ? "Pagamento em Análise" : "Pedido Recebido"}
+        </h2>
+        <p className="text-muted-foreground font-body mb-2">
+          {hasError
+            ? paymentResult?.error
+            : isPaid
+              ? "Seu pagamento foi aprovado e o pedido está sendo preparado."
+              : isAnalysis
+                ? "Seu pagamento está sendo analisado. Você receberá uma atualização em breve."
+                : "Seu pedido foi criado com sucesso."}
+        </p>
+        {orderId && <p className="text-xs text-muted-foreground font-body mb-6">Pedido: <span className="font-mono text-foreground">{orderId.slice(0, 8).toUpperCase()}</span></p>}
+        <div className="flex gap-3 justify-center">
+          <Button onClick={() => navigate("/conta")} variant="outline" className="gap-2">Meus Pedidos</Button>
+          <Button onClick={() => navigate("/")} className="gradient-gold text-primary-foreground font-body font-semibold gap-2">Continuar Comprando</Button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderBoletoConfirmation = () => {
+    const hasError = paymentResult?.error;
+
+    return (
+      <div className="text-center">
+        <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${hasError ? "bg-destructive/20" : "bg-accent/20"}`}>
+          {hasError ? <AlertTriangle size={32} className="text-destructive" /> : <Receipt size={32} className="text-accent" />}
+        </div>
+        <h2 className="font-display text-2xl font-bold mb-2">{hasError ? "Erro ao Gerar Boleto" : "Boleto Gerado"}</h2>
+        {orderId && <p className="text-xs text-muted-foreground font-body mb-4">Pedido: <span className="font-mono text-foreground">{orderId.slice(0, 8).toUpperCase()}</span></p>}
+
+        {hasError ? (
+          <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 max-w-sm mx-auto mb-6">
+            <p className="text-sm text-destructive font-body">{paymentResult?.error}</p>
+          </div>
+        ) : (
+          <>
+            {paymentResult?.formatted_barcode && (
+              <div className="bg-card border border-border rounded-xl p-4 max-w-md mx-auto mb-4">
+                <p className="text-xs text-muted-foreground mb-2">Linha digitável</p>
+                <div className="bg-secondary rounded-lg p-3 font-mono text-xs break-all">
+                  {paymentResult.formatted_barcode}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-2 gap-1 w-full"
+                  onClick={() => { navigator.clipboard.writeText(paymentResult.formatted_barcode!); toast.success("Código copiado!"); }}
+                >
+                  <Copy size={14} /> Copiar linha digitável
+                </Button>
+              </div>
+            )}
+            {paymentResult?.boleto_pdf && (
+              <Button asChild variant="outline" className="gap-2 mb-4">
+                <a href={paymentResult.boleto_pdf} target="_blank" rel="noopener noreferrer">
+                  <Receipt size={16} /> Visualizar Boleto (PDF)
+                </a>
+              </Button>
+            )}
+            {paymentResult?.boleto_due_date && (
+              <p className="text-xs text-muted-foreground mb-4">Vencimento: {new Date(paymentResult.boleto_due_date + "T12:00:00").toLocaleDateString("pt-BR")}</p>
+            )}
+            <div className="bg-accent/10 border border-accent/20 rounded-xl p-4 max-w-sm mx-auto mb-6">
+              <p className="text-sm text-foreground font-body">
+                {paymentSettings?.boleto_instructions || "Pague o boleto até o vencimento para confirmar seu pedido."}
+              </p>
+            </div>
+          </>
+        )}
+
+        <div className="flex gap-3 justify-center">
+          <Button onClick={() => navigate("/conta")} variant="outline" className="gap-2">Meus Pedidos</Button>
+          <Button onClick={() => navigate("/")} className="gradient-gold text-primary-foreground font-body font-semibold gap-2">Continuar Comprando</Button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderDefaultConfirmation = () => (
+    <div className="text-center">
+      <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
+        <CheckCircle size={40} className="text-green-500" />
+      </div>
+      <h2 className="font-display text-2xl font-bold mb-2">Pedido Confirmado!</h2>
+      <p className="text-muted-foreground font-body mb-2">Seu pedido foi criado com sucesso.</p>
+      {orderId && <p className="text-xs text-muted-foreground font-body mb-6">Código: <span className="font-mono text-foreground">{orderId.slice(0, 8).toUpperCase()}</span></p>}
+      <div className="flex gap-3 justify-center">
+        <Button onClick={() => navigate("/conta")} variant="outline" className="gap-2">Meus Pedidos</Button>
+        <Button onClick={() => navigate("/")} className="gradient-gold text-primary-foreground font-body font-semibold gap-2">Continuar Comprando</Button>
+      </div>
+    </div>
+  );
+
+  // Generates a local EMV PIX payload as fallback when PagBank is not active
+  function generateLocalPixPayload() {
+    const pixKey = "18997348718";
+    const name = "AQUATERAPIA PET SHOP";
+    const city = "ASSIS";
+    const amount = finalTotal.toFixed(2);
+    const txid = orderId ? orderId.slice(0, 25).replace(/-/g, "") : "COMPRA";
+    const pad = (id: string, val: string) => `${id}${String(val.length).padStart(2, "0")}${val}`;
+    const merchantAccount = pad("00", "br.gov.bcb.pix") + pad("01", pixKey);
+    let payload = pad("00", "01") + pad("26", merchantAccount) + pad("52", "0000") + pad("53", "986") + pad("54", amount) + pad("58", "BR") + pad("59", name.slice(0, 25)) + pad("60", city.slice(0, 15)) + pad("62", pad("05", txid));
+    payload += "6304";
+    let crc = 0xFFFF;
+    for (let i = 0; i < payload.length; i++) {
+      crc ^= payload.charCodeAt(i) << 8;
+      for (let j = 0; j < 8; j++) crc = crc & 0x8000 ? (crc << 1) ^ 0x1021 : crc << 1;
+      crc &= 0xFFFF;
+    }
+    return payload + crc.toString(16).toUpperCase().padStart(4, "0");
+  }
 
   return (
     <>
@@ -269,13 +643,12 @@ export default function CheckoutPage() {
         </div>
 
         <div className="grid md:grid-cols-5 gap-8">
-          {/* Main content */}
           <div className="md:col-span-3">
             <AnimatePresence mode="wait">
               {step === "address" && (
                 <motion.div key="address" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
                   <h2 className="font-display text-xl font-bold mb-6 flex items-center gap-2"><MapPin size={20} className="text-accent" /> Endereço de Entrega</h2>
-                  
+
                   {addresses.length === 0 && !showAddressForm ? (
                     <div className="text-center py-12 bg-card rounded-xl border border-border">
                       <MapPin size={40} className="text-muted-foreground/30 mx-auto mb-3" />
@@ -315,14 +688,7 @@ export default function CheckoutPage() {
                         <div>
                           <label className="text-sm font-body font-medium block mb-1">CEP</label>
                           <div className="relative">
-                            <input
-                              required
-                              value={form.zip_code}
-                              onChange={e => handleCepChange(e.target.value)}
-                              className={inputClass}
-                              placeholder="00000-000"
-                              maxLength={9}
-                            />
+                            <input required value={form.zip_code} onChange={e => handleCepChange(e.target.value)} className={inputClass} placeholder="00000-000" maxLength={9} />
                             {cepLoading && <Loader2 size={16} className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-accent" />}
                           </div>
                         </div>
@@ -372,109 +738,91 @@ export default function CheckoutPage() {
               {step === "payment" && (
                 <motion.div key="payment" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
                   <h2 className="font-display text-xl font-bold mb-6 flex items-center gap-2"><CreditCard size={20} className="text-accent" /> Forma de Pagamento</h2>
-                  
-                  <div className="space-y-3">
-                    {[
-                      { id: "pix", label: "PIX", desc: "Pagamento instantâneo com desconto" },
-                      { id: "credit_card", label: "Cartão de Crédito", desc: "Até 12x sem juros" },
-                      { id: "boleto", label: "Boleto Bancário", desc: "Compensação em até 3 dias úteis" },
-                    ].map(pm => (
-                      <button key={pm.id} onClick={() => setPaymentMethod(pm.id)}
-                        className={`w-full text-left bg-card rounded-xl border p-4 transition-all ${paymentMethod === pm.id ? "border-accent ring-1 ring-accent/30" : "border-border hover:border-accent/30"}`}>
-                        <div className="flex items-center gap-2">
-                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${paymentMethod === pm.id ? "border-accent" : "border-muted-foreground"}`}>
-                            {paymentMethod === pm.id && <div className="w-2 h-2 rounded-full bg-accent" />}
-                          </div>
-                          <div>
-                            <span className="font-body text-sm font-semibold">{pm.label}</span>
-                            <p className="text-xs text-muted-foreground">{pm.desc}</p>
-                          </div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
 
-                  {/* Credit card form */}
-                  <AnimatePresence>
-                    {paymentMethod === "credit_card" && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="bg-card rounded-xl border border-border p-6 mt-4 space-y-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Lock size={14} className="text-accent" />
-                            <span className="text-xs text-muted-foreground font-body">Seus dados estão seguros e criptografados</span>
-                          </div>
+                  {settingsLoading ? (
+                    <div className="flex items-center justify-center py-8">
+                      <Loader2 className="animate-spin text-accent" size={24} />
+                    </div>
+                  ) : (
+                    <>
+                      <div className="space-y-3">
+                        {displayMethods.map(pm => (
+                          <button key={pm.id} onClick={() => setPaymentMethod(pm.id)}
+                            className={`w-full text-left bg-card rounded-xl border p-4 transition-all ${paymentMethod === pm.id ? "border-accent ring-1 ring-accent/30" : "border-border hover:border-accent/30"}`}>
+                            <div className="flex items-center gap-2">
+                              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${paymentMethod === pm.id ? "border-accent" : "border-muted-foreground"}`}>
+                                {paymentMethod === pm.id && <div className="w-2 h-2 rounded-full bg-accent" />}
+                              </div>
+                              <div>
+                                <span className="font-body text-sm font-semibold">{pm.label}</span>
+                                <p className="text-xs text-muted-foreground">{pm.desc}</p>
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
 
-                          <div>
-                            <label className="text-sm font-body font-medium block mb-1">Número do Cartão</label>
-                            <input
-                              value={cardForm.number}
-                              onChange={e => setCardForm(f => ({ ...f, number: formatCardNumber(e.target.value) }))}
-                              className={inputClass}
-                              placeholder="0000 0000 0000 0000"
-                              maxLength={19}
-                              inputMode="numeric"
-                            />
-                          </div>
-                          <div>
-                            <label className="text-sm font-body font-medium block mb-1">Nome no Cartão</label>
-                            <input
-                              value={cardForm.name}
-                              onChange={e => setCardForm(f => ({ ...f, name: e.target.value.toUpperCase() }))}
-                              className={inputClass}
-                              placeholder="COMO IMPRESSO NO CARTÃO"
-                            />
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <label className="text-sm font-body font-medium block mb-1">Validade</label>
-                              <input
-                                value={cardForm.expiry}
-                                onChange={e => setCardForm(f => ({ ...f, expiry: formatExpiry(e.target.value) }))}
-                                className={inputClass}
-                                placeholder="MM/AA"
-                                maxLength={5}
-                                inputMode="numeric"
-                              />
-                            </div>
-                            <div>
-                              <label className="text-sm font-body font-medium block mb-1">CVV</label>
-                              <input
-                                value={cardForm.cvv}
-                                onChange={e => setCardForm(f => ({ ...f, cvv: e.target.value.replace(/\D/g, "").slice(0, 4) }))}
-                                className={inputClass}
-                                placeholder="000"
-                                maxLength={4}
-                                inputMode="numeric"
-                                type="password"
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <label className="text-sm font-body font-medium block mb-1">Parcelas</label>
-                            <select
-                              value={cardForm.installments}
-                              onChange={e => setCardForm(f => ({ ...f, installments: e.target.value }))}
-                              className={`${inputClass} cursor-pointer`}
-                            >
-                              {installmentOptions.map(opt => (
-                                <option key={opt.value} value={opt.value}>{opt.label}</option>
-                              ))}
-                            </select>
-                          </div>
+                      {/* CPF field when required */}
+                      {paymentSettings?.require_buyer_cpf && (
+                        <div className="mt-4">
+                          <label className="text-sm font-body font-medium block mb-1">CPF do comprador</label>
+                          <input
+                            value={cpf}
+                            onChange={e => setCpf(formatCpf(e.target.value))}
+                            className={inputClass}
+                            placeholder="000.000.000-00"
+                            maxLength={14}
+                            inputMode="numeric"
+                          />
                         </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                      )}
+
+                      {/* Credit card form */}
+                      <AnimatePresence>
+                        {paymentMethod === "credit_card" && (
+                          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                            <div className="bg-card rounded-xl border border-border p-6 mt-4 space-y-4">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Lock size={14} className="text-accent" />
+                                <span className="text-xs text-muted-foreground font-body">Seus dados estão seguros e criptografados</span>
+                              </div>
+                              <div>
+                                <label className="text-sm font-body font-medium block mb-1">Número do Cartão</label>
+                                <input value={cardForm.number} onChange={e => setCardForm(f => ({ ...f, number: formatCardNumber(e.target.value) }))} className={inputClass} placeholder="0000 0000 0000 0000" maxLength={19} inputMode="numeric" />
+                              </div>
+                              <div>
+                                <label className="text-sm font-body font-medium block mb-1">Nome no Cartão</label>
+                                <input value={cardForm.name} onChange={e => setCardForm(f => ({ ...f, name: e.target.value.toUpperCase() }))} className={inputClass} placeholder="COMO IMPRESSO NO CARTÃO" />
+                              </div>
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <label className="text-sm font-body font-medium block mb-1">Validade</label>
+                                  <input value={cardForm.expiry} onChange={e => setCardForm(f => ({ ...f, expiry: formatExpiry(e.target.value) }))} className={inputClass} placeholder="MM/AA" maxLength={5} inputMode="numeric" />
+                                </div>
+                                <div>
+                                  <label className="text-sm font-body font-medium block mb-1">CVV</label>
+                                  <input value={cardForm.cvv} onChange={e => setCardForm(f => ({ ...f, cvv: e.target.value.replace(/\D/g, "").slice(0, 4) }))} className={inputClass} placeholder="000" maxLength={4} inputMode="numeric" type="password" />
+                                </div>
+                              </div>
+                              <div>
+                                <label className="text-sm font-body font-medium block mb-1">Parcelas</label>
+                                <select value={cardForm.installments} onChange={e => setCardForm(f => ({ ...f, installments: e.target.value }))} className={`${inputClass} cursor-pointer`}>
+                                  {installmentOptions.map(opt => (
+                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </>
+                  )}
 
                   <div className="mt-8 flex justify-between">
                     <Button variant="outline" onClick={() => setStep("address")} className="gap-2"><ArrowLeft size={16} /> Voltar</Button>
-                     <Button onClick={handlePlaceOrder} disabled={loading} className="gradient-gold text-primary-foreground font-body font-semibold h-11 px-8 glow-gold">
-                       {loading ? "Processando..." : "Confirmar Pedido"}
+                    <Button onClick={handlePlaceOrder} disabled={loading || processingPayment} className="gradient-gold text-primary-foreground font-body font-semibold h-11 px-8 glow-gold">
+                      {processingPayment ? <><Loader2 size={16} className="animate-spin mr-2" /> Processando...</> : "Confirmar Pedido"}
                     </Button>
                   </div>
                 </motion.div>
@@ -482,82 +830,10 @@ export default function CheckoutPage() {
 
               {step === "confirmation" && (
                 <motion.div key="confirmation" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="py-8">
-                  {paymentMethod === "pix" ? (
-                    <div className="text-center">
-                      <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mx-auto mb-4">
-                        <QrCode size={32} className="text-accent" />
-                      </div>
-                      <h2 className="font-display text-2xl font-bold mb-2">Pagamento via PIX</h2>
-                      <p className="text-muted-foreground font-body mb-1 text-sm">Escaneie o QR Code abaixo para pagar</p>
-                      {orderId && <p className="text-xs text-muted-foreground font-body mb-6">Pedido: <span className="font-mono text-foreground">{orderId.slice(0, 8).toUpperCase()}</span></p>}
-                      
-                      <div className="bg-white rounded-2xl p-6 inline-block mx-auto mb-4 shadow-lg">
-                        <QRCodeSVG
-                          value={(() => {
-                            const pixKey = "18997348718";
-                            const name = "AQUATERAPIA PET SHOP";
-                            const city = "ASSIS";
-                            const amount = finalTotal.toFixed(2);
-                            const txid = orderId ? orderId.slice(0, 25).replace(/-/g, "") : "COMPRA";
-                            // EMV PIX payload
-                            const pad = (id: string, val: string) => `${id}${String(val.length).padStart(2, "0")}${val}`;
-                            const merchantAccount = pad("00", "br.gov.bcb.pix") + pad("01", pixKey);
-                            let payload = pad("00", "01") + pad("26", merchantAccount) + pad("52", "0000") + pad("53", "986") + pad("54", amount) + pad("58", "BR") + pad("59", name.slice(0, 25)) + pad("60", city.slice(0, 15)) + pad("62", pad("05", txid));
-                            payload += "6304";
-                            // CRC16-CCITT
-                            let crc = 0xFFFF;
-                            for (let i = 0; i < payload.length; i++) {
-                              crc ^= payload.charCodeAt(i) << 8;
-                              for (let j = 0; j < 8; j++) crc = crc & 0x8000 ? (crc << 1) ^ 0x1021 : crc << 1;
-                              crc &= 0xFFFF;
-                            }
-                            return payload + crc.toString(16).toUpperCase().padStart(4, "0");
-                          })()}
-                          size={220}
-                          level="M"
-                        />
-                      </div>
-                      
-                      <div className="bg-card border border-border rounded-xl p-4 max-w-sm mx-auto mb-4">
-                        <p className="text-xs text-muted-foreground mb-1">Valor total</p>
-                        <p className="text-2xl font-display font-bold text-accent">{formatPrice(finalTotal)}</p>
-                        <p className="text-xs text-muted-foreground mt-2 mb-1">Chave PIX</p>
-                        <div className="flex items-center justify-center gap-2">
-                          <span className="font-mono text-sm">18997348718</span>
-                          <button
-                            onClick={() => { navigator.clipboard.writeText("18997348718"); toast.success("Chave PIX copiada!"); }}
-                            className="text-accent hover:text-accent/80"
-                          >
-                            <Copy size={14} />
-                          </button>
-                        </div>
-                      </div>
-                      
-                      <div className="bg-accent/10 border border-accent/20 rounded-xl p-4 max-w-sm mx-auto mb-6">
-                        <p className="text-sm text-foreground font-body">
-                          Após realizar o pagamento, aguarde a confirmação ou envie o comprovante.
-                        </p>
-                      </div>
-
-                      <div className="flex gap-3 justify-center">
-                        <Button onClick={() => navigate("/conta")} variant="outline" className="gap-2">Meus Pedidos</Button>
-                        <Button onClick={() => navigate("/")} className="gradient-gold text-primary-foreground font-body font-semibold gap-2">Continuar Comprando</Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center">
-                      <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
-                        <CheckCircle size={40} className="text-green-500" />
-                      </div>
-                      <h2 className="font-display text-2xl font-bold mb-2">Pedido Confirmado!</h2>
-                      <p className="text-muted-foreground font-body mb-2">Seu pedido foi criado com sucesso.</p>
-                      {orderId && <p className="text-xs text-muted-foreground font-body mb-6">Código: <span className="font-mono text-foreground">{orderId.slice(0, 8).toUpperCase()}</span></p>}
-                      <div className="flex gap-3 justify-center">
-                        <Button onClick={() => navigate("/conta")} variant="outline" className="gap-2">Meus Pedidos</Button>
-                        <Button onClick={() => navigate("/")} className="gradient-gold text-primary-foreground font-body font-semibold gap-2">Continuar Comprando</Button>
-                      </div>
-                    </div>
-                  )}
+                  {paymentResult?.method === "pix" ? renderPixConfirmation()
+                    : paymentResult?.method === "credit_card" ? renderCardConfirmation()
+                      : paymentResult?.method === "boleto" ? renderBoletoConfirmation()
+                        : renderDefaultConfirmation()}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -581,7 +857,6 @@ export default function CheckoutPage() {
                   ))}
                 </div>
                 <div className="border-t border-border pt-4 space-y-2">
-                  {/* Coupon */}
                   <div className="mb-3">
                     {couponApplied ? (
                       <div className="flex items-center justify-between bg-green-500/10 rounded-lg px-3 py-2">
@@ -590,12 +865,7 @@ export default function CheckoutPage() {
                       </div>
                     ) : (
                       <div className="flex gap-2">
-                        <input
-                          value={couponCode}
-                          onChange={e => setCouponCode(e.target.value.toUpperCase())}
-                          placeholder="Cupom de desconto"
-                          className="flex-1 bg-secondary text-foreground px-3 py-2 rounded-lg font-mono text-xs focus:outline-none focus:ring-1 focus:ring-accent/50 placeholder:text-muted-foreground"
-                        />
+                        <input value={couponCode} onChange={e => setCouponCode(e.target.value.toUpperCase())} placeholder="Cupom de desconto" className="flex-1 bg-secondary text-foreground px-3 py-2 rounded-lg font-mono text-xs focus:outline-none focus:ring-1 focus:ring-accent/50 placeholder:text-muted-foreground" />
                         <Button variant="outline" size="sm" onClick={handleApplyCoupon} disabled={couponLoading} className="text-xs">
                           {couponLoading ? "..." : "Aplicar"}
                         </Button>
