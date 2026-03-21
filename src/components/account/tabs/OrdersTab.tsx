@@ -1,16 +1,38 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Package } from "lucide-react";
+import { Package, CreditCard, QrCode, Receipt, Clock, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 
-const statusLabels: Record<string, { label: string; color: string }> = {
-  pending_payment: { label: "Aguardando Pagamento", color: "text-yellow-400" },
-  paid: { label: "Pagamento Aprovado", color: "text-green-400" },
-  preparing: { label: "Em Separação", color: "text-blue-400" },
-  shipped: { label: "Enviado", color: "text-purple-400" },
-  delivered: { label: "Entregue", color: "text-emerald-400" },
-  cancelled: { label: "Cancelado", color: "text-destructive" },
+const statusLabels: Record<string, { label: string; color: string; icon: typeof Clock }> = {
+  pending_payment: { label: "Aguardando Pagamento", color: "text-yellow-400", icon: Clock },
+  awaiting_payment: { label: "Aguardando Pagamento", color: "text-yellow-400", icon: Clock },
+  paid: { label: "Pagamento Aprovado", color: "text-green-400", icon: CheckCircle },
+  authorized: { label: "Pagamento Autorizado", color: "text-green-400", icon: CheckCircle },
+  under_review: { label: "Em Análise", color: "text-blue-400", icon: AlertTriangle },
+  preparing: { label: "Em Separação", color: "text-blue-400", icon: Package },
+  shipped: { label: "Enviado", color: "text-purple-400", icon: Package },
+  delivered: { label: "Entregue", color: "text-emerald-400", icon: CheckCircle },
+  cancelled: { label: "Cancelado", color: "text-destructive", icon: XCircle },
+  canceled: { label: "Cancelado", color: "text-destructive", icon: XCircle },
+  expired: { label: "Expirado", color: "text-muted-foreground", icon: Clock },
+  failed: { label: "Falhou", color: "text-destructive", icon: XCircle },
+  refunded: { label: "Reembolsado", color: "text-orange-400", icon: Receipt },
 };
+
+const paymentLabels: Record<string, string> = {
+  pix: "PIX",
+  boleto: "Boleto",
+  dinheiro: "Dinheiro",
+};
+
+function getPaymentLabel(method: string | null) {
+  if (!method) return "—";
+  if (method.startsWith("credit_card")) {
+    const parts = method.match(/(\d+)x/);
+    return parts ? `Cartão ${parts[1]}x` : "Cartão de Crédito";
+  }
+  return paymentLabels[method] || method;
+}
 
 export default function OrdersTab() {
   const { user } = useAuth();
@@ -46,7 +68,8 @@ export default function OrdersTab() {
   return (
     <div className="space-y-4">
       {orders.map(order => {
-        const st = statusLabels[order.status] || { label: order.status, color: "text-muted-foreground" };
+        const st = statusLabels[order.status] || { label: order.status, color: "text-muted-foreground", icon: Package };
+        const StatusIcon = st.icon;
         return (
           <div key={order.id} className="bg-card rounded-xl border border-border p-5">
             <div className="flex items-center justify-between mb-3">
@@ -54,8 +77,30 @@ export default function OrdersTab() {
                 <span className="text-xs text-muted-foreground font-body">Pedido #{order.id.slice(0, 8)}</span>
                 <p className="text-xs text-muted-foreground font-body">{new Date(order.created_at).toLocaleDateString("pt-BR")}</p>
               </div>
-              <span className={`text-xs font-semibold font-body ${st.color}`}>{st.label}</span>
+              <span className={`text-xs font-semibold font-body flex items-center gap-1 ${st.color}`}>
+                <StatusIcon size={12} />
+                {st.label}
+              </span>
             </div>
+
+            {/* Payment info */}
+            <div className="flex items-center gap-4 mb-3 text-xs text-muted-foreground font-body">
+              <span className="flex items-center gap-1">
+                <CreditCard size={12} />
+                {getPaymentLabel(order.payment_method)}
+              </span>
+              {order.gateway_status && (
+                <span className="bg-secondary px-2 py-0.5 rounded text-[10px]">
+                  Gateway: {order.gateway_status}
+                </span>
+              )}
+              {order.gateway_paid_at && (
+                <span className="text-green-400">
+                  Pago em {new Date(order.gateway_paid_at).toLocaleDateString("pt-BR")}
+                </span>
+              )}
+            </div>
+
             <div className="space-y-2">
               {order.order_items?.map((item: any) => (
                 <div key={item.id} className="flex items-center gap-3">
