@@ -63,7 +63,7 @@ export default function Header() {
       <div className="bg-black border-b border-white/[0.06]">
         <div className="container flex items-center justify-between h-20 md:h-[88px]">
           {/* Mobile menu */}
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden text-primary-foreground/70 p-2" aria-label="Menu">
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden text-white/70 p-2" aria-label="Menu">
             {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
 
@@ -78,13 +78,13 @@ export default function Header() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link to="/" className="text-[13px] font-body font-medium text-primary-foreground/55 hover:text-primary-foreground transition-colors tracking-wide">
+            <Link to="/" className="text-[13px] font-body font-medium text-white/55 hover:text-white transition-colors tracking-wide">
               Início
             </Link>
             <div ref={catRef} className="relative">
               <button
                 onClick={() => setCatDropdown(!catDropdown)}
-                className="flex items-center gap-1 text-[13px] font-body font-medium text-primary-foreground/55 hover:text-primary-foreground transition-colors tracking-wide"
+                className="flex items-center gap-1 text-[13px] font-body font-medium text-white/55 hover:text-white transition-colors tracking-wide"
               >
                 Categorias <ChevronDown size={13} className={`transition-transform ${catDropdown ? "rotate-180" : ""}`} />
               </button>
@@ -126,21 +126,21 @@ export default function Header() {
           {/* Actions */}
           <div className="flex items-center gap-3">
             {isAdmin && (
-              <Link to="/admin" className="hidden md:flex items-center gap-1.5 text-[11px] font-body font-semibold text-primary-foreground/35 hover:text-primary-foreground/65 transition-colors uppercase tracking-wider" aria-label="Administrador">
+              <Link to="/admin" className="hidden md:flex items-center gap-1.5 text-[11px] font-body font-semibold text-white/35 hover:text-white/65 transition-colors uppercase tracking-wider" aria-label="Administrador">
                 <Settings size={13} />
                 Admin
               </Link>
             )}
-            <button onClick={() => setSearchOpen(!searchOpen)} className="text-primary-foreground/45 hover:text-primary-foreground transition-colors p-2" aria-label="Buscar">
+            <button onClick={() => setSearchOpen(!searchOpen)} className="text-white/45 hover:text-white transition-colors p-2" aria-label="Buscar">
               <Search size={18} />
             </button>
-            <Link to="/conta" className="hidden md:block text-primary-foreground/45 hover:text-primary-foreground transition-colors p-2" aria-label="Conta">
+            <Link to="/conta" className="hidden md:block text-white/45 hover:text-white transition-colors p-2" aria-label="Conta">
               <User size={18} />
             </Link>
-            <Link to="/favoritos" className="hidden md:block text-primary-foreground/45 hover:text-primary-foreground transition-colors p-2" aria-label="Favoritos">
+            <Link to="/favoritos" className="hidden md:block text-white/45 hover:text-white transition-colors p-2" aria-label="Favoritos">
               <Heart size={18} />
             </Link>
-            <button onClick={() => setIsCartOpen(true)} className="relative text-primary-foreground/45 hover:text-primary-foreground transition-colors p-2" aria-label="Carrinho">
+            <button onClick={() => setIsCartOpen(true)} className="relative text-white/45 hover:text-white transition-colors p-2" aria-label="Carrinho">
               <ShoppingBag size={18} />
               {totalItems > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 gradient-brand-gold text-foreground text-[9px] font-bold w-[18px] h-[18px] rounded-full flex items-center justify-center shadow-gold">
