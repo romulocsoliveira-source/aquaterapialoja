@@ -328,6 +328,24 @@ export default function OrdersCentralTab() {
                                     <span className="text-muted-foreground">Pagamento</span>
                                     <span className="text-right font-medium">{order.payment_method || "—"}</span>
                                   </div>
+                                  {order.gateway_transaction_id && (
+                                    <div className="flex items-start justify-between gap-3">
+                                      <span className="text-muted-foreground">ID Transação</span>
+                                      <span className="text-right font-mono text-xs font-medium">{order.gateway_transaction_id}</span>
+                                    </div>
+                                  )}
+                                  {order.gateway_status && (
+                                    <div className="flex items-start justify-between gap-3">
+                                      <span className="text-muted-foreground">Status Gateway</span>
+                                      <span className={`text-right font-medium ${order.gateway_status === "PAID" ? "text-green-500" : order.gateway_status === "DECLINED" || order.gateway_status === "CANCELED" ? "text-destructive" : "text-yellow-500"}`}>{order.gateway_status}</span>
+                                    </div>
+                                  )}
+                                  {order.gateway_paid_at && (
+                                    <div className="flex items-start justify-between gap-3">
+                                      <span className="text-muted-foreground">Pago em</span>
+                                      <span className="text-right font-medium text-green-500">{new Date(order.gateway_paid_at).toLocaleString("pt-BR")}</span>
+                                    </div>
+                                  )}
                                   <div className="flex items-start justify-between gap-3">
                                     <span className="text-muted-foreground">Status</span>
                                     <span className={`text-right font-medium ${order.statusColor}`}>{order.statusLabel}</span>
