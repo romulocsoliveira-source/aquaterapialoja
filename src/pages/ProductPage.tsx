@@ -31,8 +31,8 @@ export default function ProductPage() {
   return (
     <>
       <Helmet>
-        <title>{product.name} | Almoxarifado das Tintas</title>
-        <meta name="description" content={product.description?.slice(0, 155) || `${product.name} - ${product.category}. Compre no Almoxarifado das Tintas com frete grátis acima de R$ 299.`} />
+        <title>{product.name} | Aquaterapia</title>
+        <meta name="description" content={product.description?.slice(0, 155) || `${product.name} - ${product.category}. Compre na Aquaterapia com frete grátis acima de R$ 199.`} />
       </Helmet>
     <div className="container py-8 md:py-16">
       <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8 font-body">
