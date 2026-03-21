@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,49 +6,52 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 210 30% 12%;
+    --background: 40 20% 97%;
+    --foreground: 180 25% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 30% 12%;
+    --card-foreground: 180 25% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 30% 12%;
+    --popover-foreground: 180 25% 12%;
 
-    --primary: 197 71% 33%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 174 42% 24%;
+    --primary-foreground: 40 30% 96%;
 
-    --secondary: 197 15% 94%;
-    --secondary-foreground: 210 30% 12%;
+    --secondary: 40 18% 93%;
+    --secondary-foreground: 180 25% 12%;
 
-    --muted: 210 12% 92%;
-    --muted-foreground: 210 10% 48%;
+    --muted: 40 12% 90%;
+    --muted-foreground: 180 8% 46%;
 
-    --accent: 170 55% 38%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 36 60% 50%;
+    --accent-foreground: 40 30% 96%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 210 14% 89%;
-    --input: 210 14% 89%;
-    --ring: 197 71% 33%;
+    --border: 40 14% 88%;
+    --input: 40 14% 88%;
+    --ring: 174 42% 24%;
 
     --radius: 0.625rem;
 
-    --brand: 197 71% 33%;
-    --brand-foreground: 0 0% 100%;
-    --brand-light: 197 60% 52%;
-    --brand-dark: 197 80% 22%;
+    --brand: 174 42% 24%;
+    --brand-foreground: 40 30% 96%;
+    --brand-light: 174 35% 38%;
+    --brand-dark: 180 30% 14%;
+    --brand-gold: 36 60% 50%;
+    --brand-gold-light: 38 55% 62%;
+    --brand-warm: 30 25% 94%;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 210 30% 12%;
-    --sidebar-primary: 197 71% 33%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 197 15% 94%;
-    --sidebar-accent-foreground: 210 30% 12%;
-    --sidebar-border: 210 14% 89%;
-    --sidebar-ring: 197 71% 33%;
+    --sidebar-foreground: 180 25% 12%;
+    --sidebar-primary: 174 42% 24%;
+    --sidebar-primary-foreground: 40 30% 96%;
+    --sidebar-accent: 40 18% 93%;
+    --sidebar-accent-foreground: 180 25% 12%;
+    --sidebar-border: 40 14% 88%;
+    --sidebar-ring: 174 42% 24%;
   }
 }
 
@@ -68,46 +71,63 @@
 
 @layer utilities {
   .gradient-brand {
-    background: linear-gradient(135deg, hsl(197, 71%, 33%), hsl(170, 55%, 38%));
+    background: linear-gradient(135deg, hsl(174, 42%, 24%), hsl(174, 35%, 38%));
   }
   .gradient-brand-soft {
-    background: linear-gradient(135deg, hsl(197, 60%, 52%), hsl(170, 45%, 48%));
+    background: linear-gradient(135deg, hsl(174, 35%, 38%), hsl(174, 28%, 48%));
+  }
+  .gradient-brand-gold {
+    background: linear-gradient(135deg, hsl(36, 60%, 50%), hsl(38, 55%, 62%));
   }
   .gradient-dark {
-    background: linear-gradient(135deg, hsl(210, 30%, 12%), hsl(197, 71%, 33%));
+    background: linear-gradient(135deg, hsl(180, 30%, 8%), hsl(180, 25%, 14%));
+  }
+  .gradient-hero {
+    background: linear-gradient(135deg, hsl(180, 30%, 10%), hsl(174, 42%, 18%), hsl(180, 25%, 14%));
   }
   .text-gradient-brand {
-    background: linear-gradient(135deg, hsl(197, 71%, 33%), hsl(170, 55%, 38%));
+    background: linear-gradient(135deg, hsl(174, 42%, 24%), hsl(174, 35%, 38%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .text-gradient-gold {
+    background: linear-gradient(135deg, hsl(36, 60%, 50%), hsl(38, 55%, 62%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .shadow-brand {
-    box-shadow: 0 4px 24px hsl(197, 71%, 33%, 0.15);
+    box-shadow: 0 4px 24px hsl(174, 42%, 24%, 0.12);
   }
   .shadow-brand-lg {
-    box-shadow: 0 8px 40px hsl(197, 71%, 33%, 0.2);
+    box-shadow: 0 8px 40px hsl(174, 42%, 24%, 0.16);
+  }
+  .shadow-gold {
+    box-shadow: 0 4px 24px hsl(36, 60%, 50%, 0.2);
+  }
+  .shadow-elegant {
+    box-shadow: 0 1px 3px hsl(180, 25%, 12%, 0.04), 0 6px 24px hsl(180, 25%, 12%, 0.06);
   }
 
-  /* Keep old class names for backwards compat */
-  .gradient-pet { background: linear-gradient(135deg, hsl(197, 71%, 33%), hsl(170, 55%, 38%)); }
-  .gradient-gold { background: linear-gradient(135deg, hsl(197, 71%, 33%), hsl(170, 55%, 38%)); }
-  .gradient-gold-shine { background: linear-gradient(135deg, hsl(197, 71%, 33%), hsl(197, 60%, 52%), hsl(170, 55%, 38%)); }
-  .gradient-dark-gold { background: linear-gradient(135deg, hsl(210, 30%, 12%), hsl(197, 71%, 33%)); }
-  .text-gradient-gold { background: linear-gradient(135deg, hsl(197, 71%, 33%), hsl(170, 55%, 38%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .text-gradient-shine { background: linear-gradient(135deg, hsl(197, 60%, 52%), hsl(197, 71%, 33%), hsl(170, 55%, 38%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .glow-gold { box-shadow: 0 0 20px hsl(197, 71%, 33%, 0.25); }
-  .glow-gold-strong { box-shadow: 0 0 30px hsl(197, 71%, 33%, 0.35); }
-  .gradient-pet-shine { background: linear-gradient(135deg, hsl(197, 71%, 33%), hsl(197, 60%, 52%), hsl(170, 55%, 38%)); }
-  .gradient-dark-pet { background: linear-gradient(135deg, hsl(210, 30%, 12%), hsl(197, 71%, 33%)); }
-  .gradient-ocean { background: linear-gradient(135deg, hsl(197, 71%, 33%), hsl(197, 60%, 52%)); }
-  .shadow-ocean { box-shadow: 0 4px 20px hsl(197, 71%, 33%, 0.25); }
-  .gradient-paint { background: linear-gradient(135deg, hsl(197, 71%, 33%), hsl(170, 55%, 38%)); }
-  .gradient-paint-soft { background: linear-gradient(135deg, hsl(197, 71%, 33%), hsl(197, 60%, 52%)); }
-  .gradient-purple-pink { background: linear-gradient(135deg, hsl(197, 71%, 33%), hsl(170, 55%, 38%)); }
-  .text-gradient-paint { background: linear-gradient(135deg, hsl(197, 71%, 33%), hsl(170, 55%, 38%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .text-gradient-pink { background: linear-gradient(135deg, hsl(197, 71%, 33%), hsl(170, 55%, 38%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .glow-pink { box-shadow: 0 0 20px hsl(197, 71%, 33%, 0.25); }
-  .glow-purple { box-shadow: 0 0 20px hsl(170, 55%, 38%, 0.3); }
+  /* Backwards compat aliases */
+  .gradient-pet { background: linear-gradient(135deg, hsl(174, 42%, 24%), hsl(174, 35%, 38%)); }
+  .gradient-gold { background: linear-gradient(135deg, hsl(36, 60%, 50%), hsl(38, 55%, 62%)); }
+  .gradient-gold-shine { background: linear-gradient(135deg, hsl(36, 60%, 50%), hsl(38, 55%, 62%), hsl(36, 60%, 50%)); }
+  .gradient-dark-gold { background: linear-gradient(135deg, hsl(180, 30%, 8%), hsl(174, 42%, 24%)); }
+  .text-gradient-shine { background: linear-gradient(135deg, hsl(36, 60%, 50%), hsl(38, 55%, 62%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .glow-gold { box-shadow: 0 0 20px hsl(36, 60%, 50%, 0.25); }
+  .glow-gold-strong { box-shadow: 0 0 30px hsl(36, 60%, 50%, 0.35); }
+  .gradient-pet-shine { background: linear-gradient(135deg, hsl(174, 42%, 24%), hsl(174, 35%, 38%), hsl(174, 28%, 48%)); }
+  .gradient-dark-pet { background: linear-gradient(135deg, hsl(180, 30%, 8%), hsl(174, 42%, 24%)); }
+  .gradient-ocean { background: linear-gradient(135deg, hsl(174, 42%, 24%), hsl(174, 35%, 38%)); }
+  .shadow-ocean { box-shadow: 0 4px 20px hsl(174, 42%, 24%, 0.25); }
+  .gradient-paint { background: linear-gradient(135deg, hsl(174, 42%, 24%), hsl(174, 35%, 38%)); }
+  .gradient-paint-soft { background: linear-gradient(135deg, hsl(174, 42%, 24%), hsl(174, 35%, 38%)); }
+  .gradient-purple-pink { background: linear-gradient(135deg, hsl(174, 42%, 24%), hsl(174, 35%, 38%)); }
+  .text-gradient-paint { background: linear-gradient(135deg, hsl(174, 42%, 24%), hsl(174, 35%, 38%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .text-gradient-pink { background: linear-gradient(135deg, hsl(174, 42%, 24%), hsl(174, 35%, 38%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .glow-pink { box-shadow: 0 0 20px hsl(174, 42%, 24%, 0.25); }
+  .glow-purple { box-shadow: 0 0 20px hsl(174, 35%, 38%, 0.3); }
+  .gradient-paint { background: linear-gradient(135deg, hsl(174, 42%, 24%), hsl(174, 35%, 38%)); }
 }
 
 @keyframes scanline {

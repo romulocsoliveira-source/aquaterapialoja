@@ -13,7 +13,7 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>{storeName} | Loja Online</title>
+        <title>{storeName} | Loja Online Premium</title>
         <meta name="description" content={`${storeName} — Produtos premium para pets. Compre online com entrega rápida e pagamento seguro.`} />
         <link rel="canonical" href="https://aquaterapia.com.br" />
         <script type="application/ld+json">{JSON.stringify({
@@ -37,10 +37,10 @@ const Index = () => {
       <CategoriesSection />
       <FeaturedProducts title="Mais Vendidos" subtitle="Os queridinhos dos clientes" filter={p => !!p.isBestSeller} limit={8} />
       <PromoBar />
-      <FeaturedProducts title="Lançamentos" subtitle="Novidades" filter={p => !!p.isNew} limit={8} />
-      <FeaturedProducts title="Promoções" subtitle="Ofertas imperdíveis" filter={p => !!p.promoPrice} limit={4} linkTo="/categoria/promocoes" />
+      <FeaturedProducts title="Lançamentos" subtitle="Novidades" filter={p => !!p.isNew} limit={8} dark />
       <BrandSection />
-      <FeaturedProducts title="Catálogo Completo" subtitle="Todos os produtos" limit={20} />
+      <FeaturedProducts title="Promoções" subtitle="Ofertas imperdíveis" filter={p => !!p.promoPrice} limit={4} linkTo="/categoria/promocoes" />
+      <FeaturedProducts title="Catálogo Completo" subtitle="Todos os produtos" limit={20} dark />
     </>
   );
 };
