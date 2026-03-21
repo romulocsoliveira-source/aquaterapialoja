@@ -69,6 +69,20 @@ export default function CheckoutPage() {
   const [cpf, setCpf] = useState("");
   const [paymentResult, setPaymentResult] = useState<PaymentResult | null>(null);
   const [processingPayment, setProcessingPayment] = useState(false);
+  const [publicKey, setPublicKey] = useState<string | null>(null);
+
+  // Fetch public_key for card encryption
+  useEffect(() => {
+    if (paymentSettings?.credit_card_enabled && paymentSettings?.is_active) {
+      supabase.from("payment_settings")
+        .select("public_key")
+        .limit(1)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data?.public_key) setPublicKey(data.public_key);
+        });
+    }
+  }, [paymentSettings]);
 
   const enabledMethods = getEnabledMethods(paymentSettings);
   const pagbankActive = paymentSettings?.is_active && enabledMethods.length > 0;
