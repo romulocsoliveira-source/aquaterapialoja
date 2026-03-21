@@ -13,16 +13,16 @@ export default function HeroSection() {
   const firstCat = categories[0];
 
   return (
-    <section className="relative overflow-hidden min-h-[520px] md:min-h-[600px] lg:min-h-[680px]">
+    <section className="relative overflow-hidden min-h-[520px] md:min-h-[600px] lg:min-h-[700px]">
       {/* Full background image */}
       <div className="absolute inset-0">
         <img
           src={heroImage}
-          alt={`${storeName} - Produtos Premium`}
-          className="w-full h-full object-cover"
+          alt={`${storeName} - Produtos Premium para Pets`}
+          className="w-full h-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(180,30%,6%)]/95 via-[hsl(180,30%,8%)]/75 to-[hsl(180,30%,8%)]/30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[hsl(180,30%,6%)]/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
       </div>
 
       {/* Content */}
@@ -38,23 +38,23 @@ export default function HeroSection() {
               <Droplets size={14} /> Qualidade Premium
             </motion.span>
 
-            <h1 className="font-display text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.05] tracking-tight text-primary-foreground">
+            <h1 className="font-display text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.05] tracking-tight text-white">
               Tudo para o bem-estar
               <span className="block text-brand-gold-light mt-2">do seu melhor amigo.</span>
             </h1>
 
-            <p className="text-primary-foreground/65 font-body text-base md:text-lg max-w-lg leading-relaxed">
-              Produtos das melhores marcas, atendimento especializado e entrega rápida em Assis e região. Sua loja de confiança para cães, gatos, peixes e muito mais.
+            <p className="text-white/60 font-body text-base md:text-lg max-w-lg leading-relaxed">
+              Produtos das melhores marcas para cães, gatos, peixes, aves, roedores e muito mais. Atendimento especializado e entrega rápida em Assis e região.
             </p>
 
             <div className="flex flex-wrap gap-3 pt-2">
               <Link to={firstCat ? `/categoria/${firstCat.slug}` : "/categoria/promocoes"}>
-                <Button className="gradient-brand-gold text-foreground font-body font-semibold tracking-wide h-12 px-8 text-sm shadow-gold hover:opacity-90 transition-opacity rounded-xl">
+                <Button className="gradient-brand-gold text-black font-body font-semibold tracking-wide h-12 px-8 text-sm shadow-gold hover:opacity-90 transition-opacity rounded-xl">
                   Explorar Produtos <ArrowRight size={16} className="ml-2" />
                 </Button>
               </Link>
               <Link to="/categoria/promocoes">
-                <Button variant="outline" className="border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10 font-body font-semibold tracking-wide h-12 px-8 text-sm rounded-xl backdrop-blur-sm">
+                <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 font-body font-semibold tracking-wide h-12 px-8 text-sm rounded-xl backdrop-blur-sm">
                   Ver Ofertas
                 </Button>
               </Link>
@@ -64,26 +64,19 @@ export default function HeroSection() {
       </div>
 
       {/* Trust strip */}
-      <div className="relative z-10 border-t border-primary-foreground/[0.08]">
+      <div className="relative z-10 border-t border-white/[0.08] bg-black/40 backdrop-blur-sm">
         <div className="container py-4 grid grid-cols-3 gap-4">
           {[
             { icon: ShieldCheck, text: "Marcas Confiáveis" },
             { icon: Truck, text: "Entrega Rápida" },
             { icon: Droplets, text: "Cuidado Premium" },
           ].map(item => (
-            <div key={item.text} className="flex items-center justify-center gap-2 text-primary-foreground/45 text-xs md:text-sm font-body">
+            <div key={item.text} className="flex items-center justify-center gap-2 text-white/45 text-xs md:text-sm font-body">
               <item.icon size={15} className="text-brand-gold-light" />
               <span>{item.text}</span>
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Bottom curve */}
-      <div className="absolute bottom-0 left-0 right-0 z-0">
-        <svg viewBox="0 0 1440 50" fill="none" className="w-full h-auto">
-          <path d="M0 50L1440 50L1440 18C1200 0 960 35 720 25C480 15 240 40 0 18L0 50Z" fill="hsl(var(--background))" />
-        </svg>
       </div>
     </section>
   );

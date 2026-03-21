@@ -20,7 +20,7 @@ export default function Footer() {
   const topCats = categories.filter(c => !c.parent).slice(0, 6);
 
   return (
-    <footer className="gradient-dark text-primary-foreground/80 mt-20">
+    <footer className="bg-black text-white/80 mt-0 border-t border-white/[0.06]">
       <div className="container py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
         {/* Brand */}
         <div className="space-y-5">

@@ -70,9 +70,9 @@ export default function Header() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
             {logoUrl ? (
-              <img src={logoUrl} alt={storeName} className="h-14 md:h-16 w-auto object-contain" />
+              <img src={logoUrl} alt={storeName} className="h-16 md:h-20 w-auto object-contain" />
             ) : (
-              <span className="font-display text-2xl md:text-3xl font-bold text-primary-foreground tracking-tight">{storeName}</span>
+              <span className="font-display text-2xl md:text-3xl font-bold text-white tracking-tight">{storeName}</span>
             )}
           </Link>
 
