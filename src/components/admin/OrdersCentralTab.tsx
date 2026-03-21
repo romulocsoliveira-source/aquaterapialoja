@@ -28,6 +28,9 @@ type OrderRecord = {
   order_items: OrderItem[] | null;
   customer_name: string | null;
   customer_phone: string | null;
+  gateway_transaction_id: string | null;
+  gateway_status: string | null;
+  gateway_paid_at: string | null;
 };
 
 const CHANNELS: Channel[] = ["Loja Online", "WhatsApp", "Mercado Livre", "PDV"];
@@ -48,13 +51,20 @@ const channelColors: Record<Channel, string> = {
 
 const statusLabels: Record<string, { label: string; color: string }> = {
   pending_payment: { label: "Aguardando Pagamento", color: "text-muted-foreground" },
+  awaiting_payment: { label: "Aguardando Pagamento", color: "text-yellow-500" },
   paid: { label: "Pagamento Aprovado", color: "text-accent" },
+  authorized: { label: "Autorizado", color: "text-green-500" },
+  under_review: { label: "Em Análise", color: "text-blue-500" },
   preparing: { label: "Em Separação", color: "text-foreground" },
   processing: { label: "Em Separação", color: "text-foreground" },
   shipped: { label: "Enviado", color: "text-foreground" },
   delivered: { label: "Entregue", color: "text-accent" },
   completed: { label: "Finalizado", color: "text-accent" },
   cancelled: { label: "Cancelado", color: "text-destructive" },
+  canceled: { label: "Cancelado", color: "text-destructive" },
+  expired: { label: "Expirado", color: "text-muted-foreground" },
+  failed: { label: "Falhou", color: "text-destructive" },
+  refunded: { label: "Reembolsado", color: "text-orange-500" },
 };
 
 function getChannel(method: string | null): Channel {
@@ -90,7 +100,7 @@ export default function OrdersCentralTab() {
     try {
       const { data: ordersData, error: ordersError } = await supabase
         .from("orders")
-        .select("id, user_id, total, status, payment_method, shipping_address, tracking_code, created_at, order_items(id, product_name, quantity, unit_price, product_image, variation)")
+        .select("id, user_id, total, status, payment_method, shipping_address, tracking_code, created_at, gateway_transaction_id, gateway_status, gateway_paid_at, order_items(id, product_name, quantity, unit_price, product_image, variation)")
         .order("created_at", { ascending: false })
         .limit(100);
 
@@ -118,6 +128,9 @@ export default function OrdersCentralTab() {
           shipping_address: (order.shipping_address as ShippingAddress) || null,
           customer_name: profilesMap.get(order.user_id)?.full_name || null,
           customer_phone: profilesMap.get(order.user_id)?.phone || null,
+          gateway_transaction_id: (order as any).gateway_transaction_id || null,
+          gateway_status: (order as any).gateway_status || null,
+          gateway_paid_at: (order as any).gateway_paid_at || null,
         })) as OrderRecord[],
       );
     } catch (error) {
@@ -315,6 +328,24 @@ export default function OrdersCentralTab() {
                                     <span className="text-muted-foreground">Pagamento</span>
                                     <span className="text-right font-medium">{order.payment_method || "—"}</span>
                                   </div>
+                                  {order.gateway_transaction_id && (
+                                    <div className="flex items-start justify-between gap-3">
+                                      <span className="text-muted-foreground">ID Transação</span>
+                                      <span className="text-right font-mono text-xs font-medium">{order.gateway_transaction_id}</span>
+                                    </div>
+                                  )}
+                                  {order.gateway_status && (
+                                    <div className="flex items-start justify-between gap-3">
+                                      <span className="text-muted-foreground">Status Gateway</span>
+                                      <span className={`text-right font-medium ${order.gateway_status === "PAID" ? "text-green-500" : order.gateway_status === "DECLINED" || order.gateway_status === "CANCELED" ? "text-destructive" : "text-yellow-500"}`}>{order.gateway_status}</span>
+                                    </div>
+                                  )}
+                                  {order.gateway_paid_at && (
+                                    <div className="flex items-start justify-between gap-3">
+                                      <span className="text-muted-foreground">Pago em</span>
+                                      <span className="text-right font-medium text-green-500">{new Date(order.gateway_paid_at).toLocaleString("pt-BR")}</span>
+                                    </div>
+                                  )}
                                   <div className="flex items-start justify-between gap-3">
                                     <span className="text-muted-foreground">Status</span>
                                     <span className={`text-right font-medium ${order.statusColor}`}>{order.statusLabel}</span>
