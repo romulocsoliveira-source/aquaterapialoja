@@ -64,9 +64,9 @@ export default function Footer() {
         <div>
           <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-gold-light mb-5">Contato</h4>
           <div className="space-y-3">
-            <a href={`tel:${phone.replace(/\D/g, "")}`} className="flex items-center gap-2.5 text-sm text-primary-foreground/40 hover:text-primary-foreground/80 transition-colors"><Phone size={14} /> {phone}</a>
-            <a href={`mailto:${email}`} className="flex items-center gap-2.5 text-sm text-primary-foreground/40 hover:text-primary-foreground/80 transition-colors"><Mail size={14} /> {email}</a>
-            <span className="flex items-start gap-2.5 text-sm text-primary-foreground/40"><MapPin size={14} className="mt-0.5 flex-shrink-0" /> {address}</span>
+            <a href={`tel:${phone.replace(/\D/g, "")}`} className="flex items-center gap-2.5 text-sm text-white/40 hover:text-white/80 transition-colors"><Phone size={14} /> {phone}</a>
+            <a href={`mailto:${email}`} className="flex items-center gap-2.5 text-sm text-white/40 hover:text-white/80 transition-colors"><Mail size={14} /> {email}</a>
+            <span className="flex items-start gap-2.5 text-sm text-white/40"><MapPin size={14} className="mt-0.5 flex-shrink-0" /> {address}</span>
           </div>
         </div>
       </div>
