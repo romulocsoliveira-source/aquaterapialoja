@@ -23,6 +23,7 @@ import AdminServicosTab from "@/components/admin/AdminServicosTab";
 import AdminPetsTab from "@/components/admin/AdminPetsTab";
 import StoreSetupWizard from "@/components/admin/StoreSetupWizard";
 import CompanySettingsTab from "@/components/admin/CompanySettingsTab";
+import AdminPaymentSettingsTab from "@/components/admin/AdminPaymentSettingsTab";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
