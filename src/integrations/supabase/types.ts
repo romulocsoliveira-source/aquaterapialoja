@@ -472,6 +472,9 @@ export type Database = {
         Row: {
           created_at: string
           discount: number | null
+          gateway_paid_at: string | null
+          gateway_status: string | null
+          gateway_transaction_id: string | null
           id: string
           payment_method: string | null
           shipping_address: Json | null
@@ -485,6 +488,9 @@ export type Database = {
         Insert: {
           created_at?: string
           discount?: number | null
+          gateway_paid_at?: string | null
+          gateway_status?: string | null
+          gateway_transaction_id?: string | null
           id?: string
           payment_method?: string | null
           shipping_address?: Json | null
@@ -498,6 +504,9 @@ export type Database = {
         Update: {
           created_at?: string
           discount?: number | null
+          gateway_paid_at?: string | null
+          gateway_status?: string | null
+          gateway_transaction_id?: string | null
           id?: string
           payment_method?: string | null
           shipping_address?: Json | null
@@ -509,6 +518,170 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      payment_gateway_logs: {
+        Row: {
+          action: string
+          created_at: string
+          error_message: string | null
+          id: string
+          request_data: Json | null
+          response_data: Json | null
+          status_code: number | null
+          success: boolean
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          request_data?: Json | null
+          response_data?: Json | null
+          status_code?: number | null
+          success?: boolean
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          request_data?: Json | null
+          response_data?: Json | null
+          status_code?: number | null
+          success?: boolean
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      payment_settings: {
+        Row: {
+          account_reference: string | null
+          boleto_due_days: number
+          boleto_enabled: boolean
+          boleto_instructions: string | null
+          created_at: string
+          credit_card_enabled: boolean
+          environment: string
+          id: string
+          interest_on_store: boolean
+          is_active: boolean
+          last_test_at: string | null
+          last_test_status: string | null
+          max_installments: number
+          min_installment_value: number
+          pix_enabled: boolean
+          pix_expiration_minutes: number
+          pix_instructions: string | null
+          production_token: string | null
+          public_key: string | null
+          require_buyer_cpf: boolean
+          require_cardholder_name: boolean
+          sandbox_token: string | null
+          updated_at: string
+          updated_by: string | null
+          webhook_url: string | null
+        }
+        Insert: {
+          account_reference?: string | null
+          boleto_due_days?: number
+          boleto_enabled?: boolean
+          boleto_instructions?: string | null
+          created_at?: string
+          credit_card_enabled?: boolean
+          environment?: string
+          id?: string
+          interest_on_store?: boolean
+          is_active?: boolean
+          last_test_at?: string | null
+          last_test_status?: string | null
+          max_installments?: number
+          min_installment_value?: number
+          pix_enabled?: boolean
+          pix_expiration_minutes?: number
+          pix_instructions?: string | null
+          production_token?: string | null
+          public_key?: string | null
+          require_buyer_cpf?: boolean
+          require_cardholder_name?: boolean
+          sandbox_token?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          webhook_url?: string | null
+        }
+        Update: {
+          account_reference?: string | null
+          boleto_due_days?: number
+          boleto_enabled?: boolean
+          boleto_instructions?: string | null
+          created_at?: string
+          credit_card_enabled?: boolean
+          environment?: string
+          id?: string
+          interest_on_store?: boolean
+          is_active?: boolean
+          last_test_at?: string | null
+          last_test_status?: string | null
+          max_installments?: number
+          min_installment_value?: number
+          pix_enabled?: boolean
+          pix_expiration_minutes?: number
+          pix_instructions?: string | null
+          production_token?: string | null
+          public_key?: string | null
+          require_buyer_cpf?: boolean
+          require_cardholder_name?: boolean
+          sandbox_token?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          webhook_url?: string | null
+        }
+        Relationships: []
+      }
+      payment_webhook_logs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          event_type: string | null
+          id: string
+          order_id: string | null
+          payload: Json | null
+          processed: boolean
+          status: string | null
+          transaction_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          event_type?: string | null
+          id?: string
+          order_id?: string | null
+          payload?: Json | null
+          processed?: boolean
+          status?: string | null
+          transaction_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          event_type?: string | null
+          id?: string
+          order_id?: string | null
+          payload?: Json | null
+          processed?: boolean
+          status?: string | null
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_webhook_logs_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pets: {
         Row: {

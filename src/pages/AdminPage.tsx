@@ -23,6 +23,7 @@ import AdminServicosTab from "@/components/admin/AdminServicosTab";
 import AdminPetsTab from "@/components/admin/AdminPetsTab";
 import StoreSetupWizard from "@/components/admin/StoreSetupWizard";
 import CompanySettingsTab from "@/components/admin/CompanySettingsTab";
+import AdminPaymentSettingsTab from "@/components/admin/AdminPaymentSettingsTab";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -39,7 +40,7 @@ import ProductLabelPrint from "@/components/shared/ProductLabelPrint";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
-type AdminTab = "dashboard" | "products" | "orders" | "financial" | "fiscal" | "suppliers" | "purchases" | "coupons" | "stock" | "inventory" | "deliveries" | "reports" | "notifications" | "integrations" | "mercadolivre" | "agenda" | "hotel" | "servicos" | "pets" | "setup" | "settings";
+type AdminTab = "dashboard" | "products" | "orders" | "financial" | "fiscal" | "suppliers" | "purchases" | "coupons" | "stock" | "inventory" | "deliveries" | "reports" | "notifications" | "integrations" | "mercadolivre" | "agenda" | "hotel" | "servicos" | "pets" | "setup" | "settings" | "payments";
 
 const CHANNELS = ["Loja Online", "WhatsApp", "Mercado Livre", "PDV"] as const;
 type Channel = typeof CHANNELS[number];
@@ -101,7 +102,8 @@ export default function AdminPage() {
      { id: "integrations" as AdminTab, label: "Integrações", icon: Store },
      { id: "mercadolivre" as AdminTab, label: "Mercado Livre", icon: Store },
      { id: "setup" as AdminTab, label: "Implantação da Loja", icon: Rocket },
-     { id: "settings" as AdminTab, label: "Configurações", icon: Settings2 },
+      { id: "settings" as AdminTab, label: "Configurações", icon: Settings2 },
+      { id: "payments" as AdminTab, label: "Pagamentos", icon: CreditCard },
   ];
 
   return (
@@ -159,6 +161,7 @@ export default function AdminPage() {
         {activeTab === "mercadolivre" && <MercadoLivreTab />}
         {activeTab === "setup" && <StoreSetupWizard />}
         {activeTab === "settings" && <CompanySettingsTab />}
+        {activeTab === "payments" && <AdminPaymentSettingsTab />}
         
       </div>
     </div>
