@@ -69,6 +69,20 @@ export default function CheckoutPage() {
   const [cpf, setCpf] = useState("");
   const [paymentResult, setPaymentResult] = useState<PaymentResult | null>(null);
   const [processingPayment, setProcessingPayment] = useState(false);
+  const [publicKey, setPublicKey] = useState<string | null>(null);
+
+  // Fetch public_key for card encryption
+  useEffect(() => {
+    if (paymentSettings?.credit_card_enabled && paymentSettings?.is_active) {
+      supabase.from("payment_settings")
+        .select("public_key")
+        .limit(1)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data?.public_key) setPublicKey(data.public_key);
+        });
+    }
+  }, [paymentSettings]);
 
   const enabledMethods = getEnabledMethods(paymentSettings);
   const pagbankActive = paymentSettings?.is_active && enabledMethods.length > 0;
@@ -249,7 +263,13 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!user || !selectedAddress) return;
-    if (paymentMethod === "credit_card" && !validateCardForm()) return;
+    if (paymentMethod === "credit_card") {
+      if (!validateCardForm()) return;
+      if (pagbankActive && !publicKey) {
+        toast.error("Cartão de crédito não está configurado corretamente. Chave pública ausente.");
+        return;
+      }
+    }
     if (paymentSettings?.require_buyer_cpf && cpf.replace(/\D/g, "").length !== 11) {
       toast.error("CPF é obrigatório");
       return;
@@ -323,11 +343,41 @@ export default function CheckoutPage() {
             setPaymentResult({ method: "pix", error: result.error || "Erro ao gerar PIX" });
           }
         } else if (paymentMethod === "credit_card") {
+          // Encrypt card data using PagBank JS SDK - NEVER send raw card data
+          const PagSeguro = (window as any).PagSeguro;
+          if (!PagSeguro || !publicKey) {
+            toast.error("Erro de segurança: SDK de pagamento não carregado. Recarregue a página.");
+            setLoading(false);
+            setProcessingPayment(false);
+            return;
+          }
+
+          const expiryParts = cardForm.expiry.split("/");
+          const expMonth = expiryParts[0];
+          const expYear = `20${expiryParts[1]}`;
+
+          const encryptedResult = PagSeguro.encryptCard({
+            publicKey: publicKey,
+            holder: cardForm.name,
+            number: cardForm.number.replace(/\s/g, ""),
+            expMonth: expMonth,
+            expYear: expYear,
+            securityCode: cardForm.cvv,
+          });
+
+          if (encryptedResult.hasErrors) {
+            const errorMessages = encryptedResult.errors?.map((e: any) => e.message).join(", ") || "Dados do cartão inválidos";
+            toast.error(`Erro na criptografia: ${errorMessages}`);
+            setLoading(false);
+            setProcessingPayment(false);
+            return;
+          }
+
           result = await callPagbankApi("create-card", {
             order_id: order.id,
             amount: finalTotal,
             customer,
-            card_token: cardForm.number.replace(/\s/g, ""), // In production, use PagBank.js tokenization
+            card_token: encryptedResult.encryptedCard,
             installments: parseInt(cardForm.installments),
           });
 
@@ -781,11 +831,17 @@ export default function CheckoutPage() {
                       <AnimatePresence>
                         {paymentMethod === "credit_card" && (
                           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                            <div className="bg-card rounded-xl border border-border p-6 mt-4 space-y-4">
+                             <div className="bg-card rounded-xl border border-border p-6 mt-4 space-y-4">
                               <div className="flex items-center gap-2 mb-2">
                                 <Lock size={14} className="text-accent" />
-                                <span className="text-xs text-muted-foreground font-body">Seus dados estão seguros e criptografados</span>
+                                <span className="text-xs text-muted-foreground font-body">Dados criptografados com SDK PagBank — nenhum dado sensível é enviado ao servidor</span>
                               </div>
+                              {pagbankActive && !publicKey && (
+                                <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 flex items-center gap-2">
+                                  <AlertTriangle size={16} className="text-destructive shrink-0" />
+                                  <p className="text-xs text-destructive font-body">Chave pública não configurada. Teste a conexão no painel administrativo para gerar a chave.</p>
+                                </div>
+                              )}
                               <div>
                                 <label className="text-sm font-body font-medium block mb-1">Número do Cartão</label>
                                 <input value={cardForm.number} onChange={e => setCardForm(f => ({ ...f, number: formatCardNumber(e.target.value) }))} className={inputClass} placeholder="0000 0000 0000 0000" maxLength={19} inputMode="numeric" />
