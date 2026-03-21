@@ -831,11 +831,17 @@ export default function CheckoutPage() {
                       <AnimatePresence>
                         {paymentMethod === "credit_card" && (
                           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                            <div className="bg-card rounded-xl border border-border p-6 mt-4 space-y-4">
+                             <div className="bg-card rounded-xl border border-border p-6 mt-4 space-y-4">
                               <div className="flex items-center gap-2 mb-2">
                                 <Lock size={14} className="text-accent" />
-                                <span className="text-xs text-muted-foreground font-body">Seus dados estão seguros e criptografados</span>
+                                <span className="text-xs text-muted-foreground font-body">Dados criptografados com SDK PagBank — nenhum dado sensível é enviado ao servidor</span>
                               </div>
+                              {pagbankActive && !publicKey && (
+                                <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 flex items-center gap-2">
+                                  <AlertTriangle size={16} className="text-destructive shrink-0" />
+                                  <p className="text-xs text-destructive font-body">Chave pública não configurada. Teste a conexão no painel administrativo para gerar a chave.</p>
+                                </div>
+                              )}
                               <div>
                                 <label className="text-sm font-body font-medium block mb-1">Número do Cartão</label>
                                 <input value={cardForm.number} onChange={e => setCardForm(f => ({ ...f, number: formatCardNumber(e.target.value) }))} className={inputClass} placeholder="0000 0000 0000 0000" maxLength={19} inputMode="numeric" />
