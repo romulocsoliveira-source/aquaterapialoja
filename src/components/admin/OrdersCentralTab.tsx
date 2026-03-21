@@ -28,6 +28,9 @@ type OrderRecord = {
   order_items: OrderItem[] | null;
   customer_name: string | null;
   customer_phone: string | null;
+  gateway_transaction_id: string | null;
+  gateway_status: string | null;
+  gateway_paid_at: string | null;
 };
 
 const CHANNELS: Channel[] = ["Loja Online", "WhatsApp", "Mercado Livre", "PDV"];
