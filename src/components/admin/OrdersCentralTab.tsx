@@ -128,6 +128,9 @@ export default function OrdersCentralTab() {
           shipping_address: (order.shipping_address as ShippingAddress) || null,
           customer_name: profilesMap.get(order.user_id)?.full_name || null,
           customer_phone: profilesMap.get(order.user_id)?.phone || null,
+          gateway_transaction_id: (order as any).gateway_transaction_id || null,
+          gateway_status: (order as any).gateway_status || null,
+          gateway_paid_at: (order as any).gateway_paid_at || null,
         })) as OrderRecord[],
       );
     } catch (error) {
