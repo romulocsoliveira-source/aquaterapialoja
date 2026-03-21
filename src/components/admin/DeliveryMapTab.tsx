@@ -33,7 +33,7 @@ const statusConfig: Record<DeliveryStatus, { label: string; color: string; bgCol
 };
 
 const DEFAULT_STORE = {
-  name: "Aquaterapia Pet Shop",
+  name: "Aquaterapia",
   phone: "(18) 99657-0512",
   street: "Avenida Getúlio Vargas, 339",
   neighborhood: "Vila Nova Santana",

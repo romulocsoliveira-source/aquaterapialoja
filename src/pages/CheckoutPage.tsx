@@ -652,7 +652,7 @@ export default function CheckoutPage() {
   // Generates a local EMV PIX payload as fallback when PagBank is not active
   function generateLocalPixPayload() {
     const pixKey = "18997348718";
-    const name = "AQUATERAPIA PET SHOP";
+    const name = "AQUATERAPIA";
     const city = "ASSIS";
     const amount = finalTotal.toFixed(2);
     const txid = orderId ? orderId.slice(0, 25).replace(/-/g, "") : "COMPRA";
@@ -672,7 +672,7 @@ export default function CheckoutPage() {
   return (
     <>
       <Helmet>
-        <title>Checkout | Aquaterapia Pet Shop</title>
+        <title>Checkout | Aquaterapia</title>
       </Helmet>
       <div className="container py-12 md:py-20 max-w-4xl">
         {/* Steps */}

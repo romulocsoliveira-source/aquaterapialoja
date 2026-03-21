@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Loader2, PawPrint } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
@@ -13,7 +13,7 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/paint-assist
 export default function AIChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Olá! 🐾 Sou o **Assistente Pet Aquaterapia**. Como posso ajudar você hoje?\n\nPosso ajudar com:\n- Produtos pet e aquarismo\n- Banho & Tosa\n- Hotel Pet\n- Dicas e cuidados" },
+    { role: "assistant", content: "Olá! 👋 Sou o **Assistente Aquaterapia**. Como posso ajudar você hoje?\n\nPosso ajudar com:\n- Encontrar produtos\n- Dúvidas sobre pedidos\n- Informações da loja\n- Dicas e recomendações" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -104,9 +104,9 @@ export default function AIChatWidget() {
             exit={{ scale: 0 }}
             onClick={() => setOpen(true)}
             className="fixed bottom-24 right-6 z-40 bg-primary text-primary-foreground p-4 rounded-full shadow-xl hover:scale-110 transition-transform"
-            aria-label="Assistente Pet"
+            aria-label="Assistente Aquaterapia"
           >
-            <PawPrint size={26} />
+            <MessageCircle size={26} />
           </motion.button>
         )}
       </AnimatePresence>
@@ -119,11 +119,11 @@ export default function AIChatWidget() {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             className="fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-2rem)] h-[500px] max-h-[calc(100vh-4rem)] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden"
           >
-            <div className="gradient-pet px-4 py-3 flex items-center justify-between">
+            <div className="gradient-brand px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <PawPrint size={18} className="text-primary-foreground" />
+                <Sparkles size={18} className="text-primary-foreground" />
                 <div>
-                  <p className="text-sm font-display font-bold text-primary-foreground">Assistente Pet</p>
+                  <p className="text-sm font-display font-bold text-primary-foreground">Assistente Aquaterapia</p>
                   <p className="text-[10px] text-primary-foreground/70">Aquaterapia · IA</p>
                 </div>
               </div>
