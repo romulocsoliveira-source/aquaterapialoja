@@ -104,9 +104,9 @@ export default function AIChatWidget() {
             exit={{ scale: 0 }}
             onClick={() => setOpen(true)}
             className="fixed bottom-24 right-6 z-40 bg-primary text-primary-foreground p-4 rounded-full shadow-xl hover:scale-110 transition-transform"
-            aria-label="Assistente Pet"
+            aria-label="Assistente Aquaterapia"
           >
-            <PawPrint size={26} />
+            <MessageCircle size={26} />
           </motion.button>
         )}
       </AnimatePresence>
