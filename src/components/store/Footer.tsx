@@ -25,9 +25,9 @@ export default function Footer() {
         {/* Brand */}
         <div className="space-y-5">
           {logoUrl ? (
-            <img src={logoUrl} alt={storeName} className="h-16 w-auto object-contain" />
+            <img src={logoUrl} alt={storeName} className="h-20 w-auto object-contain" />
           ) : (
-            <h3 className="font-display text-2xl font-bold text-primary-foreground/90">{storeName}</h3>
+            <h3 className="font-display text-2xl font-bold text-white">{storeName}</h3>
           )}
           <p className="text-sm text-primary-foreground/40 leading-relaxed">
             Sua loja premium de produtos para pets. Qualidade, carinho e confiança em cada entrega.
