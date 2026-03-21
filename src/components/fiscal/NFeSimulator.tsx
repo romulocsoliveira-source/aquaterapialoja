@@ -63,7 +63,7 @@ export default function NFeSimulator({ open, onOpenChange, sale, customerName }:
   const dateStr = now.toLocaleDateString("pt-BR");
   const timeStr = now.toLocaleTimeString("pt-BR");
 
-  const companyName = storeConfig?.trade_name || storeConfig?.company_name || "AQUATERAPIA PET SHOP";
+  const companyName = storeConfig?.trade_name || storeConfig?.company_name || "AQUATERAPIA";
   const companyPhone = storeConfig?.phone || "(18) 99657-0512";
   const companyCnpj = storeConfig?.cnpj || "00.000.000/0001-00";
   const companyAddress = storeConfig?.street
