@@ -326,9 +326,9 @@ export default function PDVPage() {
         <div className="container flex items-center justify-between py-3">
           <div className="flex items-center gap-4">
             <Link to="/admin" className="text-muted-foreground hover:text-foreground"><ArrowLeft size={20} /></Link>
-            <img src={logoImg} alt="Aquaterapia Pet Shop" className="h-14 w-auto object-contain" />
+            <img src={logoImg} alt="Aquaterapia" className="h-14 w-auto object-contain" />
             <div>
-              <h1 className="font-display text-lg font-bold text-gradient-gold">PDV · AQUATERAPIA PET SHOP</h1>
+              <h1 className="font-display text-lg font-bold text-gradient-gold">PDV · {companyName.toUpperCase()}</h1>
               <p className="text-xs text-muted-foreground">Frente de Caixa</p>
             </div>
           </div>
