@@ -33,9 +33,9 @@ export default function Footer() {
             Sua loja premium de produtos para pets. Qualidade, carinho e confiança em cada entrega.
           </p>
           <div className="flex gap-3">
-            <a href="#" className="text-primary-foreground/30 hover:text-brand-gold transition-colors" aria-label="Instagram"><Instagram size={18} /></a>
-            <a href="#" className="text-primary-foreground/30 hover:text-brand-gold transition-colors" aria-label="Facebook"><Facebook size={18} /></a>
-            <a href={`mailto:${email}`} className="text-primary-foreground/30 hover:text-brand-gold transition-colors" aria-label="Email"><Mail size={18} /></a>
+            <a href="#" className="text-white/30 hover:text-brand-gold transition-colors" aria-label="Instagram"><Instagram size={18} /></a>
+            <a href="#" className="text-white/30 hover:text-brand-gold transition-colors" aria-label="Facebook"><Facebook size={18} /></a>
+            <a href={`mailto:${email}`} className="text-white/30 hover:text-brand-gold transition-colors" aria-label="Email"><Mail size={18} /></a>
           </div>
         </div>
 
