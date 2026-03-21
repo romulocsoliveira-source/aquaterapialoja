@@ -343,11 +343,41 @@ export default function CheckoutPage() {
             setPaymentResult({ method: "pix", error: result.error || "Erro ao gerar PIX" });
           }
         } else if (paymentMethod === "credit_card") {
+          // Encrypt card data using PagBank JS SDK - NEVER send raw card data
+          const PagSeguro = (window as any).PagSeguro;
+          if (!PagSeguro || !publicKey) {
+            toast.error("Erro de segurança: SDK de pagamento não carregado. Recarregue a página.");
+            setLoading(false);
+            setProcessingPayment(false);
+            return;
+          }
+
+          const expiryParts = cardForm.expiry.split("/");
+          const expMonth = expiryParts[0];
+          const expYear = `20${expiryParts[1]}`;
+
+          const encryptedResult = PagSeguro.encryptCard({
+            publicKey: publicKey,
+            holder: cardForm.name,
+            number: cardForm.number.replace(/\s/g, ""),
+            expMonth: expMonth,
+            expYear: expYear,
+            securityCode: cardForm.cvv,
+          });
+
+          if (encryptedResult.hasErrors) {
+            const errorMessages = encryptedResult.errors?.map((e: any) => e.message).join(", ") || "Dados do cartão inválidos";
+            toast.error(`Erro na criptografia: ${errorMessages}`);
+            setLoading(false);
+            setProcessingPayment(false);
+            return;
+          }
+
           result = await callPagbankApi("create-card", {
             order_id: order.id,
             amount: finalTotal,
             customer,
-            card_token: cardForm.number.replace(/\s/g, ""), // In production, use PagBank.js tokenization
+            card_token: encryptedResult.encryptedCard,
             installments: parseInt(cardForm.installments),
           });
 
