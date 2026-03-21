@@ -84,7 +84,7 @@ export default function Footer() {
               <Link to="/admin" className="flex items-center gap-1 text-[11px] text-white/15 hover:text-white/40 transition-colors">
                 <Lock size={11} /> Admin
               </Link>
-              <Link to="/pdv" className="flex items-center gap-1 text-[11px] text-primary-foreground/15 hover:text-primary-foreground/40 transition-colors">
+              <Link to="/pdv" className="flex items-center gap-1 text-[11px] text-white/15 hover:text-white/40 transition-colors">
                 <CreditCard size={11} /> PDV
               </Link>
             </div>
