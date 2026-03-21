@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Droplets, ShieldCheck, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStoreConfig } from "@/hooks/useStoreConfig";
 import { useCategories } from "@/hooks/useStoreData";
@@ -13,38 +13,38 @@ export default function HeroSection() {
   const firstCat = categories[0];
 
   return (
-    <section className="relative overflow-hidden min-h-[520px] md:min-h-[620px] flex items-center">
-      {/* Full background image */}
+    <section className="relative overflow-hidden">
+      {/* Full background image with refined overlay */}
       <div className="absolute inset-0">
         <img
           src={heroImage}
           alt={`${storeName} - Produtos Premium`}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-foreground/80 via-foreground/50 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/90 via-brand-dark/70 to-brand-dark/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/40 to-transparent" />
       </div>
 
       {/* Content */}
-      <div className="container relative z-10 py-16 md:py-24">
-        <div className="max-w-xl">
-          <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="space-y-6">
+      <div className="container relative z-10 py-20 md:py-28 lg:py-32">
+        <div className="max-w-2xl">
+          <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="space-y-7">
             <motion.span
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="inline-flex items-center gap-2 text-[11px] font-body uppercase tracking-[0.3em] text-brand-gold font-semibold"
+              className="inline-flex items-center gap-2 text-[11px] font-body uppercase tracking-[0.3em] font-semibold text-brand-gold-light"
             >
-              ✦ Qualidade Premium
+              <Droplets size={14} /> Qualidade Premium
             </motion.span>
 
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight text-primary-foreground">
-              Cuidado e qualidade
-              <span className="block text-brand-gold-light mt-1">para quem você ama.</span>
+              Tudo para o bem-estar
+              <span className="block text-brand-gold-light mt-2">do seu melhor amigo.</span>
             </h1>
 
-            <p className="text-primary-foreground/70 font-body text-base md:text-lg max-w-md leading-relaxed">
-              {storeName} — marcas confiáveis, atendimento especializado e tudo para o bem-estar do seu pet.
+            <p className="text-primary-foreground/70 font-body text-base md:text-lg max-w-lg leading-relaxed">
+              Produtos das melhores marcas, atendimento especializado e entrega rápida em Assis e região. Sua loja de confiança para cães, gatos, peixes e muito mais.
             </p>
 
             <div className="flex flex-wrap gap-3 pt-2">
@@ -54,7 +54,7 @@ export default function HeroSection() {
                 </Button>
               </Link>
               <Link to="/categoria/promocoes">
-                <Button variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-body font-semibold tracking-wide h-12 px-8 text-sm rounded-xl backdrop-blur-sm">
+                <Button variant="outline" className="border-primary-foreground/25 text-primary-foreground hover:bg-primary-foreground/10 font-body font-semibold tracking-wide h-12 px-8 text-sm rounded-xl backdrop-blur-sm">
                   Ver Ofertas
                 </Button>
               </Link>
@@ -63,10 +63,26 @@ export default function HeroSection() {
         </div>
       </div>
 
+      {/* Trust strip at the bottom of hero */}
+      <div className="relative z-10 border-t border-primary-foreground/[0.08]">
+        <div className="container py-4 grid grid-cols-3 gap-4">
+          {[
+            { icon: ShieldCheck, text: "Marcas Confiáveis" },
+            { icon: Truck, text: "Entrega Rápida" },
+            { icon: Droplets, text: "Cuidado Premium" },
+          ].map(item => (
+            <div key={item.text} className="flex items-center justify-center gap-2 text-primary-foreground/50 text-xs md:text-sm font-body">
+              <item.icon size={15} className="text-brand-gold-light" />
+              <span>{item.text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Decorative bottom curve */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 60" fill="none" className="w-full h-auto">
-          <path d="M0 60L1440 60L1440 20C1200 0 960 40 720 30C480 20 240 50 0 20L0 60Z" fill="hsl(40, 20%, 97%)" />
+      <div className="absolute bottom-0 left-0 right-0 z-0">
+        <svg viewBox="0 0 1440 50" fill="none" className="w-full h-auto">
+          <path d="M0 50L1440 50L1440 18C1200 0 960 35 720 25C480 15 240 40 0 18L0 50Z" fill="hsl(var(--background))" />
         </svg>
       </div>
     </section>
