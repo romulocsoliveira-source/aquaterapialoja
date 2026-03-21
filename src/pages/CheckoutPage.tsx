@@ -672,7 +672,7 @@ export default function CheckoutPage() {
   return (
     <>
       <Helmet>
-        <title>Checkout | Aquaterapia Pet Shop</title>
+        <title>Checkout | Aquaterapia</title>
       </Helmet>
       <div className="container py-12 md:py-20 max-w-4xl">
         {/* Steps */}

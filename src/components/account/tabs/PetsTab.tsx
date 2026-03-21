@@ -173,7 +173,7 @@ export default function PetsTab() {
         <div className="text-center py-12 text-muted-foreground">
           <PawPrint className="w-12 h-12 mx-auto mb-3 opacity-30" />
           <p className="text-sm">Nenhum pet cadastrado ainda.</p>
-          <p className="text-xs mt-1">Cadastre seus pets para agendar Banho & Tosa e Hotel Pet.</p>
+          <p className="text-xs mt-1">Cadastre seus pets para personalizar sua experiência.</p>
         </div>
       ) : (
         <div className="grid gap-3">

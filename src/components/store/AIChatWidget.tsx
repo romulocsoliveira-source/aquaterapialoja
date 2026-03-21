@@ -13,7 +13,7 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/paint-assist
 export default function AIChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Olá! 🐾 Sou o **Assistente Pet Aquaterapia**. Como posso ajudar você hoje?\n\nPosso ajudar com:\n- Produtos pet e aquarismo\n- Banho & Tosa\n- Hotel Pet\n- Dicas e cuidados" },
+    { role: "assistant", content: "Olá! 👋 Sou o **Assistente Aquaterapia**. Como posso ajudar você hoje?\n\nPosso ajudar com:\n- Encontrar produtos\n- Dúvidas sobre pedidos\n- Informações da loja\n- Dicas e recomendações" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);

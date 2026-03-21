@@ -19,8 +19,6 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import AdminPage from "./pages/AdminPage";
 import PDVPage from "./pages/PDVPage";
 import CheckoutPage from "./pages/CheckoutPage";
-import AgendamentoPage from "./pages/AgendamentoPage";
-import HotelPetPage from "./pages/HotelPetPage";
 import ForcePasswordChangePage from "./pages/ForcePasswordChangePage";
 import NotFound from "./pages/NotFound";
 
