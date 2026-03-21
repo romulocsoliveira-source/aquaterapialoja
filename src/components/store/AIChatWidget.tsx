@@ -119,11 +119,11 @@ export default function AIChatWidget() {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             className="fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-2rem)] h-[500px] max-h-[calc(100vh-4rem)] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden"
           >
-            <div className="gradient-pet px-4 py-3 flex items-center justify-between">
+            <div className="gradient-brand px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <PawPrint size={18} className="text-primary-foreground" />
+                <Sparkles size={18} className="text-primary-foreground" />
                 <div>
-                  <p className="text-sm font-display font-bold text-primary-foreground">Assistente Pet</p>
+                  <p className="text-sm font-display font-bold text-primary-foreground">Assistente Aquaterapia</p>
                   <p className="text-[10px] text-primary-foreground/70">Aquaterapia · IA</p>
                 </div>
               </div>
