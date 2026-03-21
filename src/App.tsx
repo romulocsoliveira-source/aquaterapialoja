@@ -57,8 +57,7 @@ const App = () => (
                         <Route path="/checkout" element={<CheckoutPage />} />
                         <Route path="/favoritos" element={<AccountPage />} />
                         <Route path="/reset-password" element={<ResetPasswordPage />} />
-                        {/* <Route path="/agendamento" element={<AgendamentoPage />} /> */}
-                        {/* <Route path="/hotel-pet" element={<HotelPetPage />} /> */}
+                        {/* Agendamento and Hotel routes removed */}
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </main>
