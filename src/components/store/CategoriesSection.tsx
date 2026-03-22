@@ -9,11 +9,11 @@ export default function CategoriesSection() {
 
   if (isLoading) {
     return (
-      <section className="gradient-warm">
-        <div className="container py-16 md:py-24">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+      <section className="bg-background">
+        <div className="container py-16 md:py-20">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-5">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="rounded-2xl h-40 bg-card border border-border animate-pulse" />
+              <div key={i} className="rounded-2xl h-40 bg-secondary animate-pulse" />
             ))}
           </div>
         </div>
@@ -24,29 +24,27 @@ export default function CategoriesSection() {
   if (topCats.length === 0) return null;
 
   return (
-    <section className="gradient-warm">
-      <div className="container py-16 md:py-24">
-        <div className="flex items-end justify-between mb-12">
-          <div>
-            <span className="text-[11px] font-body uppercase tracking-[0.25em] text-accent font-semibold block">Navegue por</span>
-            <h2 className="font-display text-2xl md:text-3xl font-bold mt-1.5">Categorias</h2>
-          </div>
+    <section className="bg-background">
+      <div className="container py-16 md:py-20">
+        <div className="text-center mb-10">
+          <span className="text-[11px] font-body uppercase tracking-[0.25em] text-primary font-semibold">Navegue por</span>
+          <h2 className="font-display text-2xl md:text-3xl font-bold mt-1.5 text-foreground">Categorias</h2>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-5">
           {topCats.map((cat, i) => (
             <motion.div key={cat.slug} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
               <Link
                 to={`/categoria/${cat.slug}`}
-                className="group relative block overflow-hidden rounded-2xl bg-card border border-border/60 hover:border-primary/30 hover:shadow-brand transition-all duration-300"
+                className="group relative block overflow-hidden rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-card-hover transition-all duration-300"
               >
                 {cat.image ? (
                   <div className="aspect-[4/3] overflow-hidden">
                     <img src={cat.image} alt={cat.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <h3 className="font-display text-base font-bold text-primary-foreground">{cat.name}</h3>
-                      {cat.count > 0 && <span className="text-xs text-primary-foreground/70">{cat.count} produtos</span>}
+                      <h3 className="font-display text-base font-bold text-white">{cat.name}</h3>
+                      {cat.count > 0 && <span className="text-xs text-white/70">{cat.count} produtos</span>}
                     </div>
                   </div>
                 ) : (

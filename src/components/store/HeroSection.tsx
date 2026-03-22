@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Droplets, ShieldCheck, Truck } from "lucide-react";
+import { ArrowRight, ShieldCheck, Truck, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStoreConfig } from "@/hooks/useStoreConfig";
 import { useCategories } from "@/hooks/useStoreData";
@@ -13,66 +13,72 @@ export default function HeroSection() {
   const firstCat = categories[0];
 
   return (
-    <section className="relative overflow-hidden min-h-[520px] md:min-h-[600px] lg:min-h-[700px]">
-      {/* Full background image */}
-      <div className="absolute inset-0">
-        <img
-          src={heroImage}
-          alt={`${storeName} - Produtos Premium para Pets`}
-          className="w-full h-full object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
-      </div>
+    <section className="relative overflow-hidden bg-brand-dark">
+      <div className="container relative z-10 py-12 md:py-20 lg:py-24">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+          {/* Text content */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="space-y-6 text-center md:text-left order-2 md:order-1"
+          >
+            <span className="inline-flex items-center gap-2 text-[11px] font-body uppercase tracking-[0.25em] font-semibold text-accent">
+              <Heart size={12} className="fill-accent" /> Cuidado Premium para Pets
+            </span>
 
-      {/* Content */}
-      <div className="container relative z-10 py-24 md:py-32 lg:py-40">
-        <div className="max-w-2xl">
-          <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="space-y-7">
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="inline-flex items-center gap-2 text-[11px] font-body uppercase tracking-[0.3em] font-semibold text-brand-gold-light"
-            >
-              <Droplets size={14} /> Qualidade Premium
-            </motion.span>
-
-            <h1 className="font-display text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.05] tracking-tight text-white">
+            <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.1] text-white">
               Tudo para o bem-estar
-              <span className="block text-brand-gold-light mt-2">do seu melhor amigo.</span>
+              <span className="block text-accent mt-1">do seu melhor amigo.</span>
             </h1>
 
-            <p className="text-white/60 font-body text-base md:text-lg max-w-lg leading-relaxed">
-              Produtos das melhores marcas para cães, gatos, peixes, aves, roedores e muito mais. Atendimento especializado e entrega rápida em Assis e região.
+            <p className="text-white/50 font-body text-sm md:text-base max-w-lg leading-relaxed mx-auto md:mx-0">
+              Produtos das melhores marcas para cães, gatos, peixes, aves, roedores e muito mais. Qualidade, carinho e entrega rápida em Assis e região.
             </p>
 
-            <div className="flex flex-wrap gap-3 pt-2">
+            <div className="flex flex-wrap gap-3 justify-center md:justify-start pt-1">
               <Link to={firstCat ? `/categoria/${firstCat.slug}` : "/categoria/promocoes"}>
-                <Button className="gradient-brand-gold text-black font-body font-semibold tracking-wide h-12 px-8 text-sm shadow-gold hover:opacity-90 transition-opacity rounded-xl">
-                  Explorar Produtos <ArrowRight size={16} className="ml-2" />
+                <Button className="gradient-brand-gold text-accent-foreground font-body font-semibold tracking-wide h-12 px-7 text-sm shadow-gold hover:opacity-90 transition-opacity rounded-xl">
+                  Explorar Produtos <ArrowRight size={15} className="ml-2" />
                 </Button>
               </Link>
               <Link to="/categoria/promocoes">
-                <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 font-body font-semibold tracking-wide h-12 px-8 text-sm rounded-xl backdrop-blur-sm">
+                <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 font-body font-medium h-12 px-7 text-sm rounded-xl">
                   Ver Ofertas
                 </Button>
               </Link>
+            </div>
+          </motion.div>
+
+          {/* Hero image */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="order-1 md:order-2"
+          >
+            <div className="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-premium">
+              <img
+                src={heroImage}
+                alt={`${storeName} - Produtos para cães, gatos, peixes, aves, roedores`}
+                className="w-full h-[280px] md:h-[420px] lg:h-[480px] object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
             </div>
           </motion.div>
         </div>
       </div>
 
       {/* Trust strip */}
-      <div className="relative z-10 border-t border-white/[0.08] bg-black/40 backdrop-blur-sm">
+      <div className="relative z-10 border-t border-white/[0.08]">
         <div className="container py-4 grid grid-cols-3 gap-4">
           {[
             { icon: ShieldCheck, text: "Marcas Confiáveis" },
             { icon: Truck, text: "Entrega Rápida" },
-            { icon: Droplets, text: "Cuidado Premium" },
+            { icon: Heart, text: "Cuidado Real" },
           ].map(item => (
-            <div key={item.text} className="flex items-center justify-center gap-2 text-white/45 text-xs md:text-sm font-body">
-              <item.icon size={15} className="text-brand-gold-light" />
+            <div key={item.text} className="flex items-center justify-center gap-2 text-white/40 text-[11px] md:text-xs font-body">
+              <item.icon size={14} className="text-accent" />
               <span>{item.text}</span>
             </div>
           ))}

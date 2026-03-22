@@ -20,39 +20,39 @@ export default function Footer() {
   const topCats = categories.filter(c => !c.parent).slice(0, 6);
 
   return (
-    <footer className="bg-black text-white/80 mt-0 border-t border-white/[0.06]">
-      <div className="container py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
+    <footer className="bg-brand-dark text-white/80 border-t border-white/[0.06]">
+      <div className="container py-14 md:py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
         {/* Brand */}
-        <div className="space-y-5">
+        <div className="space-y-4">
           {logoUrl ? (
-            <img src={logoUrl} alt={storeName} className="h-20 w-auto object-contain" />
+            <img src={logoUrl} alt={storeName} className="h-16 w-auto object-contain" />
           ) : (
-            <h3 className="font-display text-2xl font-bold text-white">{storeName}</h3>
+            <h3 className="font-display text-xl font-bold text-white">{storeName}</h3>
           )}
           <p className="text-sm text-white/40 leading-relaxed">
             Sua loja premium de produtos para pets. Qualidade, carinho e confiança em cada entrega.
           </p>
           <div className="flex gap-3">
-            <a href="#" className="text-white/30 hover:text-brand-gold transition-colors" aria-label="Instagram"><Instagram size={18} /></a>
-            <a href="#" className="text-white/30 hover:text-brand-gold transition-colors" aria-label="Facebook"><Facebook size={18} /></a>
-            <a href={`mailto:${email}`} className="text-white/30 hover:text-brand-gold transition-colors" aria-label="Email"><Mail size={18} /></a>
+            <a href="#" className="text-white/30 hover:text-accent transition-colors" aria-label="Instagram"><Instagram size={18} /></a>
+            <a href="#" className="text-white/30 hover:text-accent transition-colors" aria-label="Facebook"><Facebook size={18} /></a>
+            <a href={`mailto:${email}`} className="text-white/30 hover:text-accent transition-colors" aria-label="Email"><Mail size={18} /></a>
           </div>
         </div>
 
         {/* Categories */}
         <div>
-          <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-gold-light mb-5">Categorias</h4>
+          <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-accent mb-5">Categorias</h4>
           <ul className="space-y-2.5">
             {topCats.map(cat => (
               <li key={cat.slug}><Link to={`/categoria/${cat.slug}`} className="text-sm text-white/40 hover:text-white/80 transition-colors">{cat.name}</Link></li>
             ))}
-            <li><Link to="/categoria/promocoes" className="text-sm text-brand-gold-light hover:text-brand-gold transition-colors font-medium">Promoções</Link></li>
+            <li><Link to="/categoria/promocoes" className="text-sm text-accent hover:text-brand-gold-light transition-colors font-medium">Promoções</Link></li>
           </ul>
         </div>
 
         {/* Institutional */}
         <div>
-          <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-gold-light mb-5">Institucional</h4>
+          <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-accent mb-5">Institucional</h4>
           <ul className="space-y-2.5">
             {["Sobre Nós", "Política de Privacidade", "Trocas e Devoluções", "Termos de Uso", "FAQ"].map(l => (
               <li key={l}><Link to="/" className="text-sm text-white/40 hover:text-white/80 transition-colors">{l}</Link></li>
@@ -62,7 +62,7 @@ export default function Footer() {
 
         {/* Contact */}
         <div>
-          <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-gold-light mb-5">Contato</h4>
+          <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-accent mb-5">Contato</h4>
           <div className="space-y-3">
             <a href={`tel:${phone.replace(/\D/g, "")}`} className="flex items-center gap-2.5 text-sm text-white/40 hover:text-white/80 transition-colors"><Phone size={14} /> {phone}</a>
             <a href={`mailto:${email}`} className="flex items-center gap-2.5 text-sm text-white/40 hover:text-white/80 transition-colors"><Mail size={14} /> {email}</a>

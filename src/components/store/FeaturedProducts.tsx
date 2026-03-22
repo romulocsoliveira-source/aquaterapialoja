@@ -20,15 +20,15 @@ export default function FeaturedProducts({ title, subtitle, filter, limit = 4, l
 
   if (isLoading) {
     return (
-      <section className={dark ? "gradient-dark" : ""}>
-        <div className="container py-16 md:py-24">
+      <section className={dark ? "gradient-dark" : "bg-background"}>
+        <div className="container py-16 md:py-20">
           <div className="text-center mb-10">
-            {subtitle && <span className={`text-[11px] font-body uppercase tracking-[0.3em] font-semibold ${dark ? "text-brand-gold-light" : "text-accent"}`}>{subtitle}</span>}
-            <h2 className={`font-display text-2xl md:text-3xl font-bold mt-1.5 ${dark ? "text-primary-foreground" : ""}`}>{title}</h2>
+            {subtitle && <span className={`text-[11px] font-body uppercase tracking-[0.25em] font-semibold ${dark ? "text-accent" : "text-primary"}`}>{subtitle}</span>}
+            <h2 className={`font-display text-2xl md:text-3xl font-bold mt-1.5 ${dark ? "text-white" : "text-foreground"}`}>{title}</h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
             {Array.from({ length: limit > 4 ? 4 : limit }).map((_, i) => (
-              <div key={i} className="bg-card rounded-2xl border border-border/60 aspect-square animate-pulse" />
+              <div key={i} className={`rounded-2xl border aspect-square animate-pulse ${dark ? "bg-white/5 border-white/10" : "bg-secondary border-border"}`} />
             ))}
           </div>
         </div>
@@ -39,27 +39,27 @@ export default function FeaturedProducts({ title, subtitle, filter, limit = 4, l
   if (display.length === 0) return null;
 
   return (
-    <section className={dark ? "gradient-dark" : ""}>
-      <div className="container py-16 md:py-24">
+    <section className={dark ? "gradient-dark" : "bg-background"}>
+      <div className="container py-16 md:py-20">
         <div className="flex items-end justify-between mb-10">
           <div>
-            {subtitle && <span className={`text-[11px] font-body uppercase tracking-[0.3em] font-semibold block ${dark ? "text-brand-gold-light" : "text-accent"}`}>{subtitle}</span>}
-            <h2 className={`font-display text-2xl md:text-3xl font-bold mt-1.5 ${dark ? "text-primary-foreground" : ""}`}>{title}</h2>
+            {subtitle && <span className={`text-[11px] font-body uppercase tracking-[0.25em] font-semibold block ${dark ? "text-accent" : "text-primary"}`}>{subtitle}</span>}
+            <h2 className={`font-display text-2xl md:text-3xl font-bold mt-1.5 ${dark ? "text-white" : "text-foreground"}`}>{title}</h2>
           </div>
           {linkTo && (
-            <Link to={linkTo} className={`hidden md:flex items-center gap-1.5 text-sm font-body font-medium transition-colors ${dark ? "text-brand-gold-light hover:text-brand-gold" : "text-primary hover:text-primary/80"}`}>
+            <Link to={linkTo} className={`hidden md:flex items-center gap-1.5 text-sm font-body font-medium transition-colors ${dark ? "text-accent hover:text-brand-gold-light" : "text-primary hover:text-primary/80"}`}>
               Ver todos <ArrowRight size={14} />
             </Link>
           )}
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
           {display.map((product, i) => (
             <ProductCard key={product.id} product={product} index={i} />
           ))}
         </div>
         {linkTo && (
           <div className="md:hidden text-center mt-8">
-            <Link to={linkTo} className={`inline-flex items-center gap-1.5 text-sm font-body font-medium transition-colors ${dark ? "text-brand-gold-light hover:text-brand-gold" : "text-primary hover:text-primary/80"}`}>
+            <Link to={linkTo} className={`inline-flex items-center gap-1.5 text-sm font-body font-medium transition-colors ${dark ? "text-accent hover:text-brand-gold-light" : "text-primary hover:text-primary/80"}`}>
               Ver todos <ArrowRight size={14} />
             </Link>
           </div>
