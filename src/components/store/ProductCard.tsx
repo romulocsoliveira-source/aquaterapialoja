@@ -22,7 +22,7 @@ export default function ProductCard({ product, index = 0 }: Props) {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.06 }}
-      className="group relative bg-card rounded-2xl overflow-hidden border border-border/60 hover:border-primary/20 transition-all duration-500 shadow-elegant hover:shadow-brand-lg"
+      className="group relative bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/25 transition-all duration-300 hover:shadow-card-hover"
     >
       {/* Badges */}
       <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
@@ -32,7 +32,7 @@ export default function ProductCard({ product, index = 0 }: Props) {
           </span>
         )}
         {product.isBestSeller && (
-          <span className="gradient-brand-gold text-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md flex items-center gap-1 shadow-gold">
+          <span className="gradient-brand-gold text-accent-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md flex items-center gap-1 shadow-gold">
             <Award size={10} /> Top
           </span>
         )}
@@ -50,17 +50,16 @@ export default function ProductCard({ product, index = 0 }: Props) {
       )}
 
       {/* Image */}
-      <div className="relative overflow-hidden aspect-square bg-secondary/20">
+      <div className="relative overflow-hidden aspect-square bg-secondary">
         <Link to={`/produto/${product.slug}`} className="block w-full h-full">
           <img
             src={product.image || "/placeholder.svg"}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
             onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
           />
         </Link>
-        <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/[0.03] transition-colors pointer-events-none" />
         <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-3 group-hover:translate-y-0">
           <button
             onClick={(e) => { e.preventDefault(); addItem(product); }}
@@ -77,7 +76,7 @@ export default function ProductCard({ product, index = 0 }: Props) {
 
       {/* Info */}
       <div className="p-4 space-y-2">
-        <span className="text-[10px] font-body uppercase tracking-[0.15em] text-accent font-semibold">{product.category}</span>
+        <span className="text-[10px] font-body uppercase tracking-[0.15em] text-primary font-semibold">{product.category}</span>
         <Link to={`/produto/${product.slug}`}>
           <h3 className="font-body text-[13px] font-medium text-foreground line-clamp-2 hover:text-primary transition-colors leading-snug">
             {product.name}

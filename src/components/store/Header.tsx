@@ -18,6 +18,7 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [catDropdown, setCatDropdown] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const catRef = useRef<HTMLDivElement>(null);
 
@@ -43,6 +44,12 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const handleProductClick = (slug: string) => {
     navigate(`/produto/${slug}`);
     setSearchOpen(false);
@@ -55,22 +62,22 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50">
       {/* Announcement bar */}
-      <div className="bg-brand-gold text-center py-2 text-[11px] font-body tracking-[0.15em] uppercase text-black font-semibold">
+      <div className="bg-brand-dark text-center py-2 text-[11px] font-body tracking-[0.12em] uppercase text-white/70 font-medium">
         Frete grátis acima de R$ 199 · Parcele em até 12x
       </div>
 
-      {/* Main header */}
-      <div className="bg-black border-b border-white/[0.06]">
-        <div className="container flex items-center justify-between h-20 md:h-[88px]">
+      {/* Main header — black bg to match logo */}
+      <div className={`bg-brand-dark transition-shadow duration-300 ${scrolled ? "shadow-lg" : ""}`}>
+        <div className="container flex items-center justify-between h-[72px] md:h-20">
           {/* Mobile menu */}
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden text-white/70 p-2" aria-label="Menu">
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden text-white/70 hover:text-white p-2 transition-colors" aria-label="Menu">
             {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
             {logoUrl ? (
-              <img src={logoUrl} alt={storeName} className="h-16 md:h-20 w-auto object-contain" />
+              <img src={logoUrl} alt={storeName} className="h-14 md:h-16 w-auto object-contain" />
             ) : (
               <span className="font-display text-2xl md:text-3xl font-bold text-white tracking-tight">{storeName}</span>
             )}
@@ -78,13 +85,13 @@ export default function Header() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link to="/" className="text-[13px] font-body font-medium text-white/55 hover:text-white transition-colors tracking-wide">
+            <Link to="/" className="text-[13px] font-body font-medium text-white/60 hover:text-white transition-colors">
               Início
             </Link>
             <div ref={catRef} className="relative">
               <button
                 onClick={() => setCatDropdown(!catDropdown)}
-                className="flex items-center gap-1 text-[13px] font-body font-medium text-white/55 hover:text-white transition-colors tracking-wide"
+                className="flex items-center gap-1 text-[13px] font-body font-medium text-white/60 hover:text-white transition-colors"
               >
                 Categorias <ChevronDown size={13} className={`transition-transform ${catDropdown ? "rotate-180" : ""}`} />
               </button>
@@ -118,32 +125,32 @@ export default function Header() {
                 )}
               </AnimatePresence>
             </div>
-            <Link to="/categoria/promocoes" className="text-[13px] font-body font-semibold text-brand-gold-light hover:text-brand-gold transition-colors tracking-wide">
+            <Link to="/categoria/promocoes" className="text-[13px] font-body font-semibold text-accent hover:text-brand-gold-light transition-colors">
               Promoções
             </Link>
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
             {isAdmin && (
-              <Link to="/admin" className="hidden md:flex items-center gap-1.5 text-[11px] font-body font-semibold text-white/35 hover:text-white/65 transition-colors uppercase tracking-wider" aria-label="Administrador">
+              <Link to="/admin" className="hidden md:flex items-center gap-1.5 text-[11px] font-body font-semibold text-white/30 hover:text-white/60 transition-colors uppercase tracking-wider" aria-label="Administrador">
                 <Settings size={13} />
                 Admin
               </Link>
             )}
-            <button onClick={() => setSearchOpen(!searchOpen)} className="text-white/45 hover:text-white transition-colors p-2" aria-label="Buscar">
+            <button onClick={() => setSearchOpen(!searchOpen)} className="text-white/50 hover:text-white transition-colors p-2" aria-label="Buscar">
               <Search size={18} />
             </button>
-            <Link to="/conta" className="hidden md:block text-white/45 hover:text-white transition-colors p-2" aria-label="Conta">
+            <Link to="/conta" className="hidden md:block text-white/50 hover:text-white transition-colors p-2" aria-label="Conta">
               <User size={18} />
             </Link>
-            <Link to="/favoritos" className="hidden md:block text-white/45 hover:text-white transition-colors p-2" aria-label="Favoritos">
+            <Link to="/favoritos" className="hidden md:block text-white/50 hover:text-white transition-colors p-2" aria-label="Favoritos">
               <Heart size={18} />
             </Link>
-            <button onClick={() => setIsCartOpen(true)} className="relative text-white/45 hover:text-white transition-colors p-2" aria-label="Carrinho">
+            <button onClick={() => setIsCartOpen(true)} className="relative text-white/50 hover:text-white transition-colors p-2" aria-label="Carrinho">
               <ShoppingBag size={18} />
               {totalItems > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 gradient-brand-gold text-foreground text-[9px] font-bold w-[18px] h-[18px] rounded-full flex items-center justify-center shadow-gold">
+                <span className="absolute -top-0.5 -right-0.5 gradient-brand-gold text-accent-foreground text-[9px] font-bold w-[18px] h-[18px] rounded-full flex items-center justify-center shadow-gold">
                   {totalItems}
                 </span>
               )}
@@ -155,7 +162,7 @@ export default function Header() {
       {/* Search overlay */}
       <AnimatePresence>
         {searchOpen && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden border-b border-border/40 bg-card">
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden border-b border-border bg-card shadow-elegant">
             <div className="container py-5">
               <div className="relative max-w-xl mx-auto">
                 <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -172,7 +179,7 @@ export default function Header() {
               {searchResults.length > 0 && (
                 <div className="mt-3 max-w-xl mx-auto bg-card border border-border rounded-xl overflow-hidden shadow-premium">
                   {searchResults.map(p => (
-                    <button key={p.id} onClick={() => handleProductClick(p.slug)} className="w-full flex items-center gap-3 p-3 hover:bg-secondary/60 transition-colors border-b border-border/40 last:border-0 text-left">
+                    <button key={p.id} onClick={() => handleProductClick(p.slug)} className="w-full flex items-center gap-3 p-3 hover:bg-secondary/60 transition-colors border-b border-border last:border-0 text-left">
                       <img src={p.image || "/placeholder.svg"} alt={p.name} className="w-11 h-11 rounded-lg object-cover bg-secondary" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{p.name}</p>
@@ -197,17 +204,17 @@ export default function Header() {
       {/* Mobile menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="md:hidden overflow-hidden border-b border-border/40 bg-card">
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="md:hidden overflow-hidden border-b border-border bg-card">
             <nav className="container py-4 flex flex-col gap-1">
-              <Link to="/" onClick={() => setMobileMenuOpen(false)} className="text-sm font-body font-medium text-foreground/70 hover:text-foreground py-3 border-b border-border/30">
+              <Link to="/" onClick={() => setMobileMenuOpen(false)} className="text-sm font-body font-medium text-foreground/70 hover:text-foreground py-3 border-b border-border/50">
                 Início
               </Link>
               {topCategories.map(cat => (
-                <Link key={cat.slug} to={`/categoria/${cat.slug}`} onClick={() => setMobileMenuOpen(false)} className="text-sm font-body font-medium text-foreground/70 hover:text-foreground py-3 border-b border-border/30">
+                <Link key={cat.slug} to={`/categoria/${cat.slug}`} onClick={() => setMobileMenuOpen(false)} className="text-sm font-body font-medium text-foreground/70 hover:text-foreground py-3 border-b border-border/50">
                   {cat.name}
                 </Link>
               ))}
-              <Link to="/categoria/promocoes" onClick={() => setMobileMenuOpen(false)} className="text-sm font-body font-semibold text-accent py-3 border-b border-border/30">
+              <Link to="/categoria/promocoes" onClick={() => setMobileMenuOpen(false)} className="text-sm font-body font-semibold text-accent py-3 border-b border-border/50">
                 ✦ Promoções
               </Link>
               <Link to="/conta" onClick={() => setMobileMenuOpen(false)} className="text-sm font-body font-medium text-foreground/70 hover:text-foreground py-3 flex items-center gap-2">

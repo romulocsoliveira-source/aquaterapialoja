@@ -38,7 +38,7 @@ const Index = () => {
       <CategoriesSection />
       <FeaturedProducts title="Mais Vendidos" subtitle="Os queridinhos dos clientes" filter={p => !!p.isBestSeller} limit={8} />
       <PromoBar />
-      <FeaturedProducts title="Lançamentos" subtitle="Novidades selecionadas" filter={p => !!p.isNew} limit={8} dark />
+      <FeaturedProducts title="Lançamentos" subtitle="Novidades selecionadas" filter={p => !!p.isNew} limit={8} />
       <BrandSection />
       <FeaturedProducts title="Ofertas Especiais" subtitle="Aproveite os melhores preços" filter={p => !!p.promoPrice} limit={4} linkTo="/categoria/promocoes" />
       <TrustSection />

@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        display: ['"Playfair Display"', 'Georgia', 'serif'],
         body: ['"Inter"', 'system-ui', 'sans-serif'],
       },
       colors: {
@@ -55,6 +55,7 @@ export default {
         "brand-light": "hsl(var(--brand-light))",
         "brand-gold": "hsl(var(--brand-gold))",
         "brand-gold-light": "hsl(var(--brand-gold-light))",
+        "brand-teal": "hsl(var(--brand-teal))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

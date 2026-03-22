@@ -15,49 +15,50 @@ export default function BrandSection() {
   ];
 
   return (
-    <section className="gradient-dark overflow-hidden">
-      <div className="container py-20 md:py-28">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
-          <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-6">
-            <span className="text-[11px] font-body uppercase tracking-[0.3em] text-brand-gold-light font-semibold">Sobre a {storeName}</span>
-            <h2 className="font-display text-3xl md:text-4xl font-bold leading-snug text-white">
+    <section className="bg-secondary/50">
+      <div className="container py-16 md:py-20">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-5">
+            <span className="text-[11px] font-body uppercase tracking-[0.25em] text-primary font-semibold">Sobre a {storeName}</span>
+            <h2 className="font-display text-2xl md:text-3xl font-bold leading-snug text-foreground">
               Excelência no cuidado
-              <span className="block text-brand-gold-light mt-1">que faz a diferença.</span>
+              <span className="block text-primary mt-1">que faz a diferença.</span>
             </h2>
-            <p className="text-white/55 font-body leading-relaxed">
+            <p className="text-muted-foreground font-body leading-relaxed text-sm">
               A {storeName} nasceu do compromisso com a qualidade. Oferecemos uma seleção curada de produtos premium para cães, gatos, peixes e pequenos animais — sempre com as melhores marcas e atendimento humanizado.
             </p>
-            <div className="grid grid-cols-2 gap-4 pt-4">
+            <div className="grid grid-cols-2 gap-3 pt-2">
               {features.map(item => (
-                <div key={item.label} className="flex items-start gap-3 p-4 rounded-xl bg-primary-foreground/[0.04] border border-primary-foreground/[0.07]">
-                  <div className="w-10 h-10 rounded-lg gradient-brand-gold flex items-center justify-center flex-shrink-0">
-                    <item.icon size={18} className="text-black" />
+                <div key={item.label} className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border hover:shadow-elegant transition-shadow">
+                  <div className="w-10 h-10 rounded-lg gradient-brand flex items-center justify-center flex-shrink-0">
+                    <item.icon size={18} className="text-primary-foreground" />
                   </div>
                   <div>
-                    <span className="font-body text-sm font-semibold text-white/90 block">{item.label}</span>
-                    <span className="text-xs text-white/40 font-body">{item.desc}</span>
+                    <span className="font-body text-sm font-semibold text-foreground block">{item.label}</span>
+                    <span className="text-xs text-muted-foreground font-body">{item.desc}</span>
                   </div>
                 </div>
               ))}
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative flex items-center justify-center">
-            <div className="absolute -inset-8 bg-brand-gold/5 rounded-full blur-3xl" />
+          <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative flex items-center justify-center">
             {logoUrl ? (
-              <img src={logoUrl} alt={storeName} className="relative w-64 md:w-80 h-auto object-contain drop-shadow-2xl" />
+              <div className="bg-brand-dark rounded-3xl p-10 shadow-premium">
+                <img src={logoUrl} alt={storeName} className="w-56 md:w-72 h-auto object-contain" />
+              </div>
             ) : (
-              <div className="relative w-64 md:w-80 aspect-square rounded-3xl gradient-brand flex items-center justify-center">
-                <span className="font-display text-5xl font-bold text-white/80">{storeName.charAt(0)}</span>
+              <div className="w-56 md:w-72 aspect-square rounded-3xl gradient-brand flex items-center justify-center">
+                <span className="font-display text-5xl font-bold text-primary-foreground/80">{storeName.charAt(0)}</span>
               </div>
             )}
-            <div className="absolute -bottom-4 -left-4 bg-card rounded-xl p-4 border border-border/60 shadow-premium">
+            <div className="absolute -bottom-4 -right-4 bg-card rounded-xl p-4 border border-border shadow-premium">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full gradient-brand-gold flex items-center justify-center">
-                  <Award size={18} className="text-black" />
+                  <Award size={18} className="text-accent-foreground" />
                 </div>
                 <div>
-                  <p className="font-body text-sm font-bold text-black">+500 Produtos</p>
+                  <p className="font-body text-sm font-bold text-foreground">+500 Produtos</p>
                   <p className="text-[11px] text-muted-foreground">Qualidade garantida</p>
                 </div>
               </div>
