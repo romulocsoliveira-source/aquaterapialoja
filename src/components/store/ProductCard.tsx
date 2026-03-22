@@ -19,32 +19,32 @@ export default function ProductCard({ product, index = 0 }: Props) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.06 }}
-      className="group relative bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/25 transition-all duration-300 hover:shadow-card-hover"
+      transition={{ duration: 0.35, delay: index * 0.05 }}
+      className="group relative bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/20 transition-all duration-200 hover:shadow-card-hover"
     >
       {/* Badges */}
-      <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
+      <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1.5">
         {product.badge && (
-          <span className="gradient-brand text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md shadow-sm">
+          <span className="bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md">
             {product.badge}
           </span>
         )}
         {product.isBestSeller && (
-          <span className="gradient-brand-gold text-accent-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md flex items-center gap-1 shadow-gold">
+          <span className="bg-accent text-accent-foreground text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md flex items-center gap-1">
             <Award size={10} /> Top
           </span>
         )}
         {product.isNew && (
-          <span className="bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md flex items-center gap-1">
+          <span className="bg-foreground text-background text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md flex items-center gap-1">
             <Zap size={10} /> Novo
           </span>
         )}
       </div>
 
       {discount > 0 && (
-        <span className="absolute top-3 right-3 z-10 bg-destructive text-destructive-foreground text-[10px] font-bold px-2.5 py-1 rounded-md shadow-sm">
+        <span className="absolute top-2.5 right-2.5 z-10 bg-destructive text-destructive-foreground text-[10px] font-bold px-2 py-1 rounded-md">
           -{discount}%
         </span>
       )}
@@ -55,15 +55,15 @@ export default function ProductCard({ product, index = 0 }: Props) {
           <img
             src={product.image || "/placeholder.svg"}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
             onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
           />
         </Link>
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-3 group-hover:translate-y-0">
+        <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-2 group-hover:translate-y-0">
           <button
             onClick={(e) => { e.preventDefault(); addItem(product); }}
-            className="gradient-brand text-primary-foreground p-2.5 rounded-xl hover:scale-105 transition-transform shadow-brand"
+            className="bg-accent text-accent-foreground p-2.5 rounded-xl hover:scale-105 transition-transform shadow-gold"
             aria-label="Adicionar ao carrinho"
           >
             <ShoppingBag size={15} />
@@ -75,8 +75,8 @@ export default function ProductCard({ product, index = 0 }: Props) {
       </div>
 
       {/* Info */}
-      <div className="p-4 space-y-2">
-        <span className="text-[10px] font-body uppercase tracking-[0.15em] text-primary font-semibold">{product.category}</span>
+      <div className="p-3.5 space-y-1.5">
+        <span className="text-[10px] font-body uppercase tracking-[0.12em] text-primary font-semibold">{product.category}</span>
         <Link to={`/produto/${product.slug}`}>
           <h3 className="font-body text-[13px] font-medium text-foreground line-clamp-2 hover:text-primary transition-colors leading-snug">
             {product.name}
@@ -90,7 +90,7 @@ export default function ProductCard({ product, index = 0 }: Props) {
             <span className="text-[10px] text-muted-foreground ml-1">({product.reviews})</span>
           </div>
         )}
-        <div className="flex items-baseline gap-2 pt-1">
+        <div className="flex items-baseline gap-2 pt-0.5">
           {product.promoPrice ? (
             <>
               <span className="font-body font-bold text-primary text-[15px]">{formatPrice(product.promoPrice)}</span>
