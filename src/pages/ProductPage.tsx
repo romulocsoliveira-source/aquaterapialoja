@@ -43,7 +43,7 @@ export default function ProductPage() {
 
       <div className="bg-background min-h-screen">
         {/* Breadcrumb */}
-        <div className="container pt-6 pb-2">
+        <div className="container pt-5 pb-2">
           <nav className="flex items-center gap-1.5 text-xs font-body text-muted-foreground">
             <Link to="/" className="hover:text-foreground transition-colors">Início</Link>
             <ChevronRight size={12} />
@@ -53,29 +53,29 @@ export default function ProductPage() {
           </nav>
         </div>
 
-        <div className="container py-6 md:py-10">
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12">
+        <div className="container py-5 md:py-8">
+          <div className="grid md:grid-cols-2 gap-6 md:gap-10">
             {/* Image */}
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative">
               <div className="aspect-square rounded-2xl overflow-hidden bg-card border border-border shadow-elegant">
                 <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
               </div>
               {product.badge && (
-                <span className="absolute top-4 left-4 gradient-brand text-primary-foreground text-xs font-bold uppercase tracking-wider px-4 py-1.5 rounded-lg shadow-brand">
+                <span className="absolute top-3 left-3 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg">
                   {product.badge}
                 </span>
               )}
               {discount > 0 && (
-                <span className="absolute top-4 right-4 bg-destructive text-destructive-foreground text-xs font-bold px-3 py-1.5 rounded-lg">
+                <span className="absolute top-3 right-3 bg-destructive text-destructive-foreground text-xs font-bold px-3 py-1.5 rounded-lg">
                   -{discount}%
                 </span>
               )}
             </motion.div>
 
             {/* Details */}
-            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="space-y-5">
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="space-y-4">
               <div>
-                <span className="text-xs font-body uppercase tracking-[0.15em] text-primary font-semibold">{product.category}</span>
+                <span className="text-xs font-body uppercase tracking-[0.12em] text-accent font-semibold">{product.category}</span>
                 <h1 className="font-display text-2xl md:text-3xl font-bold mt-1 text-foreground leading-tight">{product.name}</h1>
               </div>
 
@@ -83,7 +83,7 @@ export default function ProductPage() {
                 <div className="flex items-center gap-2">
                   <div className="flex">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} size={15} className={i < Math.floor(product.rating) ? "text-accent fill-accent" : "text-border"} />
+                      <Star key={i} size={14} className={i < Math.floor(product.rating) ? "text-accent fill-accent" : "text-border"} />
                     ))}
                   </div>
                   <span className="text-sm text-muted-foreground font-body">{product.rating} ({product.reviews} avaliações)</span>
@@ -91,15 +91,15 @@ export default function ProductPage() {
               )}
 
               {/* Price block */}
-              <div className="bg-card rounded-xl border border-border p-5 space-y-2">
+              <div className="bg-card rounded-xl border border-border p-4 space-y-1.5">
                 <div className="flex items-baseline gap-3">
                   {product.promoPrice ? (
                     <>
-                      <span className="font-display text-3xl font-bold text-primary">{formatPrice(product.promoPrice)}</span>
-                      <span className="text-base text-muted-foreground line-through font-body">{formatPrice(product.price)}</span>
+                      <span className="font-display text-2xl md:text-3xl font-bold text-primary">{formatPrice(product.promoPrice)}</span>
+                      <span className="text-sm text-muted-foreground line-through font-body">{formatPrice(product.price)}</span>
                     </>
                   ) : (
-                    <span className="font-display text-3xl font-bold text-foreground">{formatPrice(product.price)}</span>
+                    <span className="font-display text-2xl md:text-3xl font-bold text-foreground">{formatPrice(product.price)}</span>
                   )}
                 </div>
                 {product.promoPrice && (
@@ -116,13 +116,13 @@ export default function ProductPage() {
               {/* Variations */}
               {product.variations && (
                 <div>
-                  <span className="text-sm font-body font-semibold text-foreground mb-2.5 block">Variação:</span>
+                  <span className="text-sm font-body font-semibold text-foreground mb-2 block">Variação:</span>
                   <div className="flex flex-wrap gap-2">
                     {product.variations.map(v => (
                       <button
                         key={v}
                         onClick={() => setSelectedVariation(v)}
-                        className={`text-sm font-body px-4 py-2.5 rounded-lg border transition-all duration-200 ${selectedVariation === v ? "bg-primary text-primary-foreground border-primary shadow-brand" : "border-border text-foreground hover:border-primary/40 bg-card"}`}
+                        className={`text-sm font-body px-3.5 py-2 rounded-lg border transition-all duration-200 ${selectedVariation === v ? "bg-primary text-primary-foreground border-primary" : "border-border text-foreground hover:border-primary/40 bg-card"}`}
                       >
                         {v}
                       </button>
@@ -132,10 +132,10 @@ export default function ProductPage() {
               )}
 
               {/* CTAs */}
-              <div className="flex gap-3 pt-1">
+              <div className="flex gap-2.5 pt-1">
                 <Button
                   onClick={() => addItem(product, selectedVariation)}
-                  className="flex-1 gradient-brand-gold text-accent-foreground font-body font-semibold tracking-wide uppercase h-12 text-sm shadow-gold hover:opacity-90 transition-opacity rounded-xl"
+                  className="flex-1 bg-accent text-accent-foreground font-body font-semibold tracking-wide uppercase h-12 text-sm hover:bg-accent/90 transition-all duration-200 rounded-xl shadow-gold"
                 >
                   <ShoppingBag size={18} className="mr-2" /> Comprar Agora
                 </Button>
@@ -148,19 +148,19 @@ export default function ProductPage() {
                     <MessageCircle size={18} />
                   </Button>
                 </a>
-                <Button variant="outline" className="border-border text-muted-foreground hover:text-primary hover:border-primary/40 h-12 px-4 rounded-xl transition-all duration-200" aria-label="Adicionar aos favoritos">
+                <Button variant="outline" className="border-border text-muted-foreground hover:text-accent hover:border-accent/40 h-12 px-4 rounded-xl transition-all duration-200" aria-label="Adicionar aos favoritos">
                   <Heart size={18} />
                 </Button>
               </div>
 
               {/* Trust signals */}
-              <div className="grid grid-cols-2 gap-3 pt-3">
-                <div className="flex items-center gap-2.5 p-3 rounded-xl bg-card border border-border">
-                  <Truck size={18} className="text-primary flex-shrink-0" />
+              <div className="grid grid-cols-2 gap-2.5 pt-2">
+                <div className="flex items-center gap-2 p-3 rounded-xl bg-card border border-border">
+                  <Truck size={16} className="text-primary flex-shrink-0" />
                   <span className="text-xs text-muted-foreground font-body">Entrega rápida e segura</span>
                 </div>
-                <div className="flex items-center gap-2.5 p-3 rounded-xl bg-card border border-border">
-                  <Shield size={18} className="text-primary flex-shrink-0" />
+                <div className="flex items-center gap-2 p-3 rounded-xl bg-card border border-border">
+                  <Shield size={16} className="text-primary flex-shrink-0" />
                   <span className="text-xs text-muted-foreground font-body">Garantia de qualidade</span>
                 </div>
               </div>
@@ -169,12 +169,12 @@ export default function ProductPage() {
 
           {/* Related */}
           {related.length > 0 && (
-            <div className="mt-16 md:mt-20">
-              <div className="mb-8">
-                <span className="text-[11px] font-body uppercase tracking-[0.25em] text-primary font-semibold">Você também pode gostar</span>
+            <div className="mt-14 md:mt-16">
+              <div className="mb-6">
+                <span className="text-[11px] font-body uppercase tracking-[0.2em] text-accent font-semibold">Você também pode gostar</span>
                 <h2 className="font-display text-2xl font-bold mt-1 text-foreground">Produtos Relacionados</h2>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                 {related.map((p, i) => (
                   <ProductCard key={p.id} product={p} index={i} />
                 ))}
