@@ -2,7 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useProducts, useProduct } from "@/hooks/useStoreData";
 import { useCart } from "@/context/CartContext";
-import { Star, ShoppingBag, Heart, Truck, Shield, ArrowLeft, MessageCircle } from "lucide-react";
+import { Star, ShoppingBag, Heart, Truck, Shield, ArrowLeft, MessageCircle, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import ProductCard from "@/components/store/ProductCard";
@@ -19,14 +19,20 @@ export default function ProductPage() {
   if (!product) {
     return (
       <div className="container py-20 text-center">
-        <p className="text-muted-foreground font-body">Produto não encontrado.</p>
-        <Link to="/" className="text-accent underline mt-4 inline-block">Voltar ao início</Link>
+        <div className="max-w-md mx-auto space-y-4">
+          <ShoppingBag size={48} className="mx-auto text-muted-foreground/30" />
+          <p className="text-muted-foreground font-body text-lg">Produto não encontrado.</p>
+          <Link to="/" className="inline-flex items-center gap-2 text-primary font-body font-medium hover:underline">
+            <ArrowLeft size={16} /> Voltar ao início
+          </Link>
+        </div>
       </div>
     );
   }
 
   const formatPrice = (p: number) => p.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   const related = products.filter(p => p.categorySlug === product.categorySlug && p.id !== product.id).slice(0, 4);
+  const discount = product.promoPrice ? Math.round((1 - product.promoPrice / product.price) * 100) : 0;
 
   return (
     <>
@@ -34,117 +40,149 @@ export default function ProductPage() {
         <title>{product.name} | Aquaterapia</title>
         <meta name="description" content={product.description?.slice(0, 155) || `${product.name} - ${product.category}. Compre na Aquaterapia com frete grátis acima de R$ 199.`} />
       </Helmet>
-    <div className="container py-8 md:py-16">
-      <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8 font-body">
-        <ArrowLeft size={16} /> Voltar
-      </Link>
 
-      <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-        {/* Image */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-border">
-          <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-          {product.badge && (
-             <span className="absolute top-4 left-4 gradient-gold text-primary-foreground text-xs font-bold uppercase tracking-wider px-4 py-1.5 rounded-full">
-               {product.badge}
-             </span>
-          )}
-        </motion.div>
+      <div className="bg-background min-h-screen">
+        {/* Breadcrumb */}
+        <div className="container pt-6 pb-2">
+          <nav className="flex items-center gap-1.5 text-xs font-body text-muted-foreground">
+            <Link to="/" className="hover:text-foreground transition-colors">Início</Link>
+            <ChevronRight size={12} />
+            <Link to={`/categoria/${product.categorySlug}`} className="hover:text-foreground transition-colors">{product.category}</Link>
+            <ChevronRight size={12} />
+            <span className="text-foreground/70 truncate max-w-[200px]">{product.name}</span>
+          </nav>
+        </div>
 
-        {/* Details */}
-        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="space-y-6">
-          <div>
-            <span className="text-xs font-body uppercase tracking-widest text-accent">{product.category}</span>
-            <h1 className="font-display text-2xl md:text-4xl font-bold mt-1">{product.name}</h1>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="flex">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} size={16} className={i < Math.floor(product.rating) ? "text-gold fill-gold" : "text-muted-foreground"} />
-              ))}
-            </div>
-            <span className="text-sm text-muted-foreground font-body">{product.rating} ({product.reviews} avaliações)</span>
-          </div>
-
-          <div className="flex items-baseline gap-3">
-            {product.promoPrice ? (
-              <>
-                <span className="text-lg text-muted-foreground line-through font-body">{formatPrice(product.price)}</span>
-                <span className="font-display text-3xl font-bold text-accent">{formatPrice(product.promoPrice)}</span>
-                <span className="text-xs gradient-purple-pink text-primary-foreground px-2 py-1 rounded-full font-bold">
-                  -{Math.round((1 - product.promoPrice / product.price) * 100)}%
+        <div className="container py-6 md:py-10">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12">
+            {/* Image */}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative">
+              <div className="aspect-square rounded-2xl overflow-hidden bg-card border border-border shadow-elegant">
+                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+              </div>
+              {product.badge && (
+                <span className="absolute top-4 left-4 gradient-brand text-primary-foreground text-xs font-bold uppercase tracking-wider px-4 py-1.5 rounded-lg shadow-brand">
+                  {product.badge}
                 </span>
-              </>
-            ) : (
-              <span className="font-display text-3xl font-bold text-foreground">{formatPrice(product.price)}</span>
-            )}
+              )}
+              {discount > 0 && (
+                <span className="absolute top-4 right-4 bg-destructive text-destructive-foreground text-xs font-bold px-3 py-1.5 rounded-lg">
+                  -{discount}%
+                </span>
+              )}
+            </motion.div>
+
+            {/* Details */}
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="space-y-5">
+              <div>
+                <span className="text-xs font-body uppercase tracking-[0.15em] text-primary font-semibold">{product.category}</span>
+                <h1 className="font-display text-2xl md:text-3xl font-bold mt-1 text-foreground leading-tight">{product.name}</h1>
+              </div>
+
+              {product.rating > 0 && (
+                <div className="flex items-center gap-2">
+                  <div className="flex">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} size={15} className={i < Math.floor(product.rating) ? "text-accent fill-accent" : "text-border"} />
+                    ))}
+                  </div>
+                  <span className="text-sm text-muted-foreground font-body">{product.rating} ({product.reviews} avaliações)</span>
+                </div>
+              )}
+
+              {/* Price block */}
+              <div className="bg-card rounded-xl border border-border p-5 space-y-2">
+                <div className="flex items-baseline gap-3">
+                  {product.promoPrice ? (
+                    <>
+                      <span className="font-display text-3xl font-bold text-primary">{formatPrice(product.promoPrice)}</span>
+                      <span className="text-base text-muted-foreground line-through font-body">{formatPrice(product.price)}</span>
+                    </>
+                  ) : (
+                    <span className="font-display text-3xl font-bold text-foreground">{formatPrice(product.price)}</span>
+                  )}
+                </div>
+                {product.promoPrice && (
+                  <p className="text-xs text-muted-foreground font-body">
+                    ou 12x de {formatPrice(product.promoPrice / 12)} sem juros
+                  </p>
+                )}
+              </div>
+
+              {product.description && (
+                <p className="text-muted-foreground font-body leading-relaxed text-sm">{product.description}</p>
+              )}
+
+              {/* Variations */}
+              {product.variations && (
+                <div>
+                  <span className="text-sm font-body font-semibold text-foreground mb-2.5 block">Variação:</span>
+                  <div className="flex flex-wrap gap-2">
+                    {product.variations.map(v => (
+                      <button
+                        key={v}
+                        onClick={() => setSelectedVariation(v)}
+                        className={`text-sm font-body px-4 py-2.5 rounded-lg border transition-all duration-200 ${selectedVariation === v ? "bg-primary text-primary-foreground border-primary shadow-brand" : "border-border text-foreground hover:border-primary/40 bg-card"}`}
+                      >
+                        {v}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* CTAs */}
+              <div className="flex gap-3 pt-1">
+                <Button
+                  onClick={() => addItem(product, selectedVariation)}
+                  className="flex-1 gradient-brand-gold text-accent-foreground font-body font-semibold tracking-wide uppercase h-12 text-sm shadow-gold hover:opacity-90 transition-opacity rounded-xl"
+                >
+                  <ShoppingBag size={18} className="mr-2" /> Comprar Agora
+                </Button>
+                <a
+                  href={getProductWhatsAppUrl(product.name, formatPrice(product.promoPrice || product.price), window.location.href)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="outline" className="border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white h-12 px-4 rounded-xl transition-all duration-200" aria-label="Comprar pelo WhatsApp">
+                    <MessageCircle size={18} />
+                  </Button>
+                </a>
+                <Button variant="outline" className="border-border text-muted-foreground hover:text-primary hover:border-primary/40 h-12 px-4 rounded-xl transition-all duration-200" aria-label="Adicionar aos favoritos">
+                  <Heart size={18} />
+                </Button>
+              </div>
+
+              {/* Trust signals */}
+              <div className="grid grid-cols-2 gap-3 pt-3">
+                <div className="flex items-center gap-2.5 p-3 rounded-xl bg-card border border-border">
+                  <Truck size={18} className="text-primary flex-shrink-0" />
+                  <span className="text-xs text-muted-foreground font-body">Entrega rápida e segura</span>
+                </div>
+                <div className="flex items-center gap-2.5 p-3 rounded-xl bg-card border border-border">
+                  <Shield size={18} className="text-primary flex-shrink-0" />
+                  <span className="text-xs text-muted-foreground font-body">Garantia de qualidade</span>
+                </div>
+              </div>
+            </motion.div>
           </div>
 
-          <p className="text-muted-foreground font-body leading-relaxed">{product.description}</p>
-
-          {/* Variations */}
-          {product.variations && (
-            <div>
-              <span className="text-sm font-body font-semibold text-foreground mb-2 block">Variação:</span>
-              <div className="flex flex-wrap gap-2">
-                {product.variations.map(v => (
-                  <button
-                    key={v}
-                    onClick={() => setSelectedVariation(v)}
-                    className={`text-sm font-body px-4 py-2 rounded-lg border transition-colors ${selectedVariation === v ? "bg-accent text-accent-foreground border-accent" : "border-border text-muted-foreground hover:border-accent/50"}`}
-                  >
-                    {v}
-                  </button>
+          {/* Related */}
+          {related.length > 0 && (
+            <div className="mt-16 md:mt-20">
+              <div className="mb-8">
+                <span className="text-[11px] font-body uppercase tracking-[0.25em] text-primary font-semibold">Você também pode gostar</span>
+                <h2 className="font-display text-2xl font-bold mt-1 text-foreground">Produtos Relacionados</h2>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
+                {related.map((p, i) => (
+                  <ProductCard key={p.id} product={p} index={i} />
                 ))}
               </div>
             </div>
           )}
-
-          <div className="flex gap-3 pt-2">
-             <Button
-               onClick={() => addItem(product, selectedVariation)}
-               className="flex-1 gradient-gold text-primary-foreground font-body font-semibold tracking-wide uppercase h-12 text-sm glow-gold hover:opacity-90 transition-opacity"
-             >
-               <ShoppingBag size={18} className="mr-2" /> Comprar Agora
-             </Button>
-            <a
-              href={getProductWhatsAppUrl(product.name, formatPrice(product.promoPrice || product.price), window.location.href)}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button variant="outline" className="border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white h-12 px-4">
-                <MessageCircle size={18} />
-              </Button>
-            </a>
-            <Button variant="outline" className="border-border text-muted-foreground hover:text-accent hover:border-accent/50 h-12 px-4">
-              <Heart size={18} />
-            </Button>
-          </div>
-
-          {/* Trust */}
-          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground font-body">
-              <Truck size={18} className="text-accent" /> Entrega segura e premium
-            </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground font-body">
-              <Shield size={18} className="text-accent" /> Garantia vitalícia
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Related */}
-      {related.length > 0 && (
-        <div className="mt-20">
-          <h2 className="font-display text-2xl font-bold mb-8">Produtos Relacionados</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {related.map((p, i) => (
-              <ProductCard key={p.id} product={p} index={i} />
-            ))}
-          </div>
         </div>
-      )}
-    </div>
+      </div>
     </>
   );
 }
