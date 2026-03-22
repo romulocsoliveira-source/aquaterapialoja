@@ -9,7 +9,7 @@ export default {
       center: true,
       padding: "1rem",
       screens: {
-        "2xl": "1400px",
+        "2xl": "1280px",
       },
     },
     extend: {
@@ -56,6 +56,7 @@ export default {
         "brand-gold": "hsl(var(--brand-gold))",
         "brand-gold-light": "hsl(var(--brand-gold-light))",
         "brand-teal": "hsl(var(--brand-teal))",
+        "brand-coral": "hsl(var(--brand-coral))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
