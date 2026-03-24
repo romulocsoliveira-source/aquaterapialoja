@@ -221,7 +221,9 @@ serve(async (req) => {
         body: JSON.stringify(pixPayload),
       });
 
-      const respData = await resp.json();
+      const pixRespText = await resp.text();
+      let respData: any;
+      try { respData = JSON.parse(pixRespText); } catch { respData = { raw_response: pixRespText.substring(0, 500) }; }
       await logGateway(supabaseAdmin, "create-pix", pixPayload, respData, resp.status, resp.ok, resp.ok ? undefined : JSON.stringify(respData), userId);
 
       if (resp.ok) {
@@ -297,7 +299,9 @@ serve(async (req) => {
         body: JSON.stringify(boletoPayload),
       });
 
-      const respData = await resp.json();
+      const boletoRespText = await resp.text();
+      let respData: any;
+      try { respData = JSON.parse(boletoRespText); } catch { respData = { raw_response: boletoRespText.substring(0, 500) }; }
       await logGateway(supabaseAdmin, "create-boleto", boletoPayload, respData, resp.status, resp.ok, resp.ok ? undefined : JSON.stringify(respData), userId);
 
       if (resp.ok) {
@@ -371,7 +375,9 @@ serve(async (req) => {
         body: JSON.stringify(cardPayload),
       });
 
-      const respData = await resp.json();
+      const cardRespText = await resp.text();
+      let respData: any;
+      try { respData = JSON.parse(cardRespText); } catch { respData = { raw_response: cardRespText.substring(0, 500) }; }
       await logGateway(supabaseAdmin, "create-card", { ...cardPayload, charges: [{ ...cardPayload.charges[0], payment_method: { ...cardPayload.charges[0].payment_method, card: { encrypted: "[REDACTED]" } } }] }, respData, resp.status, resp.ok, resp.ok ? undefined : JSON.stringify(respData), userId);
 
       if (resp.ok) {
