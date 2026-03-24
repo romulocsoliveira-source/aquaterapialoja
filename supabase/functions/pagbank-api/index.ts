@@ -160,7 +160,13 @@ serve(async (req) => {
           body: JSON.stringify({ type: "card" }),
         });
 
-        const respData = await resp.json();
+        const respText = await resp.text();
+        let respData: any;
+        try {
+          respData = JSON.parse(respText);
+        } catch {
+          respData = { raw_response: respText.substring(0, 500) };
+        }
         const success = resp.ok;
 
         await logGateway(supabaseAdmin, "test-connection", { url: testUrl, environment: settings.environment }, respData, resp.status, success, success ? undefined : JSON.stringify(respData), userId);
