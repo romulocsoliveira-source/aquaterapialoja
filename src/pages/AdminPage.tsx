@@ -354,6 +354,7 @@ function ProductsTab({ searchTerm, setSearchTerm }: { searchTerm: string; setSea
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Buscar por nome, SKU ou categoria..." className="w-full bg-secondary text-foreground pl-10 pr-4 py-2.5 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground" />
         </div>
+        <Button onClick={() => openLabelPrint(filtered)} variant="outline" className="font-body text-sm gap-2"><Printer size={16} /> Imprimir Códigos de Barras</Button>
         <Button onClick={handleNew} className="gradient-purple-pink text-primary-foreground font-body text-sm gap-2"><Plus size={16} /> Novo Produto</Button>
       </div>
 
