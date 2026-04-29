@@ -302,6 +302,18 @@ function ProductsTab({ searchTerm, setSearchTerm }: { searchTerm: string; setSea
   const queryClient = useQueryClient();
   const [formOpen, setFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<(typeof products)[number] | null>(null);
+  const [labelPrintOpen, setLabelPrintOpen] = useState(false);
+  const [labelProducts, setLabelProducts] = useState<{ name: string; price: number; promoPrice?: number | null; barcode: string }[]>([]);
+
+  const openLabelPrint = (items: typeof products) => {
+    const valid = items.filter(p => p.barcode);
+    if (valid.length === 0) {
+      toast.error("Nenhum produto com código de barras disponível");
+      return;
+    }
+    setLabelProducts(valid.map(p => ({ name: p.name, price: p.price, promoPrice: p.promoPrice, barcode: p.barcode })));
+    setLabelPrintOpen(true);
+  };
 
   const filtered = products.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
