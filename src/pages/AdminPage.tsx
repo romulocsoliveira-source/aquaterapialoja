@@ -31,7 +31,7 @@ import {
   BarChart3, Package, ShoppingCart, Users, Tag, AlertTriangle,
   TrendingUp, DollarSign, ArrowLeft, Search, Edit, Trash2, Plus,
   Eye, Bell, Store, MessageCircle, Monitor, Smartphone, FileText, Truck, ShoppingBag, MapPin, Brain,
-  Scissors, Building2, PawPrint, Calendar, Camera, Rocket, CreditCard, Settings2
+  Scissors, Building2, PawPrint, Calendar, Camera, Rocket, CreditCard, Settings2, Printer
 } from "lucide-react";
 import BarcodeScanner from "@/components/shared/BarcodeScanner";
 import StockEntryDialog from "@/components/admin/StockEntryDialog";
@@ -302,6 +302,18 @@ function ProductsTab({ searchTerm, setSearchTerm }: { searchTerm: string; setSea
   const queryClient = useQueryClient();
   const [formOpen, setFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<(typeof products)[number] | null>(null);
+  const [labelPrintOpen, setLabelPrintOpen] = useState(false);
+  const [labelProducts, setLabelProducts] = useState<{ name: string; price: number; promoPrice?: number | null; barcode: string }[]>([]);
+
+  const openLabelPrint = (items: typeof products) => {
+    const valid = items.filter(p => p.barcode);
+    if (valid.length === 0) {
+      toast.error("Nenhum produto com código de barras disponível");
+      return;
+    }
+    setLabelProducts(valid.map(p => ({ name: p.name, price: p.price, promoPrice: p.promoPrice, barcode: p.barcode })));
+    setLabelPrintOpen(true);
+  };
 
   const filtered = products.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -342,6 +354,7 @@ function ProductsTab({ searchTerm, setSearchTerm }: { searchTerm: string; setSea
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Buscar por nome, SKU ou categoria..." className="w-full bg-secondary text-foreground pl-10 pr-4 py-2.5 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground" />
         </div>
+        <Button onClick={() => openLabelPrint(filtered)} variant="outline" className="font-body text-sm gap-2"><Printer size={16} /> Imprimir Códigos de Barras</Button>
         <Button onClick={handleNew} className="gradient-purple-pink text-primary-foreground font-body text-sm gap-2"><Plus size={16} /> Novo Produto</Button>
       </div>
 
@@ -377,6 +390,7 @@ function ProductsTab({ searchTerm, setSearchTerm }: { searchTerm: string; setSea
                   <td className="p-3 text-right">
                     <div className="flex items-center justify-end gap-1">
                       <Link to={`/produto/${p.slug}`} className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground"><Eye size={14} /></Link>
+                      <button onClick={() => openLabelPrint([p])} title="Imprimir código de barras" className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground"><Printer size={14} /></button>
                       <button onClick={() => handleEdit(p)} className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground"><Edit size={14} /></button>
                       <button onClick={() => handleDelete(p)} className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-destructive"><Trash2 size={14} /></button>
                     </div>
@@ -390,6 +404,7 @@ function ProductsTab({ searchTerm, setSearchTerm }: { searchTerm: string; setSea
       </div>
 
       <ProductFormDialog open={formOpen} onOpenChange={setFormOpen} product={editingProduct} onSaved={handleSaved} />
+      <ProductLabelPrint open={labelPrintOpen} onOpenChange={setLabelPrintOpen} products={labelProducts} />
 
       {/* Category Management */}
       <div className="mt-8 border-t border-border pt-6">
