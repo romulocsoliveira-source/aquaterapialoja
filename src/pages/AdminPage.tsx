@@ -31,7 +31,7 @@ import {
   BarChart3, Package, ShoppingCart, Users, Tag, AlertTriangle,
   TrendingUp, DollarSign, ArrowLeft, Search, Edit, Trash2, Plus,
   Eye, Bell, Store, MessageCircle, Monitor, Smartphone, FileText, Truck, ShoppingBag, MapPin, Brain,
-  Scissors, Building2, PawPrint, Calendar, Camera, Rocket, CreditCard, Settings2
+  Scissors, Building2, PawPrint, Calendar, Camera, Rocket, CreditCard, Settings2, Printer
 } from "lucide-react";
 import BarcodeScanner from "@/components/shared/BarcodeScanner";
 import StockEntryDialog from "@/components/admin/StockEntryDialog";
