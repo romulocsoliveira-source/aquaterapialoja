@@ -404,6 +404,7 @@ function ProductsTab({ searchTerm, setSearchTerm }: { searchTerm: string; setSea
       </div>
 
       <ProductFormDialog open={formOpen} onOpenChange={setFormOpen} product={editingProduct} onSaved={handleSaved} />
+      <ProductLabelPrint open={labelPrintOpen} onOpenChange={setLabelPrintOpen} products={labelProducts} />
 
       {/* Category Management */}
       <div className="mt-8 border-t border-border pt-6">
