@@ -390,6 +390,7 @@ function ProductsTab({ searchTerm, setSearchTerm }: { searchTerm: string; setSea
                   <td className="p-3 text-right">
                     <div className="flex items-center justify-end gap-1">
                       <Link to={`/produto/${p.slug}`} className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground"><Eye size={14} /></Link>
+                      <button onClick={() => openLabelPrint([p])} title="Imprimir código de barras" className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground"><Printer size={14} /></button>
                       <button onClick={() => handleEdit(p)} className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground"><Edit size={14} /></button>
                       <button onClick={() => handleDelete(p)} className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-destructive"><Trash2 size={14} /></button>
                     </div>
