@@ -149,6 +149,7 @@ export default function AdminPage() {
         {/* {activeTab === "pets" && <AdminPetsTab />} */}
         {activeTab === "products" && <ProductsTab searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}
         {activeTab === "orders" && <OrdersCentralTab />}
+        {activeTab === "customers" && <AdminCustomersTab />}
          {activeTab === "financial" && <FinancialTab />}
          {activeTab === "fiscal" && <FiscalTab />}
          {activeTab === "suppliers" && <SuppliersTab />}
