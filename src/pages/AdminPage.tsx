@@ -90,6 +90,7 @@ export default function AdminPage() {
      // { id: "pets" as AdminTab, label: "Pets", icon: PawPrint },
      { id: "products" as AdminTab, label: "Produtos", icon: Package },
      { id: "orders" as AdminTab, label: "Central de Pedidos", icon: ShoppingCart },
+     { id: "customers" as AdminTab, label: "Clientes", icon: Users },
      { id: "financial" as AdminTab, label: "Financeiro", icon: DollarSign },
      { id: "fiscal" as AdminTab, label: "Nota Fiscal", icon: FileText },
      { id: "suppliers" as AdminTab, label: "Fornecedores", icon: Truck },
