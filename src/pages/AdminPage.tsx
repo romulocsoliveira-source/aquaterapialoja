@@ -21,6 +21,7 @@ import AdminAgendaTab from "@/components/admin/AdminAgendaTab";
 import AdminHotelTab from "@/components/admin/AdminHotelTab";
 import AdminServicosTab from "@/components/admin/AdminServicosTab";
 import AdminPetsTab from "@/components/admin/AdminPetsTab";
+import AdminCustomersTab from "@/components/admin/AdminCustomersTab";
 import StoreSetupWizard from "@/components/admin/StoreSetupWizard";
 import CompanySettingsTab from "@/components/admin/CompanySettingsTab";
 import AdminPaymentSettingsTab from "@/components/admin/AdminPaymentSettingsTab";
