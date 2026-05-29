@@ -230,6 +230,66 @@ export type Database = {
         }
         Relationships: []
       }
+      customers: {
+        Row: {
+          birth_date: string | null
+          city: string | null
+          complement: string | null
+          cpf: string | null
+          created_at: string
+          created_by: string
+          email: string | null
+          full_name: string
+          id: string
+          neighborhood: string | null
+          number: string | null
+          observacoes: string | null
+          phone: string | null
+          state: string | null
+          street: string | null
+          updated_at: string
+          zip_code: string | null
+        }
+        Insert: {
+          birth_date?: string | null
+          city?: string | null
+          complement?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by: string
+          email?: string | null
+          full_name: string
+          id?: string
+          neighborhood?: string | null
+          number?: string | null
+          observacoes?: string | null
+          phone?: string | null
+          state?: string | null
+          street?: string | null
+          updated_at?: string
+          zip_code?: string | null
+        }
+        Update: {
+          birth_date?: string | null
+          city?: string | null
+          complement?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          neighborhood?: string | null
+          number?: string | null
+          observacoes?: string | null
+          phone?: string | null
+          state?: string | null
+          street?: string | null
+          updated_at?: string
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
       deployment_payments: {
         Row: {
           amount: number

@@ -21,6 +21,7 @@ import AdminAgendaTab from "@/components/admin/AdminAgendaTab";
 import AdminHotelTab from "@/components/admin/AdminHotelTab";
 import AdminServicosTab from "@/components/admin/AdminServicosTab";
 import AdminPetsTab from "@/components/admin/AdminPetsTab";
+import AdminCustomersTab from "@/components/admin/AdminCustomersTab";
 import StoreSetupWizard from "@/components/admin/StoreSetupWizard";
 import CompanySettingsTab from "@/components/admin/CompanySettingsTab";
 import AdminPaymentSettingsTab from "@/components/admin/AdminPaymentSettingsTab";
@@ -40,7 +41,7 @@ import ProductLabelPrint from "@/components/shared/ProductLabelPrint";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
-type AdminTab = "dashboard" | "products" | "orders" | "financial" | "fiscal" | "suppliers" | "purchases" | "coupons" | "stock" | "inventory" | "deliveries" | "reports" | "notifications" | "integrations" | "mercadolivre" | "agenda" | "hotel" | "servicos" | "pets" | "setup" | "settings" | "payments";
+type AdminTab = "dashboard" | "products" | "orders" | "customers" | "financial" | "fiscal" | "suppliers" | "purchases" | "coupons" | "stock" | "inventory" | "deliveries" | "reports" | "notifications" | "integrations" | "mercadolivre" | "agenda" | "hotel" | "servicos" | "pets" | "setup" | "settings" | "payments";
 
 const CHANNELS = ["Loja Online", "WhatsApp", "Mercado Livre", "PDV"] as const;
 type Channel = typeof CHANNELS[number];
@@ -89,6 +90,7 @@ export default function AdminPage() {
      // { id: "pets" as AdminTab, label: "Pets", icon: PawPrint },
      { id: "products" as AdminTab, label: "Produtos", icon: Package },
      { id: "orders" as AdminTab, label: "Central de Pedidos", icon: ShoppingCart },
+     { id: "customers" as AdminTab, label: "Clientes", icon: Users },
      { id: "financial" as AdminTab, label: "Financeiro", icon: DollarSign },
      { id: "fiscal" as AdminTab, label: "Nota Fiscal", icon: FileText },
      { id: "suppliers" as AdminTab, label: "Fornecedores", icon: Truck },
@@ -147,6 +149,7 @@ export default function AdminPage() {
         {/* {activeTab === "pets" && <AdminPetsTab />} */}
         {activeTab === "products" && <ProductsTab searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}
         {activeTab === "orders" && <OrdersCentralTab />}
+        {activeTab === "customers" && <AdminCustomersTab />}
          {activeTab === "financial" && <FinancialTab />}
          {activeTab === "fiscal" && <FiscalTab />}
          {activeTab === "suppliers" && <SuppliersTab />}
