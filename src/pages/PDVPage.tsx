@@ -565,23 +565,40 @@ export default function PDVPage() {
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 space-y-2">
-            {cart.map((item, idx) => (
+            {cart.map((item, idx) => {
+              const weighed = isWeighed(item.product);
+              const unitPrice = item.product.promoPrice || item.product.price;
+              return (
               <div key={item.product.id} className="flex items-center gap-3 bg-secondary/50 rounded-lg p-3">
                 <span className="text-xs text-muted-foreground w-5">{idx + 1}</span>
                 <img src={item.product.image || "/placeholder.svg"} alt={item.product.name} className="w-10 h-10 rounded object-cover" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{item.product.name}</p>
-                  <p className="text-xs text-muted-foreground">{formatPrice(item.product.promoPrice || item.product.price)} un</p>
+                  <p className="text-xs text-muted-foreground">{formatPrice(unitPrice)} / {weighed ? "kg" : "un"}</p>
                 </div>
                 <div className="flex items-center gap-1">
                   <button onClick={() => updateQty(item.product.id, -1)} className="p-1 rounded bg-secondary hover:bg-border"><Minus size={14} /></button>
-                  <span className="w-8 text-center text-sm font-bold">{item.quantity}</span>
+                  {weighed ? (
+                    <input
+                      type="number"
+                      step="0.001"
+                      min="0"
+                      value={item.quantity}
+                      onChange={e => setQty(item.product.id, Number(e.target.value))}
+                      className="w-16 text-center text-sm font-bold bg-secondary rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-accent/50"
+                      aria-label="Quantidade em kg"
+                    />
+                  ) : (
+                    <span className="w-8 text-center text-sm font-bold">{item.quantity}</span>
+                  )}
                   <button onClick={() => updateQty(item.product.id, 1)} className="p-1 rounded bg-secondary hover:bg-border"><Plus size={14} /></button>
+                  {weighed && <span className="text-[10px] text-muted-foreground ml-0.5">kg</span>}
                 </div>
-                <span className="text-sm font-bold w-20 text-right">{formatPrice((item.product.promoPrice || item.product.price) * item.quantity)}</span>
+                <span className="text-sm font-bold w-20 text-right">{formatPrice(unitPrice * item.quantity)}</span>
                 <button onClick={() => removeFromCart(item.product.id)} className="text-muted-foreground hover:text-destructive"><Trash2 size={14} /></button>
               </div>
-            ))}
+            );})}
+
           </div>
 
           <div className="border-t border-border p-4 space-y-3">
