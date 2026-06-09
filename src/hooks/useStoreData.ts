@@ -36,7 +36,8 @@ async function fetchProducts(): Promise<Product[]> {
     barcode: p.barcode,
     stock: p.stock || 0,
     costPrice: p.cost_price ? Number(p.cost_price) : 0,
-  }));
+    unitMeasure: (p.unit_measure || "UN").toString().toUpperCase(),
+  } as Product));
 }
 
 async function fetchCategories(): Promise<Category[]> {

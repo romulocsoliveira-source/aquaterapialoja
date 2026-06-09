@@ -23,6 +23,7 @@ export interface Product {
   barcode: string;
   stock: number;
   costPrice?: number;
+  unitMeasure?: string;
 }
 
 export interface Category {
