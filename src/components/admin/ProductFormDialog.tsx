@@ -466,8 +466,23 @@ export default function ProductFormDialog({ open, onOpenChange, product, onSaved
                 <Input value={form.cst} onChange={e => setForm(f => ({ ...f, cst: e.target.value }))} placeholder="00" />
               </div>
               <div className="space-y-2">
-                <Label>Unidade</Label>
-                <Input value={form.unit_measure} onChange={e => setForm(f => ({ ...f, unit_measure: e.target.value }))} placeholder="UN" />
+                <Label>Unidade de Venda</Label>
+                <Select value={form.unit_measure} onValueChange={v => setForm(f => ({ ...f, unit_measure: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="UN">UN — Unidade</SelectItem>
+                    <SelectItem value="KG">KG — Quilograma (granel)</SelectItem>
+                    <SelectItem value="G">G — Grama</SelectItem>
+                    <SelectItem value="L">L — Litro</SelectItem>
+                    <SelectItem value="ML">ML — Mililitro</SelectItem>
+                    <SelectItem value="M">M — Metro</SelectItem>
+                    <SelectItem value="CX">CX — Caixa</SelectItem>
+                    <SelectItem value="PCT">PCT — Pacote</SelectItem>
+                  </SelectContent>
+                </Select>
+                {form.unit_measure === "KG" && (
+                  <p className="text-[11px] text-muted-foreground">Preço informado refere-se a 1 kg. No PDV será possível digitar quantidade fracionada (ex.: 1,5).</p>
+                )}
               </div>
             </div>
           </div>
