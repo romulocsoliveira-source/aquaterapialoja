@@ -82,13 +82,15 @@ export default function PDVPage() {
       )
     : [];
 
+  const isWeighed = (p: Product) => (p.unitMeasure || "UN").toUpperCase() === "KG";
+
   const addToCart = (product: Product) => {
     setCart(prev => {
       const existing = prev.find(i => i.product.id === product.id);
-      if (existing) {
+      if (existing && !isWeighed(product)) {
         return prev.map(i => i.product.id === product.id ? { ...i, quantity: i.quantity + 1 } : i);
       }
-      return [...prev, { product, quantity: 1 }];
+      return [...prev, { product, quantity: isWeighed(product) ? 1 : 1 }];
     });
     setSearchTerm("");
     setBarcodeInput("");
@@ -98,16 +100,23 @@ export default function PDVPage() {
   const updateQty = (id: string, delta: number) => {
     setCart(prev => prev.map(i => {
       if (i.product.id === id) {
-        const newQty = i.quantity + delta;
+        const step = isWeighed(i.product) ? 0.1 : 1;
+        const newQty = Math.round((i.quantity + delta * step) * 1000) / 1000;
         return newQty > 0 ? { ...i, quantity: newQty } : i;
       }
       return i;
     }).filter(i => i.quantity > 0));
   };
 
+  const setQty = (id: string, value: number) => {
+    if (!isFinite(value) || value <= 0) return;
+    setCart(prev => prev.map(i => i.product.id === id ? { ...i, quantity: Math.round(value * 1000) / 1000 } : i));
+  };
+
   const removeFromCart = (id: string) => {
     setCart(prev => prev.filter(i => i.product.id !== id));
   };
+
 
   const subtotal = cart.reduce((s, i) => s + (i.product.promoPrice || i.product.price) * i.quantity, 0);
   const totalItems = cart.reduce((s, i) => s + i.quantity, 0);
