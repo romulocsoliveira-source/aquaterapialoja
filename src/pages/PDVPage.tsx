@@ -596,7 +596,7 @@ export default function PDVPage() {
                       value={item.quantity > 0 ? item.quantity : ""}
                       placeholder="kg"
                       onChange={e => setQty(item.product.id, e.target.value === "" ? 0 : Number(e.target.value))}
-                      className="w-20 text-center text-sm font-bold bg-secondary rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-accent/50"
+                      className="w-28 text-center text-base font-bold bg-secondary rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-accent/50"
                       aria-label="Quantidade em kg (vazio = preço unitário)"
                       title="Digite o peso em kg ou deixe vazio para manter o preço unitário"
                     />
