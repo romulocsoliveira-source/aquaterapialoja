@@ -84,13 +84,18 @@ export default function PDVPage() {
 
   const isWeighed = (p: Product) => (p.unitMeasure || "UN").toUpperCase() === "KG";
 
+  // Para produtos KG: quantity = 0 significa "campo vazio" → mantém o preço unitário (equivale a 1 kg).
+  const effectiveQty = (i: { product: Product; quantity: number }) =>
+    isWeighed(i.product) && (!i.quantity || i.quantity <= 0) ? 1 : i.quantity;
+
   const addToCart = (product: Product) => {
     setCart(prev => {
       const existing = prev.find(i => i.product.id === product.id);
       if (existing && !isWeighed(product)) {
         return prev.map(i => i.product.id === product.id ? { ...i, quantity: i.quantity + 1 } : i);
       }
-      return [...prev, { product, quantity: isWeighed(product) ? 1 : 1 }];
+      // KG entra com quantidade vazia (0) para preenchimento manual ou via balança
+      return [...prev, { product, quantity: isWeighed(product) ? 0 : 1 }];
     });
     setSearchTerm("");
     setBarcodeInput("");
@@ -101,15 +106,19 @@ export default function PDVPage() {
     setCart(prev => prev.map(i => {
       if (i.product.id === id) {
         const step = isWeighed(i.product) ? 0.1 : 1;
-        const newQty = Math.round((i.quantity + delta * step) * 1000) / 1000;
+        const base = isWeighed(i.product) && i.quantity <= 0 ? 0 : i.quantity;
+        const newQty = Math.round((base + delta * step) * 1000) / 1000;
+        if (isWeighed(i.product)) {
+          return { ...i, quantity: newQty > 0 ? newQty : 0 };
+        }
         return newQty > 0 ? { ...i, quantity: newQty } : i;
       }
       return i;
-    }).filter(i => i.quantity > 0));
+    }).filter(i => isWeighed(i.product) || i.quantity > 0));
   };
 
   const setQty = (id: string, value: number) => {
-    if (!isFinite(value) || value <= 0) return;
+    if (!isFinite(value) || value < 0) value = 0;
     setCart(prev => prev.map(i => i.product.id === id ? { ...i, quantity: Math.round(value * 1000) / 1000 } : i));
   };
 
@@ -118,8 +127,8 @@ export default function PDVPage() {
   };
 
 
-  const subtotal = cart.reduce((s, i) => s + (i.product.promoPrice || i.product.price) * i.quantity, 0);
-  const totalItems = cart.reduce((s, i) => s + i.quantity, 0);
+  const subtotal = cart.reduce((s, i) => s + (i.product.promoPrice || i.product.price) * effectiveQty(i), 0);
+  const totalItems = cart.reduce((s, i) => s + effectiveQty(i), 0);
   const discountAmount = discountPercent > 0 ? subtotal * (discountPercent / 100) : discountFixed;
   const total = Math.max(0, subtotal - discountAmount);
   const changeAmount = showCashInput && Number(cashReceived) > total ? Number(cashReceived) - total : 0;
