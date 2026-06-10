@@ -526,10 +526,10 @@ export default function PDVPage() {
             products={cart.map(i => ({ name: i.product.name, price: i.product.price, promoPrice: i.product.promoPrice, barcode: i.product.barcode }))} />
 
           <div className="relative">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input ref={searchRef} type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-              placeholder="Buscar produto por nome ou SKU..."
-              className="w-full bg-secondary text-foreground pl-10 pr-4 py-3 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground" />
+              placeholder="Buscar produto..."
+              className="w-full bg-secondary text-foreground pl-8 pr-3 py-2 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground" />
           </div>
 
           {filtered.length > 0 && (
