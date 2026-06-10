@@ -507,15 +507,15 @@ export default function PDVPage() {
 
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Barcode size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Barcode size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input ref={barcodeRef} type="text" value={barcodeInput} onChange={e => setBarcodeInput(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && handleBarcode()}
-                placeholder="Código de barras (Enter para buscar)..."
-                className="w-full bg-secondary text-foreground pl-10 pr-4 py-3 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground" />
+                placeholder="Código de barras..."
+                className="w-full bg-secondary text-foreground pl-8 pr-3 py-2 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground" />
             </div>
-            <Button onClick={() => handleBarcode()} className="bg-accent text-accent-foreground px-4">Buscar</Button>
-            <Button onClick={() => setShowCameraScanner(true)} variant="outline" className="gap-1 border-primary text-primary">
-              <Camera size={16} /> Escanear
+            <Button onClick={() => handleBarcode()} size="sm" className="bg-accent text-accent-foreground px-3">Buscar</Button>
+            <Button onClick={() => setShowCameraScanner(true)} variant="outline" size="sm" className="gap-1 border-primary text-primary px-2">
+              <Camera size={14} />
             </Button>
           </div>
 
