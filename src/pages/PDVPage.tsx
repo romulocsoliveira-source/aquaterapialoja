@@ -495,7 +495,7 @@ export default function PDVPage() {
         )}
       </AnimatePresence>
 
-      <div className="flex-1 container py-4 grid md:grid-cols-[1fr,420px] gap-4">
+      <div className="flex-1 container py-4 grid md:grid-cols-[320px,1fr] gap-4">
         {/* Products Search */}
         <div className="space-y-4">
           <div className="relative">
