@@ -82,7 +82,8 @@ export default function PDVPage() {
       )
     : [];
 
-  const isWeighed = (p: Product) => (p.unitMeasure || "UN").toUpperCase() === "KG";
+  // Todos os produtos permitem compra por kg (campo manual / balança). Deixar vazio mantém o preço unitário.
+  const isWeighed = (_p: Product) => true;
 
   // Para produtos KG: quantity = 0 significa "campo vazio" → mantém o preço unitário (equivale a 1 kg).
   const effectiveQty = (i: { product: Product; quantity: number }) =>
