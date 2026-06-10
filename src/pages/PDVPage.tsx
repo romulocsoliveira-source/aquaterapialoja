@@ -495,27 +495,27 @@ export default function PDVPage() {
         )}
       </AnimatePresence>
 
-      <div className="flex-1 container py-4 grid md:grid-cols-[1fr,420px] gap-4">
+      <div className="flex-1 container py-4 grid md:grid-cols-[320px,1fr] gap-4">
         {/* Products Search */}
         <div className="space-y-4">
           <div className="relative">
             <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)}
-              placeholder="Nome do cliente (opcional)..."
-              className="w-full bg-secondary text-foreground pl-10 pr-4 py-2.5 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground" />
+              placeholder="Cliente (opcional)..."
+              className="w-full bg-secondary text-foreground pl-9 pr-3 py-2 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground" />
           </div>
 
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Barcode size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Barcode size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input ref={barcodeRef} type="text" value={barcodeInput} onChange={e => setBarcodeInput(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && handleBarcode()}
-                placeholder="Código de barras (Enter para buscar)..."
-                className="w-full bg-secondary text-foreground pl-10 pr-4 py-3 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground" />
+                placeholder="Código de barras..."
+                className="w-full bg-secondary text-foreground pl-8 pr-3 py-2 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground" />
             </div>
-            <Button onClick={() => handleBarcode()} className="bg-accent text-accent-foreground px-4">Buscar</Button>
-            <Button onClick={() => setShowCameraScanner(true)} variant="outline" className="gap-1 border-primary text-primary">
-              <Camera size={16} /> Escanear
+            <Button onClick={() => handleBarcode()} size="sm" className="bg-accent text-accent-foreground px-3">Buscar</Button>
+            <Button onClick={() => setShowCameraScanner(true)} variant="outline" size="sm" className="gap-1 border-primary text-primary px-2">
+              <Camera size={14} />
             </Button>
           </div>
 
@@ -526,10 +526,10 @@ export default function PDVPage() {
             products={cart.map(i => ({ name: i.product.name, price: i.product.price, promoPrice: i.product.promoPrice, barcode: i.product.barcode }))} />
 
           <div className="relative">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input ref={searchRef} type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-              placeholder="Buscar produto por nome ou SKU..."
-              className="w-full bg-secondary text-foreground pl-10 pr-4 py-3 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground" />
+              placeholder="Buscar produto..."
+              className="w-full bg-secondary text-foreground pl-8 pr-3 py-2 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground" />
           </div>
 
           {filtered.length > 0 && (
@@ -596,7 +596,7 @@ export default function PDVPage() {
                       value={item.quantity > 0 ? item.quantity : ""}
                       placeholder="kg"
                       onChange={e => setQty(item.product.id, e.target.value === "" ? 0 : Number(e.target.value))}
-                      className="w-20 text-center text-sm font-bold bg-secondary rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-accent/50"
+                      className="w-28 text-center text-base font-bold bg-secondary rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-accent/50"
                       aria-label="Quantidade em kg (vazio = preço unitário)"
                       title="Digite o peso em kg ou deixe vazio para manter o preço unitário"
                     />
