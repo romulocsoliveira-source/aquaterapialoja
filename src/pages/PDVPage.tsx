@@ -592,10 +592,12 @@ export default function PDVPage() {
                       type="number"
                       step="0.001"
                       min="0"
-                      value={item.quantity}
-                      onChange={e => setQty(item.product.id, Number(e.target.value))}
-                      className="w-16 text-center text-sm font-bold bg-secondary rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-accent/50"
-                      aria-label="Quantidade em kg"
+                      value={item.quantity > 0 ? item.quantity : ""}
+                      placeholder="kg"
+                      onChange={e => setQty(item.product.id, e.target.value === "" ? 0 : Number(e.target.value))}
+                      className="w-20 text-center text-sm font-bold bg-secondary rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-accent/50"
+                      aria-label="Quantidade em kg (vazio = preço unitário)"
+                      title="Digite o peso em kg ou deixe vazio para manter o preço unitário"
                     />
                   ) : (
                     <span className="w-8 text-center text-sm font-bold">{item.quantity}</span>
@@ -603,7 +605,7 @@ export default function PDVPage() {
                   <button onClick={() => updateQty(item.product.id, 1)} className="p-1 rounded bg-secondary hover:bg-border"><Plus size={14} /></button>
                   {weighed && <span className="text-[10px] text-muted-foreground ml-0.5">kg</span>}
                 </div>
-                <span className="text-sm font-bold w-20 text-right">{formatPrice(unitPrice * item.quantity)}</span>
+                <span className="text-sm font-bold w-20 text-right">{formatPrice(unitPrice * (weighed && item.quantity <= 0 ? 1 : item.quantity))}</span>
                 <button onClick={() => removeFromCart(item.product.id)} className="text-muted-foreground hover:text-destructive"><Trash2 size={14} /></button>
               </div>
             );})}
