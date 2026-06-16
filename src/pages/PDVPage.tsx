@@ -665,21 +665,21 @@ export default function PDVPage() {
                 <p className="text-xs text-muted-foreground text-center uppercase tracking-wider">Forma de Pagamento</p>
                 {showCashInput && (
                   <div className="bg-secondary rounded-lg p-3 space-y-2">
-                    <label className="text-xs text-muted-foreground">Valor recebido em dinheiro</label>
-                    <input type="number" step="0.01" value={cashReceived} onChange={e => setCashReceived(e.target.value)}
-                      onKeyDown={e => e.key === "Enter" && Number(cashReceived) >= total && finalizeSale("cash")}
+                    <label className="text-xs text-muted-foreground">Valor recebido em dinheiro (total: {formatPrice(total)})</label>
+                    <input type="text" inputMode="decimal" value={cashReceived} onChange={e => setCashReceived(e.target.value)}
+                      onKeyDown={e => e.key === "Enter" && cashReceivedNum >= total && finalizeSale("cash")}
                       className="w-full bg-background text-foreground px-3 py-2 rounded text-lg font-mono focus:outline-none focus:ring-2 focus:ring-accent/50"
-                      placeholder={formatPrice(total)} autoFocus />
-                    {Number(cashReceived) > 0 && Number(cashReceived) >= total && (
-                      <div className="flex justify-between text-lg font-bold text-green-400"><span>Troco:</span><span>{formatPrice(Number(cashReceived) - total)}</span></div>
+                      placeholder={formatPrice(total).replace("R$", "").trim()} autoFocus />
+                    {cashReceivedNum > 0 && cashReceivedNum >= total && (
+                      <div className="flex justify-between text-lg font-bold text-green-400"><span>Troco:</span><span>{formatPrice(cashReceivedNum - total)}</span></div>
                     )}
-                    {Number(cashReceived) > 0 && Number(cashReceived) < total && (
-                      <p className="text-xs text-destructive">Valor insuficiente</p>
+                    {cashReceivedNum > 0 && cashReceivedNum < total && (
+                      <p className="text-xs text-destructive">Valor insuficiente (faltam {formatPrice(total - cashReceivedNum)})</p>
                     )}
                     <div className="flex gap-2">
-                      <Button onClick={() => finalizeSale("cash")} disabled={processing || !cashReceived || Number(cashReceived) < total}
+                      <Button onClick={() => finalizeSale("cash")} disabled={processing || cashReceivedNum < total}
                         className="flex-1 bg-accent text-accent-foreground text-sm">Confirmar</Button>
-                      <Button variant="outline" size="sm" onClick={() => setShowCashInput(false)}>Voltar</Button>
+                      <Button variant="outline" size="sm" onClick={() => { setShowCashInput(false); setCashReceived(""); }}>Voltar</Button>
                     </div>
                   </div>
                 )}
