@@ -128,11 +128,12 @@ export default function PDVPage() {
   };
 
 
-  const subtotal = cart.reduce((s, i) => s + (i.product.promoPrice || i.product.price) * effectiveQty(i), 0);
+  const rawSubtotal = cart.reduce((s, i) => s + (i.product.promoPrice || i.product.price) * effectiveQty(i), 0);
+  const subtotal = Math.round(rawSubtotal * 100) / 100;
   const totalItems = cart.reduce((s, i) => s + effectiveQty(i), 0);
-  const discountAmount = discountPercent > 0 ? subtotal * (discountPercent / 100) : discountFixed;
-  const total = Math.max(0, subtotal - discountAmount);
-  const changeAmount = showCashInput && Number(cashReceived) > total ? Number(cashReceived) - total : 0;
+  const discountAmount = Math.round((discountPercent > 0 ? subtotal * (discountPercent / 100) : discountFixed) * 100) / 100;
+  const total = Math.max(0, Math.round((subtotal - discountAmount) * 100) / 100);
+  const changeAmount = showCashInput && Number(cashReceived) > total ? Math.round((Number(cashReceived) - total) * 100) / 100 : 0;
 
   // Improved barcode matching from Almoxarifado
   const findProductInCache = (code: string): Product | undefined => {
