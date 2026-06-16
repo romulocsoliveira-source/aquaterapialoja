@@ -133,7 +133,14 @@ export default function PDVPage() {
   const totalItems = cart.reduce((s, i) => s + effectiveQty(i), 0);
   const discountAmount = Math.round((discountPercent > 0 ? subtotal * (discountPercent / 100) : discountFixed) * 100) / 100;
   const total = Math.max(0, Math.round((subtotal - discountAmount) * 100) / 100);
-  const changeAmount = showCashInput && Number(cashReceived) > total ? Math.round((Number(cashReceived) - total) * 100) / 100 : 0;
+  const parseCash = (v: string) => {
+    if (!v) return 0;
+    const normalized = v.toString().replace(/\s/g, "").replace(/\./g, "").replace(",", ".");
+    const n = parseFloat(normalized);
+    return isNaN(n) ? 0 : Math.round(n * 100) / 100;
+  };
+  const cashReceivedNum = parseCash(cashReceived);
+  const changeAmount = showCashInput && cashReceivedNum > total ? Math.round((cashReceivedNum - total) * 100) / 100 : 0;
 
   // Improved barcode matching from Almoxarifado
   const findProductInCache = (code: string): Product | undefined => {
@@ -314,7 +321,7 @@ export default function PDVPage() {
         authorized_at: new Date().toISOString(),
         notes: `Cupom fiscal PDV automático`,
       });
-      const saleData = { total, method, id: order.id, items: [...cart], discount: discountAmount, change: changeAmount, cashReceived: Number(cashReceived) || 0 };
+      const saleData = { total, method, id: order.id, items: [...cart], discount: discountAmount, change: changeAmount, cashReceived: cashReceivedNum };
       setLastSale(saleData);
       setCart([]); setShowPayment(false); setShowCashInput(false); setCashReceived("");
       setDiscountPercent(0); setDiscountFixed(0); setShowDiscount(false); setCustomerName("");
@@ -658,21 +665,21 @@ export default function PDVPage() {
                 <p className="text-xs text-muted-foreground text-center uppercase tracking-wider">Forma de Pagamento</p>
                 {showCashInput && (
                   <div className="bg-secondary rounded-lg p-3 space-y-2">
-                    <label className="text-xs text-muted-foreground">Valor recebido em dinheiro</label>
-                    <input type="number" step="0.01" value={cashReceived} onChange={e => setCashReceived(e.target.value)}
-                      onKeyDown={e => e.key === "Enter" && Number(cashReceived) >= total && finalizeSale("cash")}
+                    <label className="text-xs text-muted-foreground">Valor recebido em dinheiro (total: {formatPrice(total)})</label>
+                    <input type="text" inputMode="decimal" value={cashReceived} onChange={e => setCashReceived(e.target.value)}
+                      onKeyDown={e => e.key === "Enter" && cashReceivedNum >= total && finalizeSale("cash")}
                       className="w-full bg-background text-foreground px-3 py-2 rounded text-lg font-mono focus:outline-none focus:ring-2 focus:ring-accent/50"
-                      placeholder={formatPrice(total)} autoFocus />
-                    {Number(cashReceived) > 0 && Number(cashReceived) >= total && (
-                      <div className="flex justify-between text-lg font-bold text-green-400"><span>Troco:</span><span>{formatPrice(Number(cashReceived) - total)}</span></div>
+                      placeholder={formatPrice(total).replace("R$", "").trim()} autoFocus />
+                    {cashReceivedNum > 0 && cashReceivedNum >= total && (
+                      <div className="flex justify-between text-lg font-bold text-green-400"><span>Troco:</span><span>{formatPrice(cashReceivedNum - total)}</span></div>
                     )}
-                    {Number(cashReceived) > 0 && Number(cashReceived) < total && (
-                      <p className="text-xs text-destructive">Valor insuficiente</p>
+                    {cashReceivedNum > 0 && cashReceivedNum < total && (
+                      <p className="text-xs text-destructive">Valor insuficiente (faltam {formatPrice(total - cashReceivedNum)})</p>
                     )}
                     <div className="flex gap-2">
-                      <Button onClick={() => finalizeSale("cash")} disabled={processing || !cashReceived || Number(cashReceived) < total}
+                      <Button onClick={() => finalizeSale("cash")} disabled={processing || cashReceivedNum < total}
                         className="flex-1 bg-accent text-accent-foreground text-sm">Confirmar</Button>
-                      <Button variant="outline" size="sm" onClick={() => setShowCashInput(false)}>Voltar</Button>
+                      <Button variant="outline" size="sm" onClick={() => { setShowCashInput(false); setCashReceived(""); }}>Voltar</Button>
                     </div>
                   </div>
                 )}
