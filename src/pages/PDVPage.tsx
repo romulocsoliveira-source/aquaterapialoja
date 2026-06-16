@@ -321,7 +321,7 @@ export default function PDVPage() {
         authorized_at: new Date().toISOString(),
         notes: `Cupom fiscal PDV automático`,
       });
-      const saleData = { total, method, id: order.id, items: [...cart], discount: discountAmount, change: changeAmount, cashReceived: Number(cashReceived) || 0 };
+      const saleData = { total, method, id: order.id, items: [...cart], discount: discountAmount, change: changeAmount, cashReceived: cashReceivedNum };
       setLastSale(saleData);
       setCart([]); setShowPayment(false); setShowCashInput(false); setCashReceived("");
       setDiscountPercent(0); setDiscountFixed(0); setShowDiscount(false); setCustomerName("");
