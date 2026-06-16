@@ -133,7 +133,14 @@ export default function PDVPage() {
   const totalItems = cart.reduce((s, i) => s + effectiveQty(i), 0);
   const discountAmount = Math.round((discountPercent > 0 ? subtotal * (discountPercent / 100) : discountFixed) * 100) / 100;
   const total = Math.max(0, Math.round((subtotal - discountAmount) * 100) / 100);
-  const changeAmount = showCashInput && Number(cashReceived) > total ? Math.round((Number(cashReceived) - total) * 100) / 100 : 0;
+  const parseCash = (v: string) => {
+    if (!v) return 0;
+    const normalized = v.toString().replace(/\s/g, "").replace(/\./g, "").replace(",", ".");
+    const n = parseFloat(normalized);
+    return isNaN(n) ? 0 : Math.round(n * 100) / 100;
+  };
+  const cashReceivedNum = parseCash(cashReceived);
+  const changeAmount = showCashInput && cashReceivedNum > total ? Math.round((cashReceivedNum - total) * 100) / 100 : 0;
 
   // Improved barcode matching from Almoxarifado
   const findProductInCache = (code: string): Product | undefined => {
