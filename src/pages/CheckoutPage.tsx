@@ -84,17 +84,11 @@ export default function CheckoutPage() {
     }
   }, [paymentSettings]);
 
-  const enabledMethods = getEnabledMethods(paymentSettings);
-  const pagbankActive = paymentSettings?.is_active && enabledMethods.length > 0;
-
-  // Fallback methods when PagBank is not configured
-  const fallbackMethods = [
+  // Operação inicial: apenas PIX via chave estática (CNPJ). Sem gateway.
+  const pagbankActive = false;
+  const displayMethods = [
     { id: "pix", label: "PIX", desc: "Pagamento instantâneo" },
-    { id: "credit_card", label: "Cartão de Crédito", desc: "Até 12x" },
-    { id: "boleto", label: "Boleto Bancário", desc: "Vencimento em 3 dias" },
   ];
-
-  const displayMethods = pagbankActive ? enabledMethods : fallbackMethods;
 
   // Auto-select first method
   useEffect(() => {
@@ -651,8 +645,8 @@ export default function CheckoutPage() {
 
   // Generates a local EMV PIX payload as fallback when PagBank is not active
   function generateLocalPixPayload() {
-    const pixKey = "18997348718";
-    const name = "AQUATERAPIA";
+    const pixKey = "42157598000177";
+    const name = "AQUATERAPIA AQUARIOS";
     const city = "ASSIS";
     const amount = finalTotal.toFixed(2);
     const txid = orderId ? orderId.slice(0, 25).replace(/-/g, "") : "COMPRA";
