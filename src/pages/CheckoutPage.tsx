@@ -84,17 +84,11 @@ export default function CheckoutPage() {
     }
   }, [paymentSettings]);
 
-  const enabledMethods = getEnabledMethods(paymentSettings);
-  const pagbankActive = paymentSettings?.is_active && enabledMethods.length > 0;
-
-  // Fallback methods when PagBank is not configured
-  const fallbackMethods = [
+  // Operação inicial: apenas PIX via chave estática (CNPJ). Sem gateway.
+  const pagbankActive = false;
+  const displayMethods = [
     { id: "pix", label: "PIX", desc: "Pagamento instantâneo" },
-    { id: "credit_card", label: "Cartão de Crédito", desc: "Até 12x" },
-    { id: "boleto", label: "Boleto Bancário", desc: "Vencimento em 3 dias" },
   ];
-
-  const displayMethods = pagbankActive ? enabledMethods : fallbackMethods;
 
   // Auto-select first method
   useEffect(() => {
