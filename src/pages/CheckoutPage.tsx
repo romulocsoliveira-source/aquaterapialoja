@@ -102,8 +102,8 @@ export default function CheckoutPage() {
 
   const selectedAddr = addresses.find(a => a.id === selectedAddress);
   const isAssisCity = selectedAddr?.city?.trim().toLowerCase() === "assis";
-  const shippingCost = isAssisCity || totalPrice >= 499 ? 0 : 29.90;
-  const shippingLabel = isAssisCity ? "Frete grátis para Assis" : shippingCost === 0 ? "Grátis" : null;
+  const shippingCost = 0;
+  const shippingLabel = "Frete grátis";
   const finalTotal = Math.max(0, totalPrice - couponDiscount + shippingCost);
 
   const maxInstallments = paymentSettings?.max_installments || 12;
