@@ -102,9 +102,10 @@ export default function CheckoutPage() {
 
   const selectedAddr = addresses.find(a => a.id === selectedAddress);
   const isAssisCity = selectedAddr?.city?.trim().toLowerCase() === "assis";
-  const shippingCost = 0;
-  const shippingLabel = "Frete grátis";
-  const finalTotal = Math.max(0, totalPrice - couponDiscount + shippingCost);
+  const subtotalAfterDiscount = Math.max(0, totalPrice - couponDiscount);
+  const shippingCost = subtotalAfterDiscount >= 15 ? 0 : 5;
+  const shippingLabel = shippingCost === 0 ? "Frete grátis" : "Taxa de entrega";
+  const finalTotal = Math.max(0, subtotalAfterDiscount + shippingCost);
 
   const maxInstallments = paymentSettings?.max_installments || 12;
   const minInstallmentValue = paymentSettings?.min_installment_value || 10;
@@ -804,9 +805,16 @@ export default function CheckoutPage() {
                     </form>
                   )}
 
+                  {selectedAddress && !isAssisCity && (
+                    <div className="mt-6 p-4 rounded-lg border border-destructive/30 bg-destructive/10 text-destructive text-sm font-body flex items-start gap-2">
+                      <AlertTriangle size={18} className="flex-shrink-0 mt-0.5" />
+                      <span>No momento realizamos entregas apenas para a cidade de <strong>Assis-SP</strong>. Selecione um endereço em Assis para continuar.</span>
+                    </div>
+                  )}
+
                   <div className="mt-8 flex justify-between">
                     <Button variant="outline" onClick={() => navigate("/")} className="gap-2"><ArrowLeft size={16} /> Voltar</Button>
-                    <Button disabled={!selectedAddress} onClick={() => setStep("payment")} className="gradient-gold text-primary-foreground font-body font-semibold h-11 px-8">Continuar</Button>
+                    <Button disabled={!selectedAddress || !isAssisCity} onClick={() => setStep("payment")} className="gradient-gold text-primary-foreground font-body font-semibold h-11 px-8">Continuar</Button>
                   </div>
                 </motion.div>
               )}
@@ -967,7 +975,7 @@ export default function CheckoutPage() {
                   <div className="flex justify-between text-sm font-body">
                     <span className="text-muted-foreground flex items-center gap-1"><Truck size={14} /> Frete</span>
                     <span className={shippingCost === 0 ? "text-green-500 font-semibold" : ""}>
-                      {shippingLabel || (shippingCost === 0 ? "Grátis" : formatPrice(shippingCost))}
+                      {shippingCost === 0 ? "Frete grátis" : formatPrice(shippingCost)}
                     </span>
                   </div>
                   <div className="flex justify-between font-display text-lg font-bold pt-2 border-t border-border">
