@@ -3,6 +3,37 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ChevronDown, ChevronUp, Monitor, MessageCircle, Package, RefreshCw, Smartphone, Store } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const STATUS_OPTIONS: { value: string; label: string }[] = [
+  { value: "pending_payment", label: "Aguardando Pagamento" },
+  { value: "paid", label: "Pagamento Aprovado" },
+  { value: "under_review", label: "Em Análise" },
+  { value: "preparing", label: "Em Separação" },
+  { value: "shipped", label: "Enviado" },
+  { value: "delivered", label: "Entregue" },
+  { value: "completed", label: "Finalizado" },
+  { value: "cancelled", label: "Cancelado" },
+  { value: "expired", label: "Expirado" },
+  { value: "failed", label: "Falhou" },
+  { value: "refunded", label: "Reembolsado" },
+];
+
+async function updateOrderStatus(orderId: string, newStatus: string) {
+  const patch: any = { status: newStatus };
+  if (newStatus === "paid") {
+    patch.gateway_status = "PAID";
+    patch.gateway_paid_at = new Date().toISOString();
+  }
+  const { error } = await supabase.from("orders").update(patch).eq("id", orderId);
+  if (error) {
+    console.error("[OrdersCentral:updateStatus]", error);
+    toast.error("Erro ao atualizar status: " + error.message);
+    return false;
+  }
+  toast.success("Status atualizado!");
+  return true;
+}
 
 type Channel = "Loja Online" | "WhatsApp" | "Mercado Livre" | "PDV";
 type ShippingAddress = Record<string, string | undefined> | null;
