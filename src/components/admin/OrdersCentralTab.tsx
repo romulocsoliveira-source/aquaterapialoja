@@ -414,6 +414,9 @@ export default function OrdersCentralTab() {
                                     </Select>
                                   </div>
                                 </div>
+                              </div>
+                            </div>
+                          </td>
                         </tr>
                       )}
                     </>
