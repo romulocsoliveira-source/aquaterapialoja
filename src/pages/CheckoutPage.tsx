@@ -643,24 +643,54 @@ export default function CheckoutPage() {
     </div>
   );
 
-  // Generates a local EMV PIX payload as fallback when PagBank is not active
+  // Generates a valid EMV PIX (BR Code) payload — static QR with amount
   function generateLocalPixPayload() {
-    const pixKey = "42157598000177";
-    const name = "AQUATERAPIA AQUARIOS";
-    const city = "ASSIS";
-    const amount = finalTotal.toFixed(2);
-    const txid = orderId ? orderId.slice(0, 25).replace(/-/g, "") : "COMPRA";
-    const pad = (id: string, val: string) => `${id}${String(val.length).padStart(2, "0")}${val}`;
-    const merchantAccount = pad("00", "br.gov.bcb.pix") + pad("01", pixKey);
-    let payload = pad("00", "01") + pad("26", merchantAccount) + pad("52", "0000") + pad("53", "986") + pad("54", amount) + pad("58", "BR") + pad("59", name.slice(0, 25)) + pad("60", city.slice(0, 15)) + pad("62", pad("05", txid));
-    payload += "6304";
+    // Sanitiza para ASCII maiúsculo sem acentos/símbolos (exigido pelo padrão BR Code)
+    const sanitize = (s: string, max: number) =>
+      s.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^A-Za-z0-9 ]/g, "").toUpperCase().trim().slice(0, max);
+
+    const pixKey = "42157598000177"; // CNPJ (apenas dígitos)
+    const merchantName = sanitize("AQUATERAPIA AQUARIOS", 25);
+    const merchantCity = sanitize("ASSIS", 15);
+    const amount = Number(finalTotal || 0).toFixed(2);
+
+    // TXID: apenas alfanumérico, 1-25 chars
+    const rawTx = (orderId || "COMPRA").toString().replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+    const txid = (rawTx || "COMPRA").slice(0, 25);
+
+    const tlv = (id: string, val: string) =>
+      `${id}${String(val.length).padStart(2, "0")}${val}`;
+
+    // ID 26 — Merchant Account Information (PIX)
+    const mai = tlv("00", "br.gov.bcb.pix") + tlv("01", pixKey);
+
+    // ID 62 — Additional Data Field (TXID em 05)
+    const addData = tlv("05", txid);
+
+    const payloadNoCrc =
+      tlv("00", "01") +          // Payload Format Indicator
+      tlv("01", "11") +          // Point of Initiation Method (11 = estático)
+      tlv("26", mai) +           // Merchant Account Info
+      tlv("52", "0000") +        // Merchant Category Code
+      tlv("53", "986") +         // Moeda BRL
+      tlv("54", amount) +        // Valor
+      tlv("58", "BR") +          // País
+      tlv("59", merchantName) +  // Nome do recebedor
+      tlv("60", merchantCity) +  // Cidade
+      tlv("62", addData) +       // Dados adicionais
+      "6304";                    // Placeholder do CRC
+
+    // CRC16-CCITT (poly 0x1021, init 0xFFFF), calculado sobre o payload + "6304"
     let crc = 0xFFFF;
-    for (let i = 0; i < payload.length; i++) {
-      crc ^= payload.charCodeAt(i) << 8;
-      for (let j = 0; j < 8; j++) crc = crc & 0x8000 ? (crc << 1) ^ 0x1021 : crc << 1;
-      crc &= 0xFFFF;
+    for (let i = 0; i < payloadNoCrc.length; i++) {
+      crc ^= payloadNoCrc.charCodeAt(i) << 8;
+      for (let j = 0; j < 8; j++) {
+        crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) : (crc << 1);
+        crc &= 0xFFFF;
+      }
     }
-    return payload + crc.toString(16).toUpperCase().padStart(4, "0");
+    return payloadNoCrc + crc.toString(16).toUpperCase().padStart(4, "0");
   }
 
   return (
