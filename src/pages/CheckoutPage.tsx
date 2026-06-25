@@ -68,6 +68,7 @@ export default function CheckoutPage() {
   const [cardForm, setCardForm] = useState({ number: "", name: "", expiry: "", cvv: "", installments: "1" });
   const [cpf, setCpf] = useState("");
   const [paymentResult, setPaymentResult] = useState<PaymentResult | null>(null);
+  const [paidAmount, setPaidAmount] = useState<number>(0);
   const [processingPayment, setProcessingPayment] = useState(false);
   const [publicKey, setPublicKey] = useState<string | null>(null);
 
