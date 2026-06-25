@@ -975,7 +975,7 @@ export default function CheckoutPage() {
                   <div className="flex justify-between text-sm font-body">
                     <span className="text-muted-foreground flex items-center gap-1"><Truck size={14} /> Frete</span>
                     <span className={shippingCost === 0 ? "text-green-500 font-semibold" : ""}>
-                      {shippingLabel || (shippingCost === 0 ? "Grátis" : formatPrice(shippingCost))}
+                      {shippingCost === 0 ? "Frete grátis" : formatPrice(shippingCost)}
                     </span>
                   </div>
                   <div className="flex justify-between font-display text-lg font-bold pt-2 border-t border-border">
