@@ -805,9 +805,16 @@ export default function CheckoutPage() {
                     </form>
                   )}
 
+                  {selectedAddress && !isAssisCity && (
+                    <div className="mt-6 p-4 rounded-lg border border-destructive/30 bg-destructive/10 text-destructive text-sm font-body flex items-start gap-2">
+                      <AlertTriangle size={18} className="flex-shrink-0 mt-0.5" />
+                      <span>No momento realizamos entregas apenas para a cidade de <strong>Assis-SP</strong>. Selecione um endereço em Assis para continuar.</span>
+                    </div>
+                  )}
+
                   <div className="mt-8 flex justify-between">
                     <Button variant="outline" onClick={() => navigate("/")} className="gap-2"><ArrowLeft size={16} /> Voltar</Button>
-                    <Button disabled={!selectedAddress} onClick={() => setStep("payment")} className="gradient-gold text-primary-foreground font-body font-semibold h-11 px-8">Continuar</Button>
+                    <Button disabled={!selectedAddress || !isAssisCity} onClick={() => setStep("payment")} className="gradient-gold text-primary-foreground font-body font-semibold h-11 px-8">Continuar</Button>
                   </div>
                 </motion.div>
               )}
