@@ -514,7 +514,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="bg-card border border-border rounded-xl p-4 max-w-sm mx-auto mb-4">
                   <p className="text-xs text-muted-foreground mb-1">Valor total</p>
-                  <p className="text-2xl font-display font-bold text-accent">{formatPrice(finalTotal)}</p>
+                  <p className="text-2xl font-display font-bold text-accent">{formatPrice(paidAmount || finalTotal)}</p>
                 </div>
               </>
             )}
