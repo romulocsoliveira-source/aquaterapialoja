@@ -102,9 +102,10 @@ export default function CheckoutPage() {
 
   const selectedAddr = addresses.find(a => a.id === selectedAddress);
   const isAssisCity = selectedAddr?.city?.trim().toLowerCase() === "assis";
-  const shippingCost = 0;
-  const shippingLabel = "Frete grátis";
-  const finalTotal = Math.max(0, totalPrice - couponDiscount + shippingCost);
+  const subtotalAfterDiscount = Math.max(0, totalPrice - couponDiscount);
+  const shippingCost = subtotalAfterDiscount >= 15 ? 0 : 5;
+  const shippingLabel = shippingCost === 0 ? "Frete grátis" : "Taxa de entrega";
+  const finalTotal = Math.max(0, subtotalAfterDiscount + shippingCost);
 
   const maxInstallments = paymentSettings?.max_installments || 12;
   const minInstallmentValue = paymentSettings?.min_installment_value || 10;
