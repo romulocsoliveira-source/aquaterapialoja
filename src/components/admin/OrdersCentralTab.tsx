@@ -397,10 +397,23 @@ export default function OrdersCentralTab() {
                                     <span className="text-muted-foreground">Valor total</span>
                                     <span className="text-right font-semibold text-accent">{order.totalLabel}</span>
                                   </div>
+                                  <div className="border-t border-border pt-3">
+                                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Alterar status do pagamento</p>
+                                    <Select
+                                      value={order.status}
+                                      onValueChange={(value) => updateOrderStatus(order.id, value).then((ok) => ok && loadOrders())}
+                                    >
+                                      <SelectTrigger className="w-full">
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {STATUS_OPTIONS.map((opt) => (
+                                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
                                 </div>
-                              </div>
-                            </div>
-                          </td>
                         </tr>
                       )}
                     </>
