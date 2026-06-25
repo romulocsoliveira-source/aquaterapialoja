@@ -412,6 +412,7 @@ export default function CheckoutPage() {
       }
 
       setOrderId(order.id);
+      setPaidAmount(finalTotal);
       setStep("confirmation");
       clearCart();
     } catch (err: any) {
