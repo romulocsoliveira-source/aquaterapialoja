@@ -655,7 +655,7 @@ export default function CheckoutPage() {
     const pixKey = "42157598000177"; // CNPJ (apenas dígitos)
     const merchantName = sanitize("AQUATERAPIA AQUARIOS", 25);
     const merchantCity = sanitize("ASSIS", 15);
-    const amount = Number(finalTotal || 0).toFixed(2);
+    const amount = Number(paidAmount || finalTotal || 0).toFixed(2);
 
     // TXID: apenas alfanumérico, 1-25 chars
     const rawTx = (orderId || "COMPRA").toString().replace(/[^A-Za-z0-9]/g, "").toUpperCase();
