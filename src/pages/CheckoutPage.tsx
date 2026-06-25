@@ -68,6 +68,7 @@ export default function CheckoutPage() {
   const [cardForm, setCardForm] = useState({ number: "", name: "", expiry: "", cvv: "", installments: "1" });
   const [cpf, setCpf] = useState("");
   const [paymentResult, setPaymentResult] = useState<PaymentResult | null>(null);
+  const [paidAmount, setPaidAmount] = useState<number>(0);
   const [processingPayment, setProcessingPayment] = useState(false);
   const [publicKey, setPublicKey] = useState<string | null>(null);
 
@@ -101,8 +102,8 @@ export default function CheckoutPage() {
 
   const selectedAddr = addresses.find(a => a.id === selectedAddress);
   const isAssisCity = selectedAddr?.city?.trim().toLowerCase() === "assis";
-  const shippingCost = isAssisCity || totalPrice >= 499 ? 0 : 29.90;
-  const shippingLabel = isAssisCity ? "Frete grátis para Assis" : shippingCost === 0 ? "Grátis" : null;
+  const shippingCost = 0;
+  const shippingLabel = "Frete grátis";
   const finalTotal = Math.max(0, totalPrice - couponDiscount + shippingCost);
 
   const maxInstallments = paymentSettings?.max_installments || 12;
@@ -411,6 +412,7 @@ export default function CheckoutPage() {
       }
 
       setOrderId(order.id);
+      setPaidAmount(finalTotal);
       setStep("confirmation");
       clearCart();
     } catch (err: any) {
@@ -512,7 +514,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="bg-card border border-border rounded-xl p-4 max-w-sm mx-auto mb-4">
                   <p className="text-xs text-muted-foreground mb-1">Valor total</p>
-                  <p className="text-2xl font-display font-bold text-accent">{formatPrice(finalTotal)}</p>
+                  <p className="text-2xl font-display font-bold text-accent">{formatPrice(paidAmount || finalTotal)}</p>
                 </div>
               </>
             )}
@@ -653,7 +655,7 @@ export default function CheckoutPage() {
     const pixKey = "42157598000177"; // CNPJ (apenas dígitos)
     const merchantName = sanitize("AQUATERAPIA AQUARIOS", 25);
     const merchantCity = sanitize("ASSIS", 15);
-    const amount = Number(finalTotal || 0).toFixed(2);
+    const amount = Number(paidAmount || finalTotal || 0).toFixed(2);
 
     // TXID: apenas alfanumérico, 1-25 chars
     const rawTx = (orderId || "COMPRA").toString().replace(/[^A-Za-z0-9]/g, "").toUpperCase();
